@@ -12,6 +12,7 @@
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
+[![Download](https://img.shields.io/github/v/release/lucas3g/mirrorsight?label=download&logo=github&color=2ea44f)](https://github.com/lucas3g/mirrorsight/releases/latest)
 
 [English](README.md) · [Português](README.pt-BR.md) · [中文](README.zh-CN.md) · **日本語** · [한국어](README.ko.md) · [Deutsch](README.de.md) · [Español](README.es.md)
 
@@ -94,8 +95,8 @@ flowchart LR
 
 ## 📦 はじめかた
 
-1. **インストール** — インストーラーをビルドし（[開発](#-開発) を参照）、
-   `target/release/bundle/nsis/Mirrorsight_*_x64-setup.exe` を実行します。アプリはシステムトレイに常駐します。
+1. **インストール** — [最新リリース](https://github.com/lucas3g/mirrorsight/releases/latest) から `Mirrorsight_x.y.z_x64-setup.exe` をダウンロードして実行します
+   （自分でビルドする場合は [開発](#-開発) を参照）。アプリはシステムトレイに常駐します。
 2. **設定** — **設定 → 一般** でゲーム (PoE 1 / PoE 2) とリーグを選択します。
 3. **プレイ** — ゲーム内でアイテムにカーソルを合わせ、<kbd>Ctrl</kbd>+<kbd>D</kbd>。<kbd>Esc</kbd> で閉じます。
 

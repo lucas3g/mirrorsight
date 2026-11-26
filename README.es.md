@@ -12,6 +12,7 @@ Pasa el ratón sobre un objeto, pulsa <kbd>Ctrl</kbd> + <kbd>D</kbd> y descubre 
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![Plataforma](https://img.shields.io/badge/plataforma-Windows-0078D6?logo=windows&logoColor=white)
 ![Licencia](https://img.shields.io/badge/licencia-MIT-green)
+[![Download](https://img.shields.io/github/v/release/lucas3g/mirrorsight?label=download&logo=github&color=2ea44f)](https://github.com/lucas3g/mirrorsight/releases/latest)
 
 [English](README.md) · [Português](README.pt-BR.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Deutsch](README.de.md) · **Español**
 
@@ -96,8 +97,8 @@ flowchart LR
 
 ## 📦 Primeros pasos
 
-1. **Instala** — genera el instalador (ver [Desarrollo](#-desarrollo)) y ejecuta
-   `target/release/bundle/nsis/Mirrorsight_*_x64-setup.exe`. La app vive en la bandeja del sistema.
+1. **Instala** — descarga `Mirrorsight_x.y.z_x64-setup.exe` de la [última release](https://github.com/lucas3g/mirrorsight/releases/latest) y ejecútalo
+   (o compílalo tú mismo, ver [Desarrollo](#-desarrollo)). La app vive en la bandeja del sistema.
 2. **Configura** — en **Ajustes → General**, elige el juego (PoE 1 / PoE 2) y la liga.
 3. **Juega** — pasa el ratón sobre un objeto y pulsa <kbd>Ctrl</kbd>+<kbd>D</kbd>. <kbd>Esc</kbd> cierra.
 

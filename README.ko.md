@@ -12,6 +12,7 @@
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
+[![Download](https://img.shields.io/github/v/release/lucas3g/mirrorsight?label=download&logo=github&color=2ea44f)](https://github.com/lucas3g/mirrorsight/releases/latest)
 
 [English](README.md) · [Português](README.pt-BR.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · **한국어** · [Deutsch](README.de.md) · [Español](README.es.md)
 
@@ -94,8 +95,8 @@ flowchart LR
 
 ## 📦 시작하기
 
-1. **설치** — 설치 프로그램을 빌드한 뒤([개발](#-개발) 참고)
-   `target/release/bundle/nsis/Mirrorsight_*_x64-setup.exe`를 실행합니다. 앱은 시스템 트레이에 상주합니다.
+1. **설치** — [최신 릴리스](https://github.com/lucas3g/mirrorsight/releases/latest)에서 `Mirrorsight_x.y.z_x64-setup.exe`를 내려받아 실행합니다
+   (직접 빌드하려면 [개발](#-개발) 참고). 앱은 시스템 트레이에 상주합니다.
 2. **설정** — **설정 → 일반**에서 게임(PoE 1 / PoE 2)과 리그를 선택합니다.
 3. **플레이** — 게임에서 아이템에 마우스를 올리고 <kbd>Ctrl</kbd>+<kbd>D</kbd>. <kbd>Esc</kbd>로 닫습니다.
 

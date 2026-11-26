@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { APP_VERSION } from '$lib/version';
   import { formatAmount } from '$lib/format';
   import { priceCheck } from '$lib/stores/priceCheck.svelte';
   import { settings } from '$lib/stores/settings.svelte';
@@ -46,7 +47,7 @@
     <kbd class="kbd">Ctrl K</kbd> comandos
     <kbd class="kbd">Esc</kbd> fechar
   </span>
-  <span class="ver mono">v0.1.0</span>
+  <span class="ver mono">v{APP_VERSION}</span>
 </footer>
 
 <style>

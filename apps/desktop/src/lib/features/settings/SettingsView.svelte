@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { APP_VERSION } from '$lib/version';
   import { tick } from 'svelte';
   import { normalize } from '$lib/format';
   import { PANE_LABEL, nav, type SettingsPane } from '$lib/stores/nav.svelte';
@@ -135,7 +136,7 @@
         <Icon name={p.icon} size={16} />{PANE_LABEL[p.id]}
       </button>
     {/each}
-    <div class="ver mono">v0.1.0 · {settings.current?.game === 'poe2' ? 'PoE2' : 'PoE1'}</div>
+    <div class="ver mono">v{APP_VERSION} · {settings.current?.game === 'poe2' ? 'PoE2' : 'PoE1'}</div>
   </nav>
 
   <div class="content scroll" bind:this={content}>

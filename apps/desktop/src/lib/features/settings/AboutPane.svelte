@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { APP_VERSION } from '$lib/version';
   import { backend } from '$lib/backend';
   import Logo from '$lib/ui/Logo.svelte';
 </script>
@@ -6,7 +7,7 @@
 <div class="about">
   <Logo size={64} />
   <h4>Mirrorsight</h4>
-  <p>Versão 0.1.0 · Rust + Tauri 2 + Svelte 5</p>
+  <p>Versão {APP_VERSION} · Rust + Tauri 2 + Svelte 5</p>
   {#if backend.kind === 'demo'}<span class="chip">Modo demonstração (fora do Tauri)</span>{/if}
   <p class="fine">
     Projeto independente, não afiliado à Grinding Gear Games. Ícones de itens © Grinding Gear Games,

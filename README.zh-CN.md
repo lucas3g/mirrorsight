@@ -12,6 +12,7 @@
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
+[![Download](https://img.shields.io/github/v/release/lucas3g/mirrorsight?label=download&logo=github&color=2ea44f)](https://github.com/lucas3g/mirrorsight/releases/latest)
 
 [English](README.md) · [Português](README.pt-BR.md) · **中文** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Deutsch](README.de.md) · [Español](README.es.md)
 
@@ -92,8 +93,8 @@ flowchart LR
 
 ## 📦 快速开始
 
-1. **安装** —— 构建安装包（见 [开发](#-开发)），然后运行
-   `target/release/bundle/nsis/Mirrorsight_*_x64-setup.exe`。程序常驻系统托盘。
+1. **安装** —— 从 [最新版本](https://github.com/lucas3g/mirrorsight/releases/latest) 下载 `Mirrorsight_x.y.z_x64-setup.exe` 并运行
+   （也可以自行构建，见 [开发](#-开发)）。程序常驻系统托盘。
 2. **配置** —— 在 **设置 → 常规** 中选择游戏 (PoE 1 / PoE 2) 和赛季。
 3. **开玩** —— 在游戏中将鼠标悬停在物品上，按 <kbd>Ctrl</kbd>+<kbd>D</kbd>。按 <kbd>Esc</kbd> 关闭。
 

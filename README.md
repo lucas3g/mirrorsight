@@ -12,6 +12,7 @@ Hover an item, press <kbd>Ctrl</kbd> + <kbd>D</kbd>, and know what it's worth �
 ![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
 ![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
+[![Download](https://img.shields.io/github/v/release/lucas3g/mirrorsight?label=download&logo=github&color=2ea44f)](https://github.com/lucas3g/mirrorsight/releases/latest)
 
 **English** · [Português](README.pt-BR.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Deutsch](README.de.md) · [Español](README.es.md)
 
@@ -96,8 +97,8 @@ flowchart LR
 
 ## 📦 Getting started
 
-1. **Install** — build the installer (see [Development](#-development)) and run
-   `target/release/bundle/nsis/Mirrorsight_*_x64-setup.exe`. The app lives in the system tray.
+1. **Install** — download `Mirrorsight_x.y.z_x64-setup.exe` from the [latest release](https://github.com/lucas3g/mirrorsight/releases/latest) and run it
+   (or build it yourself, see [Development](#-development)). The app lives in the system tray.
 2. **Configure** — open **Settings → General** and choose the game (PoE 1 / PoE 2) and your league.
 3. **Play** — hover an item in game and press <kbd>Ctrl</kbd>+<kbd>D</kbd>. Press <kbd>Esc</kbd> to close.
 
