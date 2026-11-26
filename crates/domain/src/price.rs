@@ -38,6 +38,14 @@ pub struct Listing {
     /// Imagem do item listado (URL do poecdn). Em raros/mágicos é a arte da base.
     #[serde(default)]
     pub icon: Option<String>,
+    /// Propriedades a 20% de qualidade, como a trade compara (`extended.ar`…), por id do filtro
+    /// ("ar", "es", "pdps"…). Vazio quando a API não informa.
+    #[serde(default)]
+    pub max_quality: HashMap<String, f64>,
+    /// As propriedades do item foram trocadas pelos valores a 20% de qualidade para exibição
+    /// (ver [`crate::property_filter`]; a comparação com o seu item usa os valores reais).
+    #[serde(default)]
+    pub at_max_quality: bool,
 }
 
 /// Resultado agregado de um price check.
@@ -250,6 +258,8 @@ mod tests {
             item: None,
             whisper: None,
             icon: None,
+            max_quality: HashMap::new(),
+            at_max_quality: false,
         }
     }
 

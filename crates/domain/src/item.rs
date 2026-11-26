@@ -15,10 +15,11 @@ pub enum Rarity {
 }
 
 /// Origem de um modificador. Cada variante corresponde a um grupo de stats da trade API.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum ModifierKind {
     Implicit,
+    #[default]
     Explicit,
     Crafted,
     Fractured,
@@ -90,8 +91,49 @@ impl AffixSlots {
     }
 }
 
+/// Nível de um implícito eldritch (Searing Exarch / Eater of Worlds), do cabeçalho avançado.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum EldritchLevel {
+    Lesser,
+    Greater,
+    Grand,
+    Exceptional,
+    Exquisite,
+    Perfect,
+}
+
+impl EldritchLevel {
+    pub const ALL: [Self; 6] =
+        [Self::Lesser, Self::Greater, Self::Grand, Self::Exceptional, Self::Exquisite, Self::Perfect];
+
+    /// 1 (Lesser) a 6 (Perfect).
+    pub fn rank(self) -> u32 {
+        Self::ALL.iter().position(|l| *l == self).map_or(1, |p| u32::try_from(p + 1).unwrap_or(1))
+    }
+
+    pub fn from_name(name: &str) -> Option<Self> {
+        Self::ALL.into_iter().find(|l| format!("{l:?}").eq_ignore_ascii_case(name.trim()))
+    }
+}
+
+/// De onde o mod vem, quando o cabeçalho avançado (ou a trade) informa algo além do tipo.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum ModOrigin {
+    /// Implícito do Searing Exarch (`searing = true`) ou do Eater of Worlds.
+    Eldritch { searing: bool, level: EldritchLevel },
+    /// Implícito de corrupção (Vaal Orb).
+    Corruption,
+    Veiled,
+    /// Mod de influência (Shaper, Elder, conquistadores).
+    Influence { influence: Influence },
+    /// Mod de único.
+    Unique,
+}
+
 /// Mod reconhecido no banco de stats.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Modifier {
     /// ID usado pela trade API (ex.: `explicit.stat_3299347043`).
     pub trade_id: String,
@@ -105,6 +147,23 @@ pub struct Modifier {
     /// Prefixo ou sufixo, quando a origem informa (Ctrl+Alt+C ou `extended.mods` da trade API).
     #[serde(default)]
     pub affix: Option<Affix>,
+    /// Rank de bancada ("(Rank: 3)" / "R3" na trade), só em mods crafted.
+    #[serde(default)]
+    pub rank: Option<u32>,
+    /// Nome do afixo ("Fecund", "of the Lightning"): identifica o mod exato na base de tiers.
+    #[serde(default)]
+    pub mod_name: Option<String>,
+    #[serde(default)]
+    pub origin: Option<ModOrigin>,
+}
+
+/// Marcas do item que afetam o potencial de crafting.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ItemFlags {
+    pub fractured: bool,
+    pub synthesised: bool,
+    pub mirrored: bool,
+    pub split: bool,
 }
 
 /// Item parseado a partir do texto do clipboard.
@@ -145,9 +204,27 @@ pub struct Item {
     /// Slots de prefixo/sufixo ocupados; só presente quando a origem conhece os afixos.
     #[serde(default)]
     pub affix_slots: Option<AffixSlots>,
+    #[serde(default)]
+    pub flags: ItemFlags,
 }
 
 impl Item {
+    /// Número de sockets ("B-B-R G" → 4).
+    pub fn socket_count(&self) -> u32 {
+        self.sockets
+            .as_deref()
+            .map(|s| s.split(|c: char| c == '-' || c.is_whitespace()).filter(|g| !g.is_empty()).count())
+            .map_or(0, |n| u32::try_from(n).unwrap_or(u32::MAX))
+    }
+
+    /// Sockets brancos (aceitam qualquer gema).
+    pub fn white_sockets(&self) -> u32 {
+        self.sockets
+            .as_deref()
+            .map(|s| s.chars().filter(|c| *c == 'W').count())
+            .map_or(0, |n| u32::try_from(n).unwrap_or(u32::MAX))
+    }
+
     /// Maior grupo de sockets ligados ("B-B-R G" → 3).
     pub fn max_links(&self) -> u32 {
         self.sockets
@@ -187,7 +264,17 @@ mod tests {
             trade_type: None,
             map_tier: None,
             affix_slots: None,
+            flags: ItemFlags::default(),
         };
         assert_eq!(item.max_links(), 4);
+        assert_eq!(item.socket_count(), 7);
+        assert_eq!(item.white_sockets(), 0);
+    }
+
+    #[test]
+    fn eldritch_level_rank() {
+        assert_eq!(EldritchLevel::from_name("Exquisite").map(EldritchLevel::rank), Some(5));
+        assert_eq!(EldritchLevel::Lesser.rank(), 1);
+        assert_eq!(EldritchLevel::from_name("Nope"), None);
     }
 }

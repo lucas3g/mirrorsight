@@ -88,6 +88,7 @@ pub fn parse(section: &[&str]) -> Result<Item, ItemParseError> {
         trade_type: None,
         map_tier: None,
         affix_slots: None,
+        flags: Default::default(),
     })
 }
 

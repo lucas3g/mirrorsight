@@ -15,6 +15,7 @@ pub mod clipboard;
 pub mod http;
 pub mod json_file;
 pub mod ninja;
+pub mod pob;
 pub mod rate_limit;
 pub mod settings;
 pub mod trade;

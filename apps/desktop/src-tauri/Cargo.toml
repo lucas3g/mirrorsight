@@ -17,6 +17,7 @@ mirrorsight-domain.workspace = true
 mirrorsight-parser.workspace = true
 mirrorsight-application.workspace = true
 mirrorsight-infrastructure.workspace = true
+mirrorsight-gamedata.workspace = true
 
 tauri = { version = "2", features = ["tray-icon"] }
 serde.workspace = true

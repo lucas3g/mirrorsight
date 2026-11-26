@@ -1,9 +1,10 @@
 <script lang="ts">
-  import type { Listing } from '$lib/types';
+  import type { ItemQuality, Listing } from '$lib/types';
   import { formatAmount, relativeAge } from '$lib/format';
   import CurrencyIcon from '$lib/ui/CurrencyIcon.svelte';
   import Icon from '$lib/ui/Icon.svelte';
   import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
+  import QualityChip from './QualityChip.svelte';
 
   let {
     listing,
@@ -11,6 +12,7 @@
     best,
     peeking,
     compact = false,
+    quality = null,
     onpeek,
     onunpeek,
     onwhisper,
@@ -21,6 +23,8 @@
     peeking: boolean;
     /** Overlay: linhas de 34px, com iLvl, só o olho. */
     compact?: boolean;
+    /** Qualidade do item anunciado (listagem agrupada); independe do grupo/upgrade. */
+    quality?: ItemQuality | null;
     onpeek: (row: HTMLElement) => void;
     onunpeek: () => void;
     onwhisper: (listing: Listing) => void;
@@ -40,6 +44,7 @@
   <span class="seller">
     <span class="dot" class:on={listing.online} class:afk={!listing.online} title={listing.online ? 'online' : 'offline/afk'}></span>
     <span class="name">{listing.account}</span>
+    {#if quality}<span class="qc"><QualityChip {quality} short={compact} /></span>{/if}
   </span>
   <span class="age mono">{relativeAge(listing.indexed_at)}</span>
   <span class="act">
@@ -88,6 +93,7 @@
   .cheap { font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em; color: var(--ms-suggest); white-space: nowrap; }
   .seller { display: flex; align-items: center; gap: 7px; min-width: 0; font-size: 12px; color: var(--ms-text-2); }
   .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .qc { margin-left: auto; display: inline-flex; }
   .age { font-size: 11.5px; color: var(--ms-text-3); text-align: right; }
   .act { display: flex; justify-content: flex-end; gap: 2px; }
 </style>

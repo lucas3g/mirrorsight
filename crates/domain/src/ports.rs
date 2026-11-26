@@ -36,6 +36,19 @@ pub enum PortError {
 
 pub type PortResult<T> = Result<T, PortError>;
 
+/// Builds do Path of Building salvos no disco.
+pub trait BuildRepository: Send + Sync {
+    /// Builds disponíveis (pasta padrão do PoB).
+    fn list(&self) -> PortResult<Vec<crate::evaluation::profile::BuildFile>>;
+    /// Lê um build (`.xml`) e extrai o que a avaliação usa.
+    fn load(&self, path: &str) -> PortResult<crate::evaluation::BuildInput>;
+    /// Marca de versão do arquivo (ex.: data de modificação), para reaproveitar o que já foi
+    /// lido. `None` = desconhecida (não reaproveita).
+    fn stamp(&self, _path: &str) -> Option<u128> {
+        None
+    }
+}
+
 /// Leitura/escrita do clipboard do sistema.
 pub trait ClipboardPort: Send + Sync {
     fn read_text(&self) -> PortResult<Option<String>>;

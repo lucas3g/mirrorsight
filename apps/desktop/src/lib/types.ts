@@ -44,6 +44,28 @@ export interface Modifier {
   tier: number | null;
   /** Prefixo/sufixo, quando a origem informa (cópia avançada ou mods da trade API). */
   affix?: Affix | null;
+  /** Rank de bancada (mods crafted). */
+  rank?: number | null;
+  /** Nome do afixo ("Fecund"). */
+  mod_name?: string | null;
+  origin?: ModOrigin | null;
+}
+
+export type EldritchLevel = 'lesser' | 'greater' | 'grand' | 'exceptional' | 'exquisite' | 'perfect';
+
+/** Origem do mod além do tipo (crates/domain/src/item.rs). */
+export type ModOrigin =
+  | { kind: 'eldritch'; searing: boolean; level: EldritchLevel }
+  | { kind: 'corruption' }
+  | { kind: 'veiled' }
+  | { kind: 'influence'; influence: Influence }
+  | { kind: 'unique' };
+
+export interface ItemFlags {
+  fractured: boolean;
+  synthesised: boolean;
+  mirrored: boolean;
+  split: boolean;
 }
 
 export type Affix = 'prefix' | 'suffix';
@@ -71,6 +93,7 @@ export interface Item {
   properties?: Modifier[];
   unknown_lines: string[];
   affix_slots?: AffixSlots | null;
+  flags?: ItemFlags;
 }
 
 export interface Price {
@@ -89,6 +112,10 @@ export interface Listing {
   whisper: string | null;
   /** Imagem do item listado (poecdn); em raros/mágicos, a arte da base. */
   icon?: string | null;
+  /** Propriedades a 20% de qualidade, como a trade compara ("ar", "es", "pdps"…). */
+  max_quality?: Record<string, number>;
+  /** As propriedades do item mostram o valor a 20% de qualidade (item ainda aceita qualidade). */
+  at_max_quality?: boolean;
 }
 
 export interface PriceCheckResult {
@@ -160,6 +187,8 @@ export interface PriceCheckOutput {
   summary: PriceSummary | null;
   /** Motivo da ausência de listagens quando a trade falhou e o poe.ninja respondeu. */
   trade_error: AppError | null;
+  /** Corrompidos/espelhados tirados da lista por ficarem abaixo do mínimo de um filtro de propriedade. */
+  hidden_below_min?: number;
   /** Listagens agrupadas por status comparado ao seu item (PoE1), ou o motivo da lista única. */
   comparison?: ListingComparison | null;
 }
@@ -167,23 +196,175 @@ export interface PriceCheckOutput {
 // ---------- Comparação por status (crates/domain/src/compare.rs) ----------
 
 export type GroupKind = 'worse' | 'equal' | 'better' | 'not_comparable' | 'no_item';
-export type Criterion = 'tier' | 'percentile' | 'slots';
+// ---------- Avaliação de itens (crates/domain/src/evaluation) ----------
 
-export interface CompareScore {
-  avg_tier: number;
-  /** 0–1. */
-  avg_percentile: number;
-  free_valued: number;
+export type Grade = 'excellent' | 'good' | 'average' | 'weak';
+export type Confidence = 'low' | 'medium' | 'high';
+export type Verdict = 'better' | 'worse' | 'equivalent';
+
+export type InconclusiveReason =
+  | 'unique_not_in_database'
+  | 'unique_without_data'
+  | 'mod_not_in_database'
+  | 'out_of_range'
+  | 'no_range'
+  | 'foulborn';
+
+/** Como a qualidade do mod foi (ou não) determinada. */
+export type ModStatus =
+  | { kind: 'exact' }
+  | { kind: 'from_database' }
+  | { kind: 'fixed' }
+  | { kind: 'variant' }
+  /** Mutação Foulborn de valor fixo (troca um mod do único). */
+  | { kind: 'mutated' }
+  | { kind: 'inconclusive'; reason: InconclusiveReason };
+
+/** Avaliação de um mod (independe da build). */
+export interface ModEvaluation {
+  trade_id: string;
+  text: string;
+  kind: ModifierKind;
+  origin: ModOrigin | null;
+  value: number | null;
+  /** Faixa usada (tier, único ou bancada). */
+  min: number | null;
+  max: number | null;
+  tier: number | null;
+  tier_count: number | null;
+  /** Posição do roll na faixa, 0–1. */
+  roll: number | null;
+  global_roll: number | null;
+  /** Nota do mod 0–1; null = fora da nota (fixo, variante ou inconclusivo). */
+  quality: number | null;
+  importance: number;
+  status: ModStatus;
+  variant: string | null;
+  /** A faixa do jogo difere da base de conhecimento. */
+  range_mismatch: boolean;
+  tags: string[];
 }
 
+export type CraftBlock = 'corrupted' | 'mirrored' | 'split';
+
+export interface CraftingPotential {
+  open_prefixes: number | null;
+  open_suffixes: number | null;
+  valued: Affix | null;
+  crafted: number;
+  fractured_high_tier: number;
+  ilvl_allows_top_tier: boolean | null;
+  blocked: CraftBlock[];
+  /** 0–1. */
+  score: number;
+}
+
+export interface SocketInfo {
+  sockets: number;
+  links: number;
+  max: number;
+  weight: number;
+}
+
+export interface UniqueMatch {
+  name: string;
+  /** Está na base de conhecimento (com mods). */
+  found: boolean;
+  version: string | null;
+  variant: string | null;
+  legacy: boolean;
+  variable_mods: number;
+  fixed_mods: number;
+}
+
+/** Qualidade do item — comercial, sem depender da build. */
+export interface ItemQuality {
+  /** 0–100; null = inconclusiva. */
+  score: number | null;
+  grade: Grade | null;
+  confidence: Confidence;
+  mods_score: number | null;
+  mods: ModEvaluation[];
+  crafting: CraftingPotential | null;
+  unique: UniqueMatch | null;
+  sockets: SocketInfo | null;
+}
+
+export interface StatDelta {
+  key: string;
+  text: string;
+  yours: number;
+  theirs: number;
+  weight: number;
+  /** Positivo = ganho. */
+  contribution: number;
+}
+
+/** Efeito da troca numa resistência ("fire"…) ou atributo ("str"…). */
+export interface NeedChange {
+  stat: string;
+  short_before: number;
+  short_after: number;
+  contribution: number;
+}
+
+/** Upgrade em relação ao seu item, para a build. */
+export interface UpgradeVerdict {
+  verdict: Verdict;
+  delta: number;
+  /** `delta` relativo ao valor do seu item. */
+  relative: number;
+  /** Valor do seu item na mesma conta: contribuição ÷ reference = % do seu item. */
+  reference: number;
+  gains: StatDelta[];
+  losses: StatDelta[];
+  synergy: number;
+  needs: NeedChange[];
+  relevant_loss: boolean;
+  confidence: Confidence;
+}
+
+/** Build usado na relevância (genérico quando nenhum build do PoB está escolhido). */
+export interface BuildSummary {
+  name: string | null;
+  generic: boolean;
+  class: string | null;
+  main_skill: string | null;
+  focus: string[];
+  /** Títulos do item set e do skill set usados. */
+  item_set: string | null;
+  skill_set: string | null;
+  /** Resistências/atributos estimados (item set diferente do ativo no PoB). */
+  needs_estimated: boolean;
+}
+
+/** Item set ou skill set de um build do PoB. */
+export interface SetOption {
+  id: string;
+  title: string;
+}
+
+/** Resumo do build com a escolha de sets, e os sets disponíveis. */
+export interface BuildDetails {
+  summary: BuildSummary;
+  item_sets: SetOption[];
+  skill_sets: SetOption[];
+  /** Sets ativos quando o build foi salvo no PoB. */
+  active_item_set: string | null;
+  active_skill_set: string | null;
+}
+
+/** Build salvo do Path of Building. */
+export interface BuildFile {
+  name: string;
+  path: string;
+  folder: string | null;
+}
+
+/** Avaliação de um anúncio comparável (card do olho). */
 export interface CompareDetail {
-  common: number;
-  /** trade_ids do anúncio em comum com o seu item. */
-  common_ids: string[];
-  listing: CompareScore;
-  yours: CompareScore;
-  /** Critério que decidiu o grupo; null em "igual". */
-  decided: Criterion | null;
+  upgrade: UpgradeVerdict;
+  quality: ItemQuality;
 }
 
 export interface GroupEntry {
@@ -198,12 +379,12 @@ export interface ListingGroup {
   entries: GroupEntry[];
 }
 
+/** Seu item (faixa "Seu item"). */
 export interface ItemStatus {
-  avg_tier: number;
-  avg_percentile: number;
-  free_valued: number;
-  valued: Affix;
-  mods: { trade_id: string; tier: number; percentile: number }[];
+  quality: ItemQuality;
+  build: BuildSummary;
+  /** Origem da base de conhecimento ("PoB v2.69.0 · 2026-11-26"). */
+  data_source: string;
 }
 
 export type SingleReason =
@@ -250,6 +431,11 @@ export interface Settings {
   reduce_motion: boolean;
   /** Nível do preço sugerido que vem selecionado (schema v2). */
   suggested_level: SuggestedLevel;
+  /** Build do Path of Building usado na relevância do upgrade; `null` = pesos genéricos. */
+  build_path: string | null;
+  /** Item set e skill set do build (ids do PoB); `null` = o ativo no PoB. */
+  build_item_set: string | null;
+  build_skill_set: string | null;
 }
 
 /** Stat do catálogo da trade API (busca "Adicionar mod"). */

@@ -40,6 +40,7 @@ It is written in **Rust** (fast, low memory, no Electron) with a **Svelte 5** in
 | 🧮 **Smart price estimate** | Minimum, median and maximum, plus a confidence indicator based on how many listings were found. |
 | 💡 **Suggested price** | *Buy* (p25), *Fair* (p50) and *Sell* (p75) percentiles, with a one-click `~b/o` note to copy. |
 | 🎛️ **Editable mod filters** | Toggle mods on/off, see their tier (T1…T*n*) and roll range, adjust min/max, use a margin slider, add mods by text search (pseudo mods included). |
+| 🧠 **Item evaluation (PoE 1)** | Each listing gets two independent reads: **upgrade** for your build (Better / Worse / Equivalent, comparing the whole set of stats, resistance caps and attribute requirements from your Path of Building build) and **item quality** (0–100 from tiers, rolls, crafting potential; uniques by their real roll ranges). Mods without enough data are marked *inconclusive*, never assumed perfect. |
 | 💾 **Presets** | Save your favourite filter setups per game and reuse them. |
 | 📊 **Distribution chart** | Histogram of listing prices with p25 / p50 / p75 markers. |
 | 💰 **Bulk currency** | Currency and stackables are priced through the bulk exchange (price per unit, stock, seller). |
@@ -125,7 +126,7 @@ window is focused, so they never steal keys from other apps.
 ### ⚙️ Settings
 
 - **General** — game, league, client language, display currency, restore clipboard, start with Windows.
-- **Price check** — mod roll range, show offline sellers, filters checked by default, default item level, history, presets.
+- **Price check** — mod roll range, show offline sellers, filters checked by default, default item level, Path of Building build for the upgrade verdict, history, presets.
 - **Appearance** — interface scale (90–130 %), density, reduced motion.
 
 ## 🛠 Development
@@ -156,7 +157,8 @@ cargo test -p mirrorsight-infrastructure --test live -- --ignored --nocapture
 crates/domain          entities, pure rules and ports (traits). No I/O.
 crates/parser          Ctrl+C / Ctrl+Alt+C text → Item (mods matched against trade API stats)
 crates/application     use cases (price check, copy item from game, settings, leagues)
-crates/infrastructure  adapters: trade API + rate limiter, poe.ninja, Win32, clipboard, settings
+crates/infrastructure  adapters: trade API + rate limiter, poe.ninja, Win32, clipboard, settings, PoB builds
+crates/gamedata        embedded PoE 1 knowledge base (uniques, tiers, bases, gems) + evaluation rules
 apps/desktop/src-tauri composition root, commands, hotkeys, overlay, tray
 apps/desktop/src       Svelte 5 UI; talks to the backend only through the `Backend` port
                        (adapters: real Tauri and a browser demo)
@@ -166,6 +168,10 @@ apps/desktop/src       Svelte 5 UI; talks to the backend only through the `Backe
 
 - **Trade API stats** (the parser needs them to recognise mods):
   `node tools/stats/update-stats.mjs` → updates `crates/parser/data/stats-*.tsv`.
+- **Item knowledge base** (unique roll ranges, variants, mod tiers, bases, gem tags) from the latest
+  Path of Building release: `node tools/gamedata/update-gamedata.mjs` → updates `crates/gamedata/data/*.json`
+  (`--local "<PoB install dir>"` reads a local install instead). Weights, synergies and thresholds live in
+  `crates/gamedata/data/rules-poe1.json` and are edited by hand. Run `cargo test` afterwards.
 - **Currency icons**: extracted from the local game install into
   `apps/desktop/public/assets/currency/` (PNG + `manifest.json`).
 

@@ -1,10 +1,11 @@
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use serde::Serialize;
 
 use mirrorsight_domain::compare::{compare_listings, ListingComparison};
+use mirrorsight_domain::evaluation::{BuildChoice, BuildProfile, GameKnowledge};
 use mirrorsight_domain::item::{Item, Rarity};
-use mirrorsight_domain::ports::{ItemParser, PortError, PriceIndexPort, TradeApiPort};
+use mirrorsight_domain::ports::{BuildRepository, ItemParser, PortError, PriceIndexPort, TradeApiPort};
 use mirrorsight_domain::price::{summarize, CurrencyRates, IndexedPrice, PriceCheckResult, PriceSummary};
 use mirrorsight_domain::search::SearchFilters;
 use mirrorsight_domain::settings::Settings;
@@ -29,6 +30,9 @@ pub struct PriceCheckOutput {
     pub icon: Option<String>,
     /// Listagens agrupadas por status comparado ao item do usuário (ou o motivo da lista única).
     pub comparison: Option<ListingComparison>,
+    /// Anúncios corrompidos (ou espelhados) tirados da lista por ficarem abaixo do mínimo de um
+    /// filtro de propriedade (a trade compara a 20% de qualidade; esses itens não sobem mais).
+    pub hidden_below_min: u32,
 }
 
 /// Quanto o price check espera pela arte da base (o download roda em segundo plano mesmo assim).
@@ -39,6 +43,65 @@ pub struct PriceCheckItem {
     parser: Arc<dyn ItemParser>,
     trade: Arc<dyn TradeApiPort>,
     index: Arc<dyn PriceIndexPort>,
+    knowledge: Arc<dyn GameKnowledge>,
+    builds: Option<Arc<dyn BuildRepository>>,
+    /// Último perfil lido: o XML do PoB só é relido quando o arquivo, o caminho ou a escolha
+    /// de sets mudam (cada Ctrl+C não precisa reabrir o build).
+    profile_cache: Arc<Mutex<Option<CachedProfile>>>,
+}
+
+struct CachedProfile {
+    path: String,
+    stamp: u128,
+    choice: BuildChoice,
+    profile: BuildProfile,
+}
+
+/// O que das configurações define o perfil (dono dos dados, para ir a outra thread).
+struct BuildRequest {
+    path: Option<String>,
+    choice: BuildChoice,
+}
+
+impl BuildRequest {
+    fn from_settings(settings: &Settings) -> Self {
+        Self {
+            path: settings.build_path.clone(),
+            choice: BuildChoice { item_set: settings.build_item_set.clone(), skill_set: settings.build_skill_set.clone() },
+        }
+    }
+}
+
+/// Perfil do build pedido, reaproveitando o cache enquanto o arquivo não mudar.
+fn load_profile(
+    knowledge: &dyn GameKnowledge,
+    builds: Option<&dyn BuildRepository>,
+    cache: &Mutex<Option<CachedProfile>>,
+    request: &BuildRequest,
+) -> BuildProfile {
+    let generic = || BuildProfile::generic(knowledge.rules());
+    let (Some(repo), Some(path)) = (builds, request.path.as_deref()) else { return generic() };
+    let choice = &request.choice;
+    let stamp = repo.stamp(path);
+    // Um cache envenenado (pânico em outra thread) só perde o reaproveitamento.
+    let mut cache = cache.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+    if let (Some(hit), Some(stamp)) = (cache.as_ref(), stamp) {
+        if hit.path == path && hit.stamp == stamp && &hit.choice == choice {
+            return hit.profile.clone();
+        }
+    }
+    match repo.load(path) {
+        Ok(input) => {
+            let profile = BuildProfile::from_input_with(&input, choice, knowledge);
+            *cache = stamp.map(|stamp| CachedProfile { path: path.to_owned(), stamp, choice: choice.clone(), profile: profile.clone() });
+            profile
+        }
+        Err(err) => {
+            tracing::warn!(%err, "falha ao ler o build do PoB; usando pesos genéricos");
+            *cache = None;
+            generic()
+        }
+    }
 }
 
 impl PriceCheckItem {
@@ -46,12 +109,31 @@ impl PriceCheckItem {
         parser: Arc<dyn ItemParser>,
         trade: Arc<dyn TradeApiPort>,
         index: Arc<dyn PriceIndexPort>,
+        knowledge: Arc<dyn GameKnowledge>,
     ) -> Self {
         Self {
             parser,
             trade,
             index,
+            knowledge,
+            builds: None,
+            profile_cache: Arc::new(Mutex::new(None)),
         }
+    }
+
+    /// Builds do PoB: com `Settings::build_path`, a relevância do upgrade segue o build.
+    #[must_use]
+    pub fn with_builds(mut self, builds: Arc<dyn BuildRepository>) -> Self {
+        self.builds = Some(builds);
+        self
+    }
+
+    /// Perfil da build configurada; sem build (ou se ele não abrir), pesos genéricos.
+    /// (O `execute` faz o mesmo numa thread de bloqueio; aqui é para os testes.)
+    #[cfg(test)]
+    fn profile(&self, settings: &Settings) -> BuildProfile {
+        let request = BuildRequest::from_settings(settings);
+        load_profile(self.knowledge.as_ref(), self.builds.as_deref(), &self.profile_cache, &request)
     }
 
     /// `filters = None` → usa os filtros padrão derivados do item e das configurações.
@@ -104,8 +186,12 @@ impl PriceCheckItem {
         };
 
         // Sem a trade, o preço do índice ainda é útil; rate limit segue para a UI (que tem retry).
-        let (trade, trade_error) = match trade {
-            Ok(t) => (Some(t), None),
+        let mut hidden_below_min = 0;
+        let (mut trade, trade_error) = match trade {
+            Ok(mut t) => {
+                hidden_below_min = mirrorsight_domain::property_filter::apply_property_minimums(&mut t.listings, &filters);
+                (Some(t), None)
+            }
             Err(err @ PortError::RateLimited { .. }) => return Err(err.into()),
             Err(err) if indexed.is_some() => {
                 tracing::warn!(%err, "trade falhou; usando só o poe.ninja");
@@ -114,7 +200,40 @@ impl PriceCheckItem {
             Err(err) => return Err(err.into()),
         };
         let summary = trade.as_ref().and_then(|t| summarize(&t.listings, &rates));
-        let comparison = trade.as_ref().map(|t| compare_listings(league.game, &item, &t.listings, &rates));
+        // Ler o build do PoB, o primeiro parse da base de conhecimento e a avaliação são trabalho
+        // bloqueante (disco/CPU): rodam fora do runtime assíncrono.
+        let comparison = match trade.as_ref() {
+            Some(t) => {
+                let game = league.game;
+                let knowledge = self.knowledge.clone();
+                let builds = self.builds.clone();
+                let cache = self.profile_cache.clone();
+                let request = BuildRequest::from_settings(settings);
+                let (mine, listings, rates) = (item.clone(), t.listings.clone(), rates.clone());
+                let job = tokio::task::spawn_blocking(move || {
+                    // PoE2 não agrupa: nem abre o build.
+                    let profile = if game == mirrorsight_domain::GameVersion::Poe1 {
+                        load_profile(knowledge.as_ref(), builds.as_deref(), &cache, &request)
+                    } else {
+                        BuildProfile::generic(knowledge.rules())
+                    };
+                    compare_listings(game, &mine, &listings, &rates, knowledge.as_ref(), &profile)
+                });
+                match job.await {
+                    Ok(comparison) => Some(comparison),
+                    Err(err) => {
+                        tracing::error!(%err, "a avaliação dos anúncios falhou; lista sem agrupamento");
+                        None
+                    }
+                }
+            }
+            None => None,
+        };
+        // Só depois da comparação: o seu item está na qualidade atual, então o anúncio também
+        // é comparado com os valores reais; a lista mostra os valores a 20% (como a trade filtra).
+        if let Some(t) = trade.as_mut() {
+            mirrorsight_domain::property_filter::normalize_to_max_quality(&mut t.listings);
+        }
         let icon = indexed
             .as_ref()
             .and_then(|i| i.icon.clone())
@@ -137,6 +256,7 @@ impl PriceCheckItem {
             trade_error,
             icon,
             comparison,
+            hidden_below_min,
         })
     }
 }
@@ -176,6 +296,7 @@ mod tests {
                 trade_type: None,
                 map_tier: None,
                 affix_slots: None,
+                flags: Default::default(),
             })
         }
     }
@@ -220,6 +341,7 @@ mod tests {
             Arc::new(FakeParser),
             Arc::new(FakeTrade(Mutex::new(Some(trade)))),
             Arc::new(FakeIndex(indexed)),
+            Arc::new(mirrorsight_gamedata::EmbeddedKnowledge::poe1()),
         );
         uc.execute(&Settings::default(), "texto", None).await
     }
@@ -284,6 +406,7 @@ mod tests {
             Arc::new(RareParser),
             Arc::new(FakeTrade(Mutex::new(Some(Ok(found()))))),
             Arc::new(BaseIconIndex),
+            Arc::new(mirrorsight_gamedata::EmbeddedKnowledge::poe1()),
         );
         let out = uc.execute(&Settings::default(), "texto", None).await.unwrap();
         assert_eq!(out.icon.as_deref(), Some("https://web.poecdn.com/Divine Crown.png"));
@@ -298,10 +421,90 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn unique_gets_single_list_comparison() {
+    async fn unique_without_mods_gets_single_list_comparison() {
         use mirrorsight_domain::compare::SingleReason;
         let out = run(Ok(found()), Some(ninja())).await.unwrap();
-        assert_eq!(out.comparison, Some(ListingComparison::Single { reason: SingleReason::Rarity }));
+        assert_eq!(out.comparison, Some(ListingComparison::Single { reason: SingleReason::NoStatus }));
+    }
+
+    /// Repositório que conta as leituras e devolve a marca de versão configurada.
+    struct CountingBuilds {
+        loads: std::sync::atomic::AtomicUsize,
+        stamp: std::sync::atomic::AtomicU64,
+    }
+    impl BuildRepository for CountingBuilds {
+        fn list(&self) -> mirrorsight_domain::ports::PortResult<Vec<mirrorsight_domain::evaluation::profile::BuildFile>> {
+            Ok(vec![])
+        }
+        fn load(&self, _path: &str) -> mirrorsight_domain::ports::PortResult<mirrorsight_domain::evaluation::BuildInput> {
+            self.loads.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            Ok(mirrorsight_domain::evaluation::BuildInput { name: "B".into(), ..Default::default() })
+        }
+        fn stamp(&self, _path: &str) -> Option<u128> {
+            Some(u128::from(self.stamp.load(std::sync::atomic::Ordering::SeqCst)))
+        }
+    }
+
+    #[test]
+    fn build_profile_is_cached_until_the_file_or_choice_changes() {
+        use std::sync::atomic::Ordering;
+        let builds = Arc::new(CountingBuilds { loads: 0.into(), stamp: 1.into() });
+        let uc = PriceCheckItem::new(
+            Arc::new(TieredParser),
+            Arc::new(FakeTrade(Mutex::new(None))),
+            Arc::new(FakeIndex(None)),
+            Arc::new(mirrorsight_gamedata::EmbeddedKnowledge::poe1()),
+        )
+        .with_builds(builds.clone());
+        let mut settings = Settings { build_path: Some("b.xml".into()), ..Settings::default() };
+        uc.profile(&settings);
+        uc.profile(&settings);
+        assert_eq!(builds.loads.load(Ordering::SeqCst), 1);
+        // Arquivo salvo de novo no PoB: relê.
+        builds.stamp.store(2, Ordering::SeqCst);
+        uc.profile(&settings);
+        assert_eq!(builds.loads.load(Ordering::SeqCst), 2);
+        // Outro item set: relê.
+        settings.build_item_set = Some("3".into());
+        uc.profile(&settings);
+        assert_eq!(builds.loads.load(Ordering::SeqCst), 3);
+    }
+
+    /// Repositório de builds falso: um build de Fireball, ou erro.
+    struct FakeBuilds;
+    impl BuildRepository for FakeBuilds {
+        fn list(&self) -> mirrorsight_domain::ports::PortResult<Vec<mirrorsight_domain::evaluation::profile::BuildFile>> {
+            Ok(vec![])
+        }
+        fn load(&self, path: &str) -> mirrorsight_domain::ports::PortResult<mirrorsight_domain::evaluation::BuildInput> {
+            if path != "fireball.xml" {
+                return Err(PortError::NotFound(path.into()));
+            }
+            Ok(mirrorsight_domain::evaluation::BuildInput {
+                name: "Fireball".into(),
+                main_skill_gems: vec!["Fireball".into()],
+                ..Default::default()
+            })
+        }
+    }
+
+    #[test]
+    fn profile_follows_configured_build_and_falls_back_to_generic() {
+        let uc = PriceCheckItem::new(
+            Arc::new(TieredParser),
+            Arc::new(FakeTrade(Mutex::new(None))),
+            Arc::new(FakeIndex(None)),
+            Arc::new(mirrorsight_gamedata::EmbeddedKnowledge::poe1()),
+        )
+        .with_builds(Arc::new(FakeBuilds));
+        let mut settings = Settings::default();
+        assert!(uc.profile(&settings).generic);
+        settings.build_path = Some("fireball.xml".into());
+        let p = uc.profile(&settings);
+        assert!(!p.generic);
+        assert_eq!(p.main_skill.as_deref(), Some("Fireball"));
+        settings.build_path = Some("sumiu.xml".into());
+        assert!(uc.profile(&settings).generic);
     }
 
     /// Luvas raras com tiers (cópia avançada).
@@ -320,6 +523,7 @@ mod tests {
                 roll: Some(StatRoll { value: 75.0, min: Some(70.0), max: Some(80.0) }),
                 tier: Some(2),
                 affix: None,
+                ..Default::default()
             }];
             Ok(item)
         }
@@ -333,6 +537,8 @@ mod tests {
         price.chaos_value = 300.0;
         price.divine_value = Some(2.0); // → 150 c por divine
         let listing = |amount, currency: &str, item| Listing {
+            max_quality: std::collections::HashMap::new(),
+            at_max_quality: false,
             price: Price { amount, currency: Currency(currency.into()) },
             stack_size: None,
             account: "acc".into(),
@@ -353,6 +559,7 @@ mod tests {
             Arc::new(TieredParser),
             Arc::new(FakeTrade(Mutex::new(Some(Ok(result))))),
             Arc::new(FakeIndex(Some(price))),
+            Arc::new(mirrorsight_gamedata::EmbeddedKnowledge::poe1()),
         );
         let out = uc.execute(&Settings::default(), "texto", None).await.unwrap();
 

@@ -51,7 +51,12 @@ async fn price_check_against_real_apis() {
     println!("ligas PoE1: {leagues:?}");
     let league = leagues.first().cloned().expect("ao menos uma liga");
 
-    let use_case = PriceCheckItem::new(parser, trade, Arc::new(PoeNinjaIndex::new(client)));
+    let use_case = PriceCheckItem::new(
+        parser,
+        trade,
+        Arc::new(PoeNinjaIndex::new(client)),
+        Arc::new(mirrorsight_gamedata::EmbeddedKnowledge::poe1()),
+    );
     let settings = Settings { league: league.clone(), ..Settings::default() };
     let out = use_case.execute(&settings, GLOVES, None).await.expect("price check");
 
@@ -91,7 +96,12 @@ async fn price_check_tricky_items() {
     let client = http::client();
     let trade = Arc::new(PoeTradeApi::new(client.clone(), parser.clone()));
     let league = trade.leagues(GameVersion::Poe1).await.expect("ligas").first().cloned().expect("liga");
-    let use_case = PriceCheckItem::new(parser, trade, Arc::new(PoeNinjaIndex::new(client)));
+    let use_case = PriceCheckItem::new(
+        parser,
+        trade,
+        Arc::new(PoeNinjaIndex::new(client)),
+        Arc::new(mirrorsight_gamedata::EmbeddedKnowledge::poe1()),
+    );
     let settings = Settings { league, show_offline: true, ..Settings::default() };
 
     let mut failures = Vec::new();
@@ -179,3 +189,5 @@ async fn trade_extended_mods_shape() {
         }
     }
 }
+
+

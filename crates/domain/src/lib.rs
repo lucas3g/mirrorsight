@@ -7,6 +7,7 @@
 
 pub mod compare;
 pub mod error;
+pub mod evaluation;
 pub mod game;
 pub mod history;
 pub mod hotkey;
@@ -14,6 +15,7 @@ pub mod item;
 pub mod log_event;
 pub mod ports;
 pub mod presets;
+pub mod property_filter;
 pub mod price;
 pub mod search;
 pub mod settings;

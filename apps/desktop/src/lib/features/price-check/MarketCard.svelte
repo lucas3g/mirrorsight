@@ -4,6 +4,7 @@
   import { describeError } from '$lib/backend';
   import { formatAmount } from '$lib/format';
   import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
+  import { evalMsgs as em } from '$lib/i18n/messages/evaluation';
   import { ninjaDivineRate, suggestedFor } from '$lib/pricing';
   import { priceCheck } from '$lib/stores/priceCheck.svelte';
   import { settings } from '$lib/stores/settings.svelte';
@@ -16,7 +17,9 @@
   import ListingRow from './ListingRow.svelte';
   import ListingGroup from './ListingGroup.svelte';
   import ListedItemCard from './ListedItemCard.svelte';
-  import { singleListText } from './groups';
+  import QualityChip from './QualityChip.svelte';
+  import { GROUP_PREVIEW, singleListText } from './groups';
+  import { displayIndices } from './modOrder';
 
   /**
    * Cartão de mercado: abas Listagens / Distribuição.
@@ -57,15 +60,44 @@
       const always = group.kind === 'worse' || group.kind === 'equal' || group.kind === 'better';
       if (!always && group.entries.length === 0) continue;
       out.push({ group, start });
-      start += group.entries.length;
+      // Só as linhas visíveis antes do "Ver mais" contam: as ocultas atrasariam os grupos seguintes.
+      start += Math.min(group.entries.length, GROUP_PREVIEW);
     }
     return out;
   });
   const you = $derived(grouped?.you ?? null);
+  /** Nome do build da relevância ("RF 3.27 · Righteous Fire"); `null` = pesos genéricos. */
+  const buildName = $derived(you && !you.build.generic ? (you.build.name ?? you.build.main_skill) : null);
+  const buildLabel = $derived(
+    you && !you.build.generic
+      ? [you.build.name, you.build.item_set, you.build.main_skill].filter((v): v is string => !!v).join(' · ')
+      : em.genericWeights,
+  );
+  /**
+   * Mods do seu item: destacam os mods em comum no card do olho. Fractured e explicit são o
+   * mesmo stat ("fractured.stat_1" ≡ "explicit.stat_1"): os dois ids entram no conjunto.
+   */
+  const yourIds = $derived.by(() => {
+    const ids = new Set<string>();
+    for (const m of priceCheck.output?.item.modifiers ?? []) {
+      ids.add(m.trade_id);
+      const stat = m.trade_id.match(/^(?:explicit|fractured)\.(.+)$/)?.[1];
+      if (stat) {
+        ids.add(`explicit.${stat}`);
+        ids.add(`fractured.${stat}`);
+      }
+    }
+    return ids;
+  });
+  /** trade_ids do seu item na ordem do editor: o card do olho alinha os mods do anúncio a ela. */
+  const yourOrder = $derived.by(() => {
+    const stats = priceCheck.filters?.stats ?? [];
+    return displayIndices(stats).map((i) => stats[i]!.trade_id);
+  });
   /** Cotação do divine para o "mín." dos grupos: resumo, com a reserva do poe.ninja (como o PriceCheckPanel). */
   const divineRate = $derived(summary?.divine_chaos ?? ninjaDivineRate(priceCheck.output?.indexed));
 
-  const CARD_WIDTH = 330;
+  const CARD_WIDTH = 320;
   /** `index`: posição em `listings` (a mesma nos dois modos). `entry`: anúncio no modo agrupado. */
   let peek = $state<{ index: number; left: number; top: number; entry: GroupEntry | null } | null>(null);
   /** Olho sob o mouse agora — descarta respostas atrasadas da expansão da janela. */
@@ -108,8 +140,15 @@
       left = roomLeft >= 8 ? roomLeft : (panelRect?.left ?? 0) + 14;
     }
     // Altura estimada; o clamp mantém o card dentro da janela.
-    // + bloco "Comparação" (cabeçalho e 3 linhas) quando o anúncio é comparável.
-    const estimated = 120 + (listings[index]?.item?.modifiers.length ?? 0) * 24 + (entry?.detail ? 90 : 0);
+    // Anúncio avaliado: blocos Upgrade (veredito, ganhos/perdas, avisos) e Qualidade (mods + crafting).
+    const detail = entry?.detail;
+    const upgradeHeight = detail
+      ? 120 + Math.min(5, detail.upgrade.gains.length + detail.upgrade.losses.length) * 25 + detail.upgrade.needs.length * 30
+      : 0;
+    // Cabeçalho + nota + chips de crafting + rodapé; cada mod ocupa até duas linhas.
+    const qualityHeight = detail ? 120 + detail.quality.mods.length * 30 : 0;
+    const modsHeight = detail ? 0 : (listings[index]?.item?.modifiers.length ?? 0) * 24;
+    const estimated = 120 + modsHeight + upgradeHeight + qualityHeight;
     const top = Math.max(8, Math.min(rowRect.top + rowRect.height / 2 - estimated / 2, window.innerHeight - estimated - 8));
     peek = { index, left, top, entry };
   }
@@ -223,11 +262,10 @@
 
   {#if tab === 'listings' || compact}
     {#if you && listings.length > 0}
-      <div class="you">
+      <div class="you" title={em.dataSource(you.data_source)}>
         <span class="label">{pm.yourItem}</span>
-        <span class="prop">{pm.avgTier} <b>{you.avg_tier.toFixed(2)}</b></span>
-        <span class="prop">{pm.percentile} <b>{Math.round(you.avg_percentile * 100)}%</b></span>
-        <span class="prop">{you.valued === 'prefix' ? pm.freePrefix : pm.freeSuffix} <b>{you.free_valued}</b></span>
+        <span class="prop">{em.quality} <QualityChip quality={you.quality} short={compact} /></span>
+        <span class="build" class:generic={you.build.generic} title={em.buildTitle}>{buildLabel}</span>
       </div>
     {/if}
     {#if compact}
@@ -260,6 +298,15 @@
       {:else}
         {#if priceCheck.dirty}
           <div class="stale">{pm.staleFilters}</div>
+        {/if}
+        {#if (priceCheck.output?.hidden_below_min ?? 0) > 0}
+          <div class="notice" role="note" title={pm.hiddenBelowMinTitle}>
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+              <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="2" />
+              <path d="M8 7.2v4M8 4.8v.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <span>{pm.hiddenBelowMin(priceCheck.output?.hidden_below_min ?? 0)}</span>
+          </div>
         {/if}
         {#if grouped}
           <div class:stale-list={priceCheck.dirty}>
@@ -348,7 +395,9 @@
     {matchedIds}
     group={peekGroup}
     detail={peek.entry?.detail ?? undefined}
-    valued={you?.valued}
+    {yourIds}
+    {yourOrder}
+    {buildName}
     left={peek.left}
     top={peek.top}
   />
@@ -390,6 +439,23 @@
   .stale-list :global(.price b) { color: var(--ms-text-2); }
   .you { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--ms-border); flex: none; }
   .you .label { margin-right: 2px; }
+  .you .prop { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ms-text-2); }
+  .build {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 99px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ms-suggest);
+    background: var(--ms-suggest-soft);
+  }
+  .build.generic { color: var(--ms-text-2); background: var(--ms-surface-3); }
   /* Informativo e neutro: o amarelo fica para "Filtros alterados". */
   .notice {
     display: flex;

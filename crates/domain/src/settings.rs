@@ -67,6 +67,12 @@ pub struct Settings {
     pub reduce_motion: bool,
     /// v2: nível padrão do preço sugerido.
     pub suggested_level: SuggestedLevel,
+    /// Build do Path of Building (.xml) usado na relevância do upgrade; `None` = pesos genéricos.
+    /// Arquivos antigos recebem `None` pelo `#[serde(default)]`.
+    pub build_path: Option<String>,
+    /// Item set e skill set do build (ids do PoB); `None` = o ativo quando o build foi salvo.
+    pub build_item_set: Option<String>,
+    pub build_skill_set: Option<String>,
 }
 
 impl Settings {
@@ -116,6 +122,9 @@ impl Default for Settings {
             ui_scale: 1.0,
             reduce_motion: false,
             suggested_level: SuggestedLevel::Fair,
+            build_path: None,
+            build_item_set: None,
+            build_skill_set: None,
         }
     }
 }

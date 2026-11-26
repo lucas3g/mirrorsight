@@ -71,6 +71,8 @@ pub fn run() {
             commands::list_presets,
             commands::upsert_preset,
             commands::delete_preset,
+            commands::list_pob_builds,
+            commands::pob_build_details,
         ])
         .run(tauri::generate_context!());
 

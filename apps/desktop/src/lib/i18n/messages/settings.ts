@@ -49,6 +49,20 @@ interface SettingsMessages {
     clear: string;
     presets: { label: string; description: (poe1: number, poe2: number) => string; search: string; error: string };
     presetsNote: string;
+    buildSection: string;
+    build: Row;
+    buildNone: string;
+    buildEmpty: string;
+    buildLoadError: string;
+    /** Resumo do build escolhido: classe/ascendência e skill principal. */
+    buildSummary: (cls: string | null, skill: string | null) => string;
+    buildGeneric: string;
+    buildSummaryError: string;
+    itemSet: Row;
+    skillSet: Row;
+    /** Marca do set ativo no PoB nas opções. */
+    activeInPob: string;
+    buildEstimated: string;
     confirmLabel: string;
     confirmTitle: (n: number) => string;
     confirmBody: string;
@@ -130,6 +144,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
         error: 'Não foi possível contar os presets',
       },
       presetsNote: 'Gerencie pelo menu Preset no Price Check',
+      buildSection: 'Avaliação de itens',
+      build: {
+        label: 'Build do Path of Building',
+        description: 'Define quanto cada mod vale para o seu personagem no veredito de upgrade (Melhor / Pior / Equivalente). A qualidade do item não muda.',
+      },
+      buildNone: 'Nenhum (pesos genéricos)',
+      buildEmpty: 'Nenhum build encontrado em Documentos\\Path of Building\\Builds',
+      buildLoadError: 'Não foi possível listar os builds do Path of Building',
+      buildSummary: (cls, skill) => [cls, skill ? `skill principal ${skill}` : null].filter(Boolean).join(' · ') || 'Build sem skill principal reconhecida',
+      buildGeneric: 'Pesos genéricos: vida, resistências e dano valem o padrão das regras, sem checagem de cap de resistência.',
+      buildSummaryError: 'Não foi possível ler este build',
+      itemSet: { label: 'Item set', description: 'Qual conjunto de itens do build usar nas resistências e atributos' },
+      skillSet: { label: 'Skill set', description: 'Qual conjunto de skills define a skill principal (relevância do dano)' },
+      activeInPob: 'ativo no PoB',
+      buildEstimated: 'Resistências e atributos estimados: o PoB só salva os totais do item set ativo, então trocamos os valores dos itens deste set.',
       confirmLabel: 'Confirmar limpeza',
       confirmTitle: (n) => `Apagar os ${n} price checks?`,
       confirmBody: 'Não dá para desfazer. Presets e configurações não são afetados.',
@@ -211,6 +240,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
         error: "Couldn't count the presets",
       },
       presetsNote: 'Manage them from the Preset menu in Price Check',
+      buildSection: 'Item evaluation',
+      build: {
+        label: 'Path of Building build',
+        description: 'Sets how much each mod is worth to your character in the upgrade verdict (Better / Worse / Equivalent). Item quality is not affected.',
+      },
+      buildNone: 'None (generic weights)',
+      buildEmpty: 'No builds found in Documents\\Path of Building\\Builds',
+      buildLoadError: "Couldn't list the Path of Building builds",
+      buildSummary: (cls, skill) => [cls, skill ? `main skill ${skill}` : null].filter(Boolean).join(' · ') || 'Build without a recognized main skill',
+      buildGeneric: 'Generic weights: life, resistances and damage use the default rules, with no resistance cap check.',
+      buildSummaryError: "Couldn't read this build",
+      itemSet: { label: 'Item set', description: 'Which item set of the build to use for resistances and attributes' },
+      skillSet: { label: 'Skill set', description: 'Which skill set defines the main skill (damage relevance)' },
+      activeInPob: 'active in PoB',
+      buildEstimated: "Estimated resistances and attributes: PoB only saves totals for the active item set, so this set's item values are swapped in.",
       confirmLabel: 'Confirm clearing',
       confirmTitle: (n) => `Delete the ${n} price checks?`,
       confirmBody: "This can't be undone. Presets and settings are not affected.",
@@ -292,6 +336,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
         error: 'No se pudieron contar los presets',
       },
       presetsNote: 'Gestiónalos desde el menú Preset en Price Check',
+      buildSection: 'Evaluación de ítems',
+      build: {
+        label: 'Build de Path of Building',
+        description: 'Define cuánto vale cada mod para tu personaje en el veredicto de mejora (Mejor / Peor / Equivalente). La calidad del ítem no cambia.',
+      },
+      buildNone: 'Ninguna (pesos genéricos)',
+      buildEmpty: 'No se encontraron builds en Documentos\\Path of Building\\Builds',
+      buildLoadError: 'No se pudieron listar las builds de Path of Building',
+      buildSummary: (cls, skill) => [cls, skill ? `habilidad principal ${skill}` : null].filter(Boolean).join(' · ') || 'Build sin habilidad principal reconocida',
+      buildGeneric: 'Pesos genéricos: vida, resistencias y daño usan las reglas por defecto, sin comprobar el tope de resistencias.',
+      buildSummaryError: 'No se pudo leer esta build',
+      itemSet: { label: 'Item set', description: 'Qué conjunto de ítems de la build usar para resistencias y atributos' },
+      skillSet: { label: 'Skill set', description: 'Qué conjunto de habilidades define la habilidad principal (relevancia del daño)' },
+      activeInPob: 'activo en PoB',
+      buildEstimated: 'Resistencias y atributos estimados: PoB solo guarda los totales del item set activo, así que se cambian los valores de los ítems de este set.',
       confirmLabel: 'Confirmar borrado',
       confirmTitle: (n) => `¿Borrar los ${n} price checks?`,
       confirmBody: 'No se puede deshacer. Los presets y los ajustes no se ven afectados.',
@@ -373,6 +432,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
         error: 'Presets konnten nicht gezählt werden',
       },
       presetsNote: 'Verwaltung über das Preset-Menü im Price Check',
+      buildSection: 'Item-Bewertung',
+      build: {
+        label: 'Path-of-Building-Build',
+        description: 'Legt fest, wie viel jeder Mod deinem Charakter im Upgrade-Urteil (Besser / Schlechter / Gleichwertig) bringt. Die Item-Güte ändert sich nicht.',
+      },
+      buildNone: 'Keiner (allgemeine Gewichtung)',
+      buildEmpty: 'Keine Builds in Dokumente\\Path of Building\\Builds gefunden',
+      buildLoadError: 'Die Path-of-Building-Builds konnten nicht aufgelistet werden',
+      buildSummary: (cls, skill) => [cls, skill ? `Hauptskill ${skill}` : null].filter(Boolean).join(' · ') || 'Build ohne erkannten Hauptskill',
+      buildGeneric: 'Allgemeine Gewichtung: Leben, Widerstände und Schaden nach den Standardregeln, ohne Prüfung des Widerstandsmaximums.',
+      buildSummaryError: 'Dieser Build konnte nicht gelesen werden',
+      itemSet: { label: 'Item-Set', description: 'Welches Item-Set des Builds für Widerstände und Attribute genutzt wird' },
+      skillSet: { label: 'Skill-Set', description: 'Welches Skill-Set den Hauptskill bestimmt (Schadensrelevanz)' },
+      activeInPob: 'aktiv in PoB',
+      buildEstimated: 'Geschätzte Widerstände und Attribute: PoB speichert nur die Summen des aktiven Item-Sets, daher werden die Item-Werte dieses Sets eingesetzt.',
       confirmLabel: 'Leeren bestätigen',
       confirmTitle: (n) => `Alle ${n} Price checks löschen?`,
       confirmBody: 'Kann nicht rückgängig gemacht werden. Presets und Einstellungen bleiben erhalten.',
@@ -454,6 +528,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
         error: '无法统计预设数量',
       },
       presetsNote: '请在 Price Check 的 Preset 菜单中管理',
+      buildSection: '物品评估',
+      build: {
+        label: 'Path of Building 构筑',
+        description: '决定每条词缀在提升判断（更好 / 更差 / 相当）中对你的角色的价值。物品评分不受影响。',
+      },
+      buildNone: '无（通用权重）',
+      buildEmpty: '在 文档\\Path of Building\\Builds 中没有找到构筑',
+      buildLoadError: '无法列出 Path of Building 构筑',
+      buildSummary: (cls, skill) => [cls, skill ? `主技能 ${skill}` : null].filter(Boolean).join(' · ') || '未识别到主技能的构筑',
+      buildGeneric: '通用权重：生命、抗性和伤害使用默认规则，不检查抗性上限。',
+      buildSummaryError: '无法读取该构筑',
+      itemSet: { label: '物品配置', description: '用构筑中的哪套物品计算抗性和属性' },
+      skillSet: { label: '技能配置', description: '用哪套技能确定主技能（伤害相关性）' },
+      activeInPob: 'PoB 中启用',
+      buildEstimated: '抗性和属性为估算值：PoB 只保存当前启用物品配置的总值，因此换算了这套物品的数值。',
       confirmLabel: '确认清空',
       confirmTitle: (n) => `删除全部 ${n} 条 price check？`,
       confirmBody: '此操作无法撤销。预设和设置不受影响。',
@@ -534,6 +623,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
         error: 'プリセット数を取得できませんでした',
       },
       presetsNote: 'Price Check の Preset メニューで管理します',
+      buildSection: 'アイテム評価',
+      build: {
+        label: 'Path of Building のビルド',
+        description: 'アップグレード判定（上 / 下 / 同等）で各 MOD があなたのキャラクターにとってどれだけ価値があるかを決めます。アイテムの品質スコアは変わりません。',
+      },
+      buildNone: 'なし（汎用の重み）',
+      buildEmpty: 'ドキュメント\\Path of Building\\Builds にビルドが見つかりません',
+      buildLoadError: 'Path of Building のビルドを一覧できませんでした',
+      buildSummary: (cls, skill) => [cls, skill ? `メインスキル ${skill}` : null].filter(Boolean).join(' · ') || 'メインスキルを認識できないビルド',
+      buildGeneric: '汎用の重み：ライフ・耐性・ダメージは既定のルールで評価し、耐性上限はチェックしません。',
+      buildSummaryError: 'このビルドを読み込めませんでした',
+      itemSet: { label: 'アイテムセット', description: '耐性と能力値に使うビルドのアイテムセット' },
+      skillSet: { label: 'スキルセット', description: 'メインスキル（ダメージの関連度）を決めるスキルセット' },
+      activeInPob: 'PoB で有効',
+      buildEstimated: '耐性と能力値は推定値です：PoB は有効なアイテムセットの合計しか保存しないため、このセットのアイテムの値に置き換えています。',
       confirmLabel: '消去の確認',
       confirmTitle: (n) => `${n} 件の price check を削除しますか？`,
       confirmBody: '元に戻せません。プリセットと設定には影響しません。',
@@ -615,6 +719,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
         error: '프리셋 수를 셀 수 없음',
       },
       presetsNote: 'Price Check의 Preset 메뉴에서 관리하세요',
+      buildSection: '아이템 평가',
+      build: {
+        label: 'Path of Building 빌드',
+        description: '업그레이드 판정(좋음 / 나쁨 / 동등)에서 각 옵션이 내 캐릭터에게 얼마나 가치 있는지 정합니다. 아이템 품질 점수는 바뀌지 않습니다.',
+      },
+      buildNone: '없음 (일반 가중치)',
+      buildEmpty: '문서\\Path of Building\\Builds에서 빌드를 찾지 못했습니다',
+      buildLoadError: 'Path of Building 빌드 목록을 불러오지 못했습니다',
+      buildSummary: (cls, skill) => [cls, skill ? `주 스킬 ${skill}` : null].filter(Boolean).join(' · ') || '주 스킬을 인식하지 못한 빌드',
+      buildGeneric: '일반 가중치: 생명력, 저항, 피해는 기본 규칙으로 평가하며 저항 상한은 확인하지 않습니다.',
+      buildSummaryError: '이 빌드를 읽지 못했습니다',
+      itemSet: { label: '아이템 세트', description: '저항과 능력치 계산에 쓸 빌드의 아이템 세트' },
+      skillSet: { label: '스킬 세트', description: '주 스킬(피해 관련도)을 정할 스킬 세트' },
+      activeInPob: 'PoB에서 활성',
+      buildEstimated: '저항과 능력치는 추정값입니다: PoB는 활성 아이템 세트의 합계만 저장하므로 이 세트의 아이템 수치로 바꿔 계산했습니다.',
       confirmLabel: '지우기 확인',
       confirmTitle: (n) => `price check ${n}개를 모두 삭제할까요?`,
       confirmBody: '되돌릴 수 없습니다. 프리셋과 설정은 영향을 받지 않습니다.',
@@ -658,6 +777,7 @@ export const SETTINGS_KEYWORDS = {
     'compra justo venda percentil p25 p50 p75 mediana sugerido estratégia buy fair sell percentile median suggested strategy',
   history: 'histórico apagar limpar recentes history delete clear recent',
   presets: 'preset salvos mods seleção saved selection',
+  build: 'path of building pob build upgrade melhor pior equivalente relevância peso item set skill set preset better worse weight relevance',
   scale: 'zoom tamanho size',
   density: 'compacto compact',
   reduceMotion: 'motion acessibilidade accessibility animation',

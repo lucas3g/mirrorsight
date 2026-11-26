@@ -1,6 +1,6 @@
 <script lang="ts">
   import { backend } from '$lib/backend';
-  import type { ModifierKind, Settings, SuggestedLevel } from '$lib/types';
+  import type { BuildDetails, BuildFile, ModifierKind, Settings, SuggestedLevel } from '$lib/types';
   import { LEVEL_META } from '$lib/pricing';
   import { HISTORY_LIMIT, history } from '$lib/stores/history.svelte';
   import { nav } from '$lib/stores/nav.svelte';
@@ -48,6 +48,74 @@
       .then(([a, b]) => (presetCount = { poe1: a.length, poe2: b.length }))
       .catch(() => (presetCount = null));
   });
+
+  // ---------- Build do Path of Building ----------
+  /** `null` = ainda carregando; `undefined` = falhou. */
+  let builds = $state<BuildFile[] | null | undefined>(null);
+  $effect(() => {
+    void backend
+      .listPobBuilds()
+      .then((list) => (builds = list))
+      .catch(() => (builds = undefined));
+  });
+  /** Builds agrupados pela subpasta (raiz primeiro). */
+  const buildGroups = $derived.by(() => {
+    const groups = new Map<string, BuildFile[]>();
+    for (const b of builds ?? []) {
+      const key = b.folder ?? '';
+      groups.set(key, [...(groups.get(key) ?? []), b]);
+    }
+    return [...groups.entries()];
+  });
+  /** O build salvo pode ter sumido da pasta: continua aparecendo para não perder a escolha. */
+  const missingBuild = $derived(
+    current.build_path && builds && !builds.some((b) => b.path === current.build_path) ? current.build_path : null,
+  );
+  /** Detalhes do build escolhido (resumo + item/skill sets); `undefined` = falhou. */
+  let details = $state<BuildDetails | null | undefined>(null);
+  /** Build a que `details` pertence (não reativo: só evita mostrar sets de outro build). */
+  let detailsPath: string | null = null;
+  $effect(() => {
+    const path = current.build_path;
+    const itemSet = current.build_item_set;
+    const skillSet = current.build_skill_set;
+    if (!path) {
+      details = null;
+      detailsPath = null;
+      return;
+    }
+    // Outro build: os sets do anterior não podem ficar escolhíveis enquanto este carrega.
+    if (detailsPath !== path) details = null;
+    let alive = true;
+    void backend
+      .pobBuildDetails(path, itemSet, skillSet)
+      .then((d) => {
+        if (!alive) return;
+        details = d;
+        detailsPath = path;
+      })
+      .catch(() => {
+        if (!alive) return;
+        details = undefined;
+        detailsPath = path;
+      });
+    return () => {
+      alive = false;
+    };
+  });
+  const summary = $derived(details === undefined ? undefined : (details?.summary ?? null));
+
+  function pickBuild(path: string) {
+    // Outro build: os sets voltam para os ativos no PoB.
+    void settings.update({ build_path: path || null, build_item_set: null, build_skill_set: null });
+  }
+  /** Escolher o set ativo no PoB guarda `null` (segue o PoB se o build for salvo com outro ativo). */
+  function pickSet(kind: 'item' | 'skill', id: string) {
+    const active = kind === 'item' ? details?.active_item_set : details?.active_skill_set;
+    const value = id === active ? null : id;
+    void settings.update(kind === 'item' ? { build_item_set: value } : { build_skill_set: value });
+  }
+  const fileName = (path: string) => path.split(/[\\/]/).pop()?.replace(/\.xml$/i, '') ?? path;
 
   let clearBtn: HTMLButtonElement | undefined = $state();
   let confirming = $state(false);
@@ -102,6 +170,75 @@
   </div>
 </div>
 
+<div class="label sub">{m.buildSection}</div>
+<div class="group">
+  <SettingRow label={m.build.label} description={m.build.description} keywords={KW.build}>
+    {#snippet extra()}
+      <div class="bsum">
+        {#if !current.build_path}
+          <span>{m.buildGeneric}</span>
+        {:else if summary === undefined}
+          <span class="err">{m.buildSummaryError}</span>
+        {:else if summary}
+          <span><b>{m.buildSummary(summary.class, summary.main_skill)}</b></span>
+          {#if summary.focus.length > 0}
+            <span class="tags">{#each summary.focus as tag (tag)}<i>{tag}</i>{/each}</span>
+          {/if}
+          {#if summary.needs_estimated}<span class="warn">{m.buildEstimated}</span>{/if}
+        {/if}
+        {#if builds === undefined}<span class="err">{m.buildLoadError}</span>{:else if builds && builds.length === 0}<span>{m.buildEmpty}</span>{/if}
+      </div>
+    {/snippet}
+    <select
+      class="field"
+      style="width:250px"
+      value={current.build_path ?? ''}
+      disabled={builds === null}
+      onchange={(e) => pickBuild(e.currentTarget.value)}
+    >
+      <option value="">{m.buildNone}</option>
+      {#if missingBuild}<option value={missingBuild}>{fileName(missingBuild)}</option>{/if}
+      {#each buildGroups as [folder, list] (folder)}
+        {#if folder}
+          <optgroup label={folder}>
+            {#each list as b (b.path)}<option value={b.path}>{b.name}</option>{/each}
+          </optgroup>
+        {:else}
+          {#each list as b (b.path)}<option value={b.path}>{b.name}</option>{/each}
+        {/if}
+      {/each}
+    </select>
+  </SettingRow>
+  {#if details && details.item_sets.length > 1}
+    <SettingRow label={m.itemSet.label} description={m.itemSet.description} keywords={KW.build}>
+      <select
+        class="field"
+        style="width:250px"
+        value={current.build_item_set ?? details.active_item_set ?? ''}
+        onchange={(e) => pickSet('item', e.currentTarget.value)}
+      >
+        {#each details.item_sets as set (set.id)}
+          <option value={set.id}>{set.title}{set.id === details.active_item_set ? ` · ${m.activeInPob}` : ''}</option>
+        {/each}
+      </select>
+    </SettingRow>
+  {/if}
+  {#if details && details.skill_sets.length > 1}
+    <SettingRow label={m.skillSet.label} description={m.skillSet.description} keywords={KW.build}>
+      <select
+        class="field"
+        style="width:250px"
+        value={current.build_skill_set ?? details.active_skill_set ?? ''}
+        onchange={(e) => pickSet('skill', e.currentTarget.value)}
+      >
+        {#each details.skill_sets as set (set.id)}
+          <option value={set.id}>{set.title}{set.id === details.active_skill_set ? ` · ${m.activeInPob}` : ''}</option>
+        {/each}
+      </select>
+    </SettingRow>
+  {/if}
+</div>
+
 <div class="label sub">{m.localSection}</div>
 <div class="group">
   <SettingRow label={m.history.label} description={m.history.description(history.entries.length, HISTORY_LIMIT)} keywords={KW.history}>
@@ -133,6 +270,23 @@
 
 <style>
   .val { width: 36px; text-align: right; }
+  .bsum { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; font-size: 11.5px; color: var(--ms-text-3); }
+  .bsum b { font-weight: 650; color: var(--ms-text-2); }
+  .bsum .err,
+  .bsum .warn { color: var(--ms-warning); }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tags i {
+    display: inline-flex;
+    align-items: center;
+    height: 18px;
+    padding: 0 6px;
+    border-radius: 5px;
+    font-style: normal;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--ms-suggest);
+    background: var(--ms-suggest-soft);
+  }
   .sub { display: flex; align-items: center; gap: 8px; margin: 4px 0 8px; }
   .new {
     font-size: 9.5px;

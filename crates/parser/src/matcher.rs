@@ -10,7 +10,7 @@
 //!
 //! Cada uma também com o sufixo ` (Local)` — testado primeiro em armas/armaduras.
 
-use mirrorsight_domain::item::{Affix, Modifier, ModifierKind, StatRoll};
+use mirrorsight_domain::item::{Affix, ModOrigin, Modifier, ModifierKind, StatRoll};
 
 use crate::catalog::StatCatalog;
 use crate::mod_line::{strip_markers, tokenize};
@@ -28,11 +28,16 @@ const LOCAL_CLASS_HINTS: &[&str] = &[
 const NEGATING_SWAPS: &[(&str, &str)] = &[("reduced", "increased"), ("less", "more")];
 
 /// Contexto vindo do cabeçalho avançado `{ Prefix Modifier "X" (Tier: 2) — ... }`.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct ModContext {
     pub kind: Option<ModifierKind>,
     pub tier: Option<u32>,
     pub affix: Option<Affix>,
+    /// "(Rank: 3)" dos mods de bancada.
+    pub rank: Option<u32>,
+    /// Nome entre aspas: `"Fecund"`.
+    pub mod_name: Option<String>,
+    pub origin: Option<ModOrigin>,
 }
 
 pub struct StatMatcher<'a> {
@@ -56,13 +61,13 @@ impl<'a> StatMatcher<'a> {
     }
 
     /// Tenta casar `lines[0..]` (1 até MAX_SPAN linhas). `item_class` decide a preferência por stats locais.
-    pub fn match_at(&self, lines: &[&str], ctx: ModContext, item_class: &str) -> Option<Matched> {
+    pub fn match_at(&self, lines: &[&str], ctx: &ModContext, item_class: &str) -> Option<Matched> {
         let prefer_local = LOCAL_CLASS_HINTS.iter().any(|h| item_class.contains(h));
         (1..=MAX_SPAN.min(lines.len()))
             .find_map(|span| self.match_span(&lines[..span], ctx, prefer_local, item_class))
     }
 
-    fn match_span(&self, lines: &[&str], ctx: ModContext, prefer_local: bool, item_class: &str) -> Option<Matched> {
+    fn match_span(&self, lines: &[&str], ctx: &ModContext, prefer_local: bool, item_class: &str) -> Option<Matched> {
         let mut marker_kind = None;
         let texts: Vec<&str> = lines
             .iter()
@@ -86,6 +91,9 @@ impl<'a> StatMatcher<'a> {
                     roll,
                     tier: ctx.tier,
                     affix: ctx.affix,
+                    rank: ctx.rank,
+                    mod_name: ctx.mod_name.clone(),
+                    origin: ctx.origin,
                 },
                 lines: lines.len(),
             });
@@ -153,7 +161,7 @@ mod tests {
 
     fn one(line: &str, class: &str) -> Modifier {
         matcher()
-            .match_at(&[line], ModContext::default(), class)
+            .match_at(&[line], &ModContext::default(), class)
             .unwrap_or_else(|| panic!("não casou: {line}"))
             .modifier
     }
@@ -203,9 +211,9 @@ mod tests {
 
     #[test]
     fn advanced_line_keeps_range_and_tier() {
-        let ctx = ModContext { kind: None, tier: Some(2), affix: Some(Affix::Prefix) };
+        let ctx = ModContext { tier: Some(2), affix: Some(Affix::Prefix), ..ModContext::default() };
         let m = matcher()
-            .match_at(&["+78(70-79) to maximum Life (fractured)"], ctx, "Gloves")
+            .match_at(&["+78(70-79) to maximum Life (fractured)"], &ctx, "Gloves")
             .unwrap()
             .modifier;
         assert_eq!(m.kind, ModifierKind::Fractured);
@@ -219,6 +227,6 @@ mod tests {
 
     #[test]
     fn unknown_line_does_not_match() {
-        assert!(matcher().match_at(&["A sombra da forja"], ModContext::default(), "Gloves").is_none());
+        assert!(matcher().match_at(&["A sombra da forja"], &ModContext::default(), "Gloves").is_none());
     }
 }

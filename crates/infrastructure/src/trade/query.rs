@@ -159,6 +159,7 @@ mod tests {
             trade_type: None,
             map_tier: None,
             affix_slots: None,
+            flags: Default::default(),
         }
     }
 

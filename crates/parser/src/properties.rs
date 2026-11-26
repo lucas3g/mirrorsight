@@ -1,6 +1,7 @@
 //! Propriedades da base no bloco "Chave: valor" (defesas e dano), como filtros de busca.
 //!
-//! Os valores do texto já incluem qualidade e mods locais — o mesmo que a trade API indexa.
+//! Os valores do texto já incluem a qualidade atual e os mods locais. A trade API do PoE1 indexa
+//! defesas e DPS a 20% de qualidade (`extended.ar`…): ver `mirrorsight_domain::property_filter`.
 //! Armas viram DPS (físico, elemental e total), como os filtros `pdps`/`edps`/`dps` do site.
 
 use mirrorsight_domain::item::{Modifier, ModifierKind, StatRoll, PROPERTY_PREFIX};
@@ -74,6 +75,7 @@ fn property(id: &str, text: &str, value: f64) -> Modifier {
         roll: Some(StatRoll { value, min: None, max: None }),
         tier: None,
         affix: None,
+        ..Default::default()
     }
 }
 

@@ -70,6 +70,9 @@ pub struct ItemDto {
     /// em [`ModLineDto`] para que uma linha inesperada não derrube o fetch.
     #[serde(rename = "explicitMods", default)]
     pub explicit_mods: Option<Vec<serde_json::Value>>,
+    /// Implícitos, no mesmo formato (`domain: "implicit"`, com as magnitudes da faixa).
+    #[serde(rename = "implicitMods", default)]
+    pub implicit_mods: Option<Vec<serde_json::Value>>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -77,6 +80,32 @@ pub struct ExtendedDto {
     /// Texto do item em base64, no mesmo formato do Ctrl+C do jogo.
     #[serde(default)]
     pub text: Option<String>,
+    /// Defesas e DPS a 20% de qualidade: o que os filtros `armour_filters`/`weapon_filters`
+    /// comparam (PoE1). O texto traz a qualidade atual do item.
+    #[serde(default, deserialize_with = "flexible_number")]
+    pub ar: Option<f64>,
+    #[serde(default, deserialize_with = "flexible_number")]
+    pub ev: Option<f64>,
+    #[serde(default, deserialize_with = "flexible_number")]
+    pub es: Option<f64>,
+    #[serde(default, deserialize_with = "flexible_number")]
+    pub ward: Option<f64>,
+    #[serde(default, deserialize_with = "flexible_number")]
+    pub dps: Option<f64>,
+    #[serde(default, deserialize_with = "flexible_number")]
+    pub pdps: Option<f64>,
+    #[serde(default, deserialize_with = "flexible_number")]
+    pub edps: Option<f64>,
+}
+
+impl ExtendedDto {
+    /// Valores a 20% de qualidade por id do filtro de propriedade.
+    fn max_quality(&self) -> HashMap<String, f64> {
+        [("ar", self.ar), ("ev", self.ev), ("es", self.es), ("ward", self.ward), ("dps", self.dps), ("pdps", self.pdps), ("edps", self.edps)]
+            .into_iter()
+            .filter_map(|(id, v)| Some((id.to_owned(), v?)))
+            .collect()
+    }
 }
 
 /// `{"domain":"explicit","hash":"stat.explicit.stat_3299347043","mods":[{"name":"Robust","tier":"P4",
@@ -157,13 +186,12 @@ impl FetchEntry {
         let price = self.listing.price?;
         // Só imagens do CDN oficial, em https (vão direto para um <img>).
         let icon = self.item.icon.filter(|url| crate::ninja::is_https_poecdn(url));
-        let lines: Vec<ModLineDto> = self
-            .item
-            .explicit_mods
-            .unwrap_or_default()
-            .into_iter()
-            .filter_map(|v| serde_json::from_value(v).ok())
-            .collect();
+        let parse_lines = |raw: Option<Vec<serde_json::Value>>| -> Vec<ModLineDto> {
+            raw.unwrap_or_default().into_iter().filter_map(|v| serde_json::from_value(v).ok()).collect()
+        };
+        let lines = parse_lines(self.item.explicit_mods);
+        let implicit_lines = parse_lines(self.item.implicit_mods);
+        let max_quality = self.item.extended.as_ref().map(ExtendedDto::max_quality).unwrap_or_default();
         let item = self
             .item
             .extended
@@ -173,6 +201,7 @@ impl FetchEntry {
             .and_then(|text| parser.parse(game, &text).ok())
             .map(|mut item| {
                 enrich(&mut item, &lines);
+                enrich_implicits(&mut item, &implicit_lines);
                 item
             });
         Some(Listing {
@@ -187,6 +216,8 @@ impl FetchEntry {
             item,
             whisper: self.listing.whisper,
             icon,
+            max_quality,
+            at_max_quality: false,
         })
     }
 }
@@ -203,6 +234,11 @@ impl TradeModDto {
             Some('R') => (self.affix_from_name(), None),
             _ => (None, None),
         }
+    }
+
+    /// Rank de bancada: "R3" → 3.
+    fn rank(&self) -> Option<u32> {
+        self.tier.as_deref()?.strip_prefix('R')?.parse().ok()
     }
 
     fn affix_from_name(&self) -> Option<Affix> {
@@ -240,6 +276,31 @@ impl TradeModDto {
 /// Completa o item parseado do texto (formato Ctrl+C, sem tiers) com o tier, o tipo de afixo
 /// e a faixa de cada mod, e conta os slots ocupados. Linha com mais de um mod de origem
 /// (dois mods somando no mesmo stat) fica sem faixa.
+/// Faixa dos implícitos (o texto do Ctrl+C não traz): só min/max, sem tier nem slots.
+fn enrich_implicits(item: &mut Item, lines: &[ModLineDto]) {
+    let mut done = vec![false; item.modifiers.len()];
+    for line in lines {
+        let [source] = line.mods.as_slice() else { continue };
+        let stat = line.hash.rsplit('.').next().unwrap_or(&line.hash);
+        let free = |i: usize, done: &[bool]| !done[i] && item.modifiers[i].kind == ModifierKind::Implicit;
+        let Some(pos) = (0..item.modifiers.len())
+            .find(|&i| free(i, &done) && item.modifiers[i].trade_id.rsplit('.').next() == Some(stat))
+            .or_else(|| {
+                let text = line.description.as_deref()?;
+                (0..item.modifiers.len()).find(|&i| free(i, &done) && item.modifiers[i].text == text)
+            })
+        else {
+            continue;
+        };
+        done[pos] = true;
+        if let (Some(roll), Some((min, max))) = (item.modifiers[pos].roll.as_mut(), source.range(stat)) {
+            let (min, max) = if roll.value < 0.0 && min >= 0.0 { (-max, -min) } else { (min, max) };
+            roll.min = roll.min.or(Some(min));
+            roll.max = roll.max.or(Some(max));
+        }
+    }
+}
+
 fn enrich(item: &mut Item, lines: &[ModLineDto]) {
     const DOMAINS: &[&str] = &["explicit", "fractured", "crafted"];
     let mut enriched = vec![false; item.modifiers.len()];
@@ -288,6 +349,11 @@ fn enrich(item: &mut Item, lines: &[ModLineDto]) {
         let (affix, tier) = source.affix_and_tier();
         modifier.affix = modifier.affix.or(affix);
         modifier.tier = modifier.tier.or(tier);
+        modifier.rank = modifier.rank.or_else(|| source.rank());
+        // O nome do afixo identifica o mod exato (puro ou híbrido) na base de tiers.
+        if modifier.mod_name.is_none() {
+            modifier.mod_name = source.name.as_deref().map(str::trim).filter(|n| !n.is_empty()).map(str::to_owned);
+        }
         if let (Some(roll), Some((min, max))) = (modifier.roll.as_mut(), source.range(stat)) {
             // "reduced" vira "increased" com valor negativo; a faixa da API vem positiva.
             let (min, max) = if roll.value < 0.0 && min >= 0.0 { (-max, -min) } else { (min, max) };
@@ -334,6 +400,7 @@ mod tests {
                 trade_type: None,
                 map_tier: None,
                 affix_slots: None,
+                flags: Default::default(),
             })
         }
     }
@@ -411,6 +478,8 @@ mod tests {
 
         let life = item.modifiers.iter().find(|m| m.trade_id == "explicit.stat_3299347043").unwrap();
         assert_eq!((life.affix, life.tier), (Some(Affix::Prefix), Some(1)));
+        // Nome do afixo: identifica o mod na base de tiers.
+        assert_eq!(life.mod_name.as_deref(), Some("Athlete's"));
 
         // "Adds # to #": média das magnitudes (6–9 e 13–16 → 9.5–12.5), número ou string.
         let adds = item.modifiers.iter().find(|m| m.trade_id == "explicit.stat_4067062424").unwrap();
@@ -421,8 +490,59 @@ mod tests {
         // Bancada: rank não é tier; o sufixo sai do nome "of Craft".
         let crafted = by_kind(ModifierKind::Crafted);
         assert_eq!((crafted.affix, crafted.tier), (Some(Affix::Suffix), None));
+        assert_eq!(crafted.rank, Some(3));
 
         assert_eq!(item.affix_slots, Some(AffixSlots { prefixes: 2, suffixes: 2 }));
+    }
+
+    #[test]
+    fn unique_mods_get_ranges_from_magnitudes() {
+        // Mod de único: sem tier P/S, mas com faixa nas magnitudes.
+        let lines = r#"[{"domain":"explicit","hash":"stat.explicit.stat_3299347043","description":"+122 to maximum Life",
+            "mods":[{"name":"","tier":"","magnitudes":[{"min":"100","max":"130"}]}]}]"#;
+        let item = fetched(lines).item.unwrap();
+        let life = item.modifiers.iter().find(|m| m.trade_id == "explicit.stat_3299347043").unwrap();
+        let roll = life.roll.unwrap();
+        assert_eq!((roll.min, roll.max), (Some(100.0), Some(130.0)));
+        assert_eq!((life.tier, life.affix, life.mod_name.as_deref()), (None, None, None));
+        // Sem afixo P/S, nenhum slot é contado.
+        assert_eq!(item.affix_slots, None);
+    }
+
+    #[test]
+    fn reads_defences_at_20_percent_quality() {
+        // Formato real (nov/2026): números, sem texto; `ar_aug` é ignorado.
+        let json = format!(
+            r#"{{"listing":{{"indexed":"x","price":{{"amount":1,"currency":"chaos"}},"account":{{"name":"a"}}}},
+                "item":{{"extended":{{"text":"{}","ar":1332,"ar_aug":true,"es":"272","base_defence_percentile":97}}}}}}"#,
+            STANDARD.encode(GLOVES_TEXT)
+        );
+        let entry: FetchEntry = serde_json::from_str(&json).unwrap();
+        let listing = entry.into_listing(GameVersion::Poe1, &mirrorsight_parser::ClipboardItemParser::default()).unwrap();
+        assert_eq!(listing.max_quality.get("ar"), Some(&1332.0));
+        assert_eq!(listing.max_quality.get("es"), Some(&272.0));
+        assert!(!listing.max_quality.contains_key("ev"));
+        assert!(!listing.at_max_quality);
+    }
+
+    #[test]
+    fn implicit_mods_get_their_range() {
+        // Formato real (nov/2026): `implicitMods` igual ao de `explicitMods`.
+        let text = "Item Class: Rings\nRarity: Rare\nDoom Loop\nRuby Ring\n--------\nItem Level: 80\n--------\n+25% to Fire Resistance (implicit)\n--------\n+70 to maximum Life\n";
+        let json = format!(
+            r#"{{"listing":{{"indexed":"x","price":{{"amount":1,"currency":"chaos"}},"account":{{"name":"a"}}}},
+                "item":{{"extended":{{"text":"{}"}},
+                "implicitMods":[{{"description":"+25% to Fire Resistance","domain":"implicit","hash":"stat.implicit.stat_3372524247",
+                  "mods":[{{"level":1,"magnitudes":[{{"max":"30","min":"20"}}]}}]}}]}}}}"#,
+            STANDARD.encode(text)
+        );
+        let entry: FetchEntry = serde_json::from_str(&json).unwrap();
+        let item = entry.into_listing(GameVersion::Poe1, &mirrorsight_parser::ClipboardItemParser::default()).unwrap().item.unwrap();
+        let implicit = item.modifiers.iter().find(|m| m.kind == ModifierKind::Implicit).unwrap();
+        let roll = implicit.roll.unwrap();
+        assert_eq!((roll.min, roll.max), (Some(20.0), Some(30.0)));
+        // Implícito não conta slot de afixo.
+        assert_eq!(item.affix_slots, None);
     }
 
     #[test]

@@ -142,3 +142,24 @@ pub fn upsert_preset(state: State<'_, AppState>, preset: ModPreset) -> Result<Ve
 pub fn delete_preset(state: State<'_, AppState>, id: String) -> Result<(), AppError> {
     state.presets.delete(&id)
 }
+
+/// Builds salvos do Path of Building (pasta padrão em Documentos).
+/// `async`: varre o disco (Documentos pode estar no OneDrive) fora da thread principal.
+#[tauri::command(async)]
+pub fn list_pob_builds(
+    state: State<'_, AppState>,
+) -> Result<Vec<mirrorsight_domain::evaluation::profile::BuildFile>, AppError> {
+    state.builds.list()
+}
+
+/// O que a avaliação entende do build com os sets escolhidos, e os item/skill sets disponíveis.
+/// `async`: lê e parseia o XML do build fora da thread principal.
+#[tauri::command(async)]
+pub fn pob_build_details(
+    state: State<'_, AppState>,
+    path: String,
+    item_set: Option<String>,
+    skill_set: Option<String>,
+) -> Result<mirrorsight_domain::evaluation::BuildDetails, AppError> {
+    state.builds.details(&path, &mirrorsight_domain::evaluation::BuildChoice { item_set, skill_set })
+}
