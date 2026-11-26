@@ -1,0 +1,17 @@
+# Rust
+/target/
+
+# Frontend
+node_modules/
+apps/desktop/dist/
+
+# Tauri (gerado no build)
+apps/desktop/src-tauri/gen/
+
+# Editor / SO
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.log

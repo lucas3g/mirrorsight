@@ -1,0 +1,31 @@
+Item Class: Shields
+Rarity: Unique
+Foulborn Aegis Aurora
+Champion Kite Shield
+--------
+Quality: +20% (augmented)
+Chance to Block: 32% (augmented)
+Armour: 1373 (augmented)
+Energy Shield: 276 (augmented)
+--------
+Requirements:
+Level: 70 (gem)
+Str: 85
+Dex: 68 (gem)
+Int: 98 (gem)
+--------
+Sockets: B-R-B
+--------
+Item Level: 84
+--------
+369% increased Armour and Energy Shield
++10% to all Elemental Resistances
++5% to maximum Cold Resistance
++6% Chance to Block
+Recover Energy Shield equal to 2% of Armour when you Block
+Damage cannot be Reflected
+--------
+Corrupted
+--------
+Born from the marriage of ice and sky,
+the aurora evokes both awe and power.

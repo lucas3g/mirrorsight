@@ -1,0 +1,11 @@
+Item Class: Viscera
+Greater Carved Haunches
+--------
+Lower Limb
+--------
+Item Level: 82
+--------
+{ Implicit Modifier }
+Skills that Summon a Totem have 21(16-24)% chance to Summon two Totems instead of one
+--------
+Take this to the Wickerman in a town or hideout to attach it.

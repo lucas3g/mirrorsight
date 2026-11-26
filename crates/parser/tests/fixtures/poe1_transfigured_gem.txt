@@ -1,0 +1,13 @@
+Item Class: Skill Gems
+Rarity: Gem
+Kinetic Blast of Clustering
+--------
+Projectile, Attack, AoE
+Level: 20 (Max)
+Quality: +20% (augmented)
+--------
+Requirements:
+Level: 70
+Dex: 155
+--------
+Fires a projectile.

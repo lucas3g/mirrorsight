@@ -1,0 +1,38 @@
+Item Class: Helmets
+Rarity: Rare
+Onslaught Veil
+Divine Crown
+--------
+Quality: +20% (augmented)
+Armour: 855 (augmented)
+Energy Shield: 171 (augmented)
+--------
+Requirements:
+Level: 84
+Str: 132
+Int: 155
+--------
+Sockets: W-R-B-W
+--------
+Item Level: 85
+--------
+{ Searing Exarch Implicit Modifier (Lesser) — Damage, Physical, Caster }
+Adds 9(8-10) to 18(15-18) Physical Damage to Spells
+{ Eater of Worlds Implicit Modifier (Lesser) — Physical, Elemental, Fire }
+6% of Physical Damage from Hits taken as Fire Damage
+--------
+{ Prefix Modifier "Fecund" (Tier: 1) — Life }
++138(130-144) to maximum Life
+{ Prefix Modifier "Aqua" (Tier: 7) — Mana }
++40(40-44) to maximum Mana
+{ Prefix Modifier "Inspired" (Tier: 1) — Defences, Armour, Energy Shield }
+98(92-100)% increased Armour and Energy Shield
+{ Suffix Modifier "of Bameth" (Tier: 1) — Chaos, Resistance }
++31(31-35)% to Chaos Resistance
+{ Suffix Modifier "of the Philosopher" (Tier: 6) — Attribute }
++29(28-32) to Intelligence
+{ Suffix Modifier "of Perpetuity" (Tier: 4) — Life }
+14(12-14)% increased Life Regeneration rate
+--------
+Searing Exarch Item
+Eater of Worlds Item

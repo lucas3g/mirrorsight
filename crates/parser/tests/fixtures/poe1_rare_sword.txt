@@ -1,0 +1,26 @@
+Item Class: One Hand Swords
+Rarity: Rare
+Havoc Edge
+Jewelled Foil
+--------
+One Hand Sword
+Physical Damage: 50-90 (augmented)
+Critical Strike Chance: 5.50%
+Attacks per Second: 1.60
+Weapon Range: 1.1 metres
+--------
+Requirements:
+Level: 68
+Dex: 212
+--------
+Sockets: G-G-B
+--------
+Item Level: 84
+--------
++25% to Global Critical Strike Multiplier (implicit)
+--------
+Adds 10 to 20 Physical Damage
+120% increased Physical Damage
++30 to Dexterity
+--------
+Corrupted

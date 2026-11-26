@@ -1,0 +1,2722 @@
+{
+ "Blacksmith's Whetstone": {
+  "id": "Metadata/Items/Currency/CurrencyWeaponQuality",
+  "icon": "currency/currencyweaponquality.png"
+ },
+ "Scroll of Wisdom": {
+  "id": "Metadata/Items/Currency/CurrencyIdentification",
+  "icon": "currency/currencyidentification.png"
+ },
+ "Chaos Orb": {
+  "id": "Metadata/Items/Currency/CurrencyRerollRare",
+  "icon": "currency/currencyrerollrare.png"
+ },
+ "Veiled Exalted Orb": {
+  "id": "Metadata/Items/Currency/CurrencyRerollRareVeiled",
+  "icon": "currency/veiledexaltedorb.png"
+ },
+ "Veiled Chaos Orb": {
+  "id": "Metadata/Items/Currency/CurrencyRerollRareVeiledChaos",
+  "icon": "currency/veiledchaosorb.png"
+ },
+ "Armourer's Scrap": {
+  "id": "Metadata/Items/Currency/CurrencyArmourQuality",
+  "icon": "currency/currencyarmourquality.png"
+ },
+ "Mirror of Kalandra": {
+  "id": "Metadata/Items/Currency/CurrencyDuplicate",
+  "icon": "currency/currencyduplicate.png"
+ },
+ "Orb of Alchemy": {
+  "id": "Metadata/Items/Currency/CurrencyUpgradeToRare",
+  "icon": "currency/currencyupgradetorare.png"
+ },
+ "Orb of Chance": {
+  "id": "Metadata/Items/Currency/CurrencyUpgradeRandomly",
+  "icon": "currency/currencyupgraderandomly.png"
+ },
+ "Orb of Regret": {
+  "id": "Metadata/Items/Currency/CurrencyPassiveRefund",
+  "icon": "currency/currencypassiveskillrefund.png"
+ },
+ "Orb of Unmaking": {
+  "id": "Metadata/Items/Currency/CurrencyAtlasPassiveRefund",
+  "icon": "currency/regretorb.png"
+ },
+ "Orb of Transmutation": {
+  "id": "Metadata/Items/Currency/CurrencyUpgradeToMagic",
+  "icon": "currency/currencyupgradetomagic.png"
+ },
+ "Orb of Alteration": {
+  "id": "Metadata/Items/Currency/CurrencyRerollMagic",
+  "icon": "currency/currencyrerollmagic.png"
+ },
+ "Orb of Scouring": {
+  "id": "Metadata/Items/Currency/CurrencyConvertToNormal",
+  "icon": "currency/currencyconverttonormal.png"
+ },
+ "Exalted Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAddModToRare",
+  "icon": "currency/currencyaddmodtorare.png"
+ },
+ "Regal Orb": {
+  "id": "Metadata/Items/Currency/CurrencyUpgradeMagicToRare",
+  "icon": "currency/currencyupgrademagictorare.png"
+ },
+ "Orb of Augmentation": {
+  "id": "Metadata/Items/Currency/CurrencyAddModToMagic",
+  "icon": "currency/currencyaddmodtomagic.png"
+ },
+ "Portal Scroll": {
+  "id": "Metadata/Items/Currency/CurrencyPortal",
+  "icon": "currency/currencyportal.png"
+ },
+ "Glassblower's Bauble": {
+  "id": "Metadata/Items/Currency/CurrencyFlaskQuality",
+  "icon": "currency/currencyflaskquality.png"
+ },
+ "Gemcutter's Prism": {
+  "id": "Metadata/Items/Currency/CurrencyGemQuality",
+  "icon": "currency/currencygemquality.png"
+ },
+ "Chromatic Orb": {
+  "id": "Metadata/Items/Currency/CurrencyRerollSocketColours",
+  "icon": "currency/currencyrerollsocketcolours.png"
+ },
+ "Orb of Fusing": {
+  "id": "Metadata/Items/Currency/CurrencyRerollSocketLinks",
+  "icon": "currency/currencyrerollsocketlinks.png"
+ },
+ "Jeweller's Orb": {
+  "id": "Metadata/Items/Currency/CurrencyRerollSocketNumbers",
+  "icon": "currency/currencyrerollsocketnumbers.png"
+ },
+ "Divine Orb": {
+  "id": "Metadata/Items/Currency/CurrencyModValues",
+  "icon": "currency/currencymodvalues.png"
+ },
+ "Blessed Orb": {
+  "id": "Metadata/Items/Currency/CurrencyRerollImplicit",
+  "icon": "currency/currencyimplicitmod.png"
+ },
+ "Sacred Orb": {
+  "id": "Metadata/Items/Currency/CurrencyRerollDefences",
+  "icon": "currency/sacredorb.png"
+ },
+ "Cartographer's Chisel": {
+  "id": "Metadata/Items/Currency/CurrencyMapQuality",
+  "icon": "currency/currencymapquality.png"
+ },
+ "Maven's Chisel of Procurement": {
+  "id": "Metadata/Items/Currency/CurrencyMapQualityRarity",
+  "icon": "currency/mavenchisel1.png"
+ },
+ "Maven's Chisel of Proliferation": {
+  "id": "Metadata/Items/Currency/CurrencyMapQualityPackSize",
+  "icon": "currency/mavenchisel2.png"
+ },
+ "Maven's Chisel of Divination": {
+  "id": "Metadata/Items/Currency/CurrencyMapQualityDivinationCards",
+  "icon": "currency/mavenchisel5.png"
+ },
+ "Maven's Chisel of Threads": {
+  "id": "Metadata/Items/Currency/CurrencyMapQualityScarabs",
+  "icon": "currency/mavenchisel3.png"
+ },
+ "Maven's Chisel of Avarice": {
+  "id": "Metadata/Items/Currency/CurrencyMapQualityCurrency",
+  "icon": "currency/mavenchisel4.png"
+ },
+ "Scroll Fragment": {
+  "id": "Metadata/Items/Currency/CurrencyIdentificationShard",
+  "icon": "currency/currencyidentificationfragment.png"
+ },
+ "Transmutation Shard": {
+  "id": "Metadata/Items/Currency/CurrencyUpgradeToMagicShard",
+  "icon": "currency/currencyupgradetomagicshard.png"
+ },
+ "Alteration Shard": {
+  "id": "Metadata/Items/Currency/CurrencyRerollMagicShard",
+  "icon": "currency/currencyrerollmagicshard.png"
+ },
+ "Alchemy Shard": {
+  "id": "Metadata/Items/Currency/CurrencyUpgradeToRareShard",
+  "icon": "currency/currencyupgradetorareshard.png"
+ },
+ "Albino Rhoa Feather": {
+  "id": "Metadata/Items/Currency/CurrencyRhoaFeather",
+  "icon": "currency/currencyrhoafeather.png"
+ },
+ "Albino Crab Claw": {
+  "id": "Metadata/Items/Currency/CurrencyAlbinoCrabClaw",
+  "icon": "currency/albinocrabclaw.png"
+ },
+ "Broken Mirror of Kalandra": {
+  "id": "Metadata/Items/Currency/CurrencyDuplicateShattered",
+  "icon": "currency/brokenmirrorofkalandra.png"
+ },
+ "Eternal Orb": {
+  "id": "Metadata/Items/Currency/CurrencyImprintOrb",
+  "icon": "currency/currencyimprintorb.png"
+ },
+ "Imprint": {
+  "id": "Metadata/Items/Currency/CurrencyImprint",
+  "icon": "currency/currencyimprint.png"
+ },
+ "Vaal Orb": {
+  "id": "Metadata/Items/Currency/CurrencyCorrupt",
+  "icon": "currency/currencyvaal.png"
+ },
+ "Enchant": {
+  "id": "Metadata/Items/Currency/CurrencyLabyrinthEnchant",
+  "icon": "currency/enchantment.png"
+ },
+ "Tainted Blessing": {
+  "id": "Metadata/Items/Currency/CurrencyLabyrinthEnchantCorrupt",
+  "icon": "currency/taintedblessing.png"
+ },
+ "Corrupt": {
+  "id": "Metadata/Items/Currency/CurrencyIncursionCorruptMap",
+  "icon": "currency/incursiongemcorruptiondouble.png"
+ },
+ "Perandus Coin": {
+  "id": "Metadata/Items/Currency/CurrencyPerandusCoin",
+  "icon": "currency/currencycoin.png"
+ },
+ "Silver Coin": {
+  "id": "Metadata/Items/Currency/CurrencyAncestralSilverCoin",
+  "icon": "currency/navalicoin.png"
+ },
+ "Scrying Orb": {
+  "id": "Metadata/Items/Currency/CurrencyScryingOrb",
+  "icon": "currency/scryingorb.png"
+ },
+ "Prophecy": {
+  "id": "Metadata/Items/Currency/CurrencyItemisedProphecy",
+  "icon": "currency/prophecyorbred.png"
+ },
+ "Bestiary Orb": {
+  "id": "Metadata/Items/Currency/CurrencyItemiseCapturedMonster",
+  "icon": "currency/bestiaryorbempty.png"
+ },
+ "Imprinted Bestiary Orb": {
+  "id": "Metadata/Items/Currency/CurrencyItemisedCapturedMonster",
+  "icon": "currency/bestiaryorbfull.png"
+ },
+ "Empty Coffin": {
+  "id": "Metadata/Items/Currency/CurrencyItemiseNecropolisCorpse",
+  "icon": "currency/necropoliscoffinempty.png"
+ },
+ "Filled Coffin": {
+  "id": "Metadata/Items/Currency/CurrencyItemisedNecropolisCorpse",
+  "icon": "currency/necropoliscoffinfilled.png"
+ },
+ "Shaper's Exalted Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAddModToRareShaper",
+  "icon": "currency/shaperexaltedorb.png"
+ },
+ "Elder's Exalted Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAddModToRareElder",
+  "icon": "currency/elderexaltedorb.png"
+ },
+ "Originator's Exalted Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAddModToRareOriginator",
+  "icon": "currency/originatorsexaltedorb.png"
+ },
+ "Orb of Remembrance": {
+  "id": "Metadata/Items/Currency/CurrencyAddZanaInfluence",
+  "icon": "currency/zanapinnacleorb1.png"
+ },
+ "Orb of Unravelling": {
+  "id": "Metadata/Items/Currency/CurrencyRemoveZanaInfluence",
+  "icon": "currency/zanapinnacleorb2.png"
+ },
+ "Orb of Intention": {
+  "id": "Metadata/Items/Currency/CurrencyMoreZanaInfluencedItems",
+  "icon": "currency/zanapinnacleorb3.png"
+ },
+ "Surveyor's Compass": {
+  "id": "Metadata/Items/Currency/CurrencyItemiseSextantModifier",
+  "icon": "currency/surveyorscompass.png"
+ },
+ "Charged Compass": {
+  "id": "Metadata/Items/Currency/CurrencyItemisedSextantModifier",
+  "icon": "currency/chargedcompass.png"
+ },
+ "Prime Regrading Lens": {
+  "id": "Metadata/Items/Currency/CurrencyRerollSkillQualityType",
+  "icon": "currency/alternateskillgemcurrency.png"
+ },
+ "Secondary Regrading Lens": {
+  "id": "Metadata/Items/Currency/CurrencyRerollSupportQualityType",
+  "icon": "currency/alternatesupportgemcurrency.png"
+ },
+ "Tempering Orb": {
+  "id": "Metadata/Items/Currency/CurrencyHeistWeaponEnchant",
+  "icon": "currency/divineenchantbodyarmourcurrency.png"
+ },
+ "Tailoring Orb": {
+  "id": "Metadata/Items/Currency/CurrencyHeistArmourEnchant",
+  "icon": "currency/divineenchantweaponcurrency.png"
+ },
+ "Fine Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbProphecies",
+  "icon": "currency/deliriumorbcurrency.png"
+ },
+ "Singular Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbUniques",
+  "icon": "currency/deliriumorbuniques.png"
+ },
+ "Thaumaturge's Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbGems",
+  "icon": "currency/deliriumorbgems.png"
+ },
+ "Blacksmith's Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbWeapons",
+  "icon": "currency/deliriumorbweapons.png"
+ },
+ "Armoursmith's Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbArmour",
+  "icon": "currency/deliriumorbarmour.png"
+ },
+ "Cartographer's Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbMaps",
+  "icon": "currency/deliriumorbmaps.png"
+ },
+ "Jeweller's Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbTrinkets",
+  "icon": "currency/deliriumorbtrinkets.png"
+ },
+ "Abyssal Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbAbyss",
+  "icon": "currency/deliriumorbabyss.png"
+ },
+ "Kalguuran Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbPerandus",
+  "icon": "currency/deliriumorbexpedition.png"
+ },
+ "Obscured Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbBreach",
+  "icon": "currency/deliriumorbbreach.png"
+ },
+ "Whispering Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbEssences",
+  "icon": "currency/deliriumorbessence.png"
+ },
+ "Fragmented Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbFragments",
+  "icon": "currency/deliriumorbfragments.png"
+ },
+ "Threaded Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbScarabs",
+  "icon": "currency/deliriumorbscarabs.png"
+ },
+ "Fossilised Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbFossils",
+  "icon": "currency/deliriumorbfossils.png"
+ },
+ "Diviner's Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbDivinationCards",
+  "icon": "currency/deliriumorbdivinationcards.png"
+ },
+ "Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbHardMode",
+  "icon": "currency/deliriumorbgeneric.png"
+ },
+ "Primal Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbTalismans",
+  "icon": "currency/deliriumorbtalismans.png"
+ },
+ "Imperial Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbLabyrinth",
+  "icon": "currency/deliriumorblabyrinth.png"
+ },
+ "Timeless Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbIncubators",
+  "icon": "currency/deliriumorblegion.png"
+ },
+ "Blighted Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbBlight",
+  "icon": "currency/deliriumorbblight.png"
+ },
+ "Challenging Delirium Orb": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionOrbMetamorphosis",
+  "icon": "currency/deliriumorbultimatum.png"
+ },
+ "Refracting Fog": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionRerollClusterEnchant",
+  "icon": "currency/delirium.png"
+ },
+ "Augmentation Implant": {
+  "id": "Metadata/Items/Currency/CurrencyGraftAddModToMagic",
+  "icon": "currency/graftedaugmentation.png"
+ },
+ "Regal Implant": {
+  "id": "Metadata/Items/Currency/CurrencyGraftUpgradeMagicToRare",
+  "icon": "currency/graftedregal.png"
+ },
+ "Exalted Implant": {
+  "id": "Metadata/Items/Currency/CurrencyGraftAddModToRare",
+  "icon": "currency/graftedexalted.png"
+ },
+ "Unstable Implant": {
+  "id": "Metadata/Items/Currency/CurrencyGraftCorrupt",
+  "icon": "currency/unstableimplant.png"
+ },
+ "Foulborn Orb of Augmentation": {
+  "id": "Metadata/Items/Currency/CurrencyMutatedAddModToMagic",
+  "icon": "currency/foulbornaugmentation.png"
+ },
+ "Foulborn Regal Orb": {
+  "id": "Metadata/Items/Currency/CurrencyMutatedUpgradeMagicToRare",
+  "icon": "currency/foulbornregal.png"
+ },
+ "Foulborn Exalted Orb": {
+  "id": "Metadata/Items/Currency/CurrencyMutatedAddModToRare",
+  "icon": "currency/foulbornexalted.png"
+ },
+ "Whispering Essence of Hatred": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceHatred1",
+  "icon": "currency/hatred1.png"
+ },
+ "Muttering Essence of Hatred": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceHatred2",
+  "icon": "currency/hatred2.png"
+ },
+ "Weeping Essence of Hatred": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceHatred3",
+  "icon": "currency/hatred3.png"
+ },
+ "Wailing Essence of Hatred": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceHatred4",
+  "icon": "currency/hatred4.png"
+ },
+ "Screaming Essence of Hatred": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceHatred5",
+  "icon": "currency/hatred5.png"
+ },
+ "Shrieking Essence of Hatred": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceHatred6",
+  "icon": "currency/hatred6.png"
+ },
+ "Deafening Essence of Hatred": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceHatred7",
+  "icon": "currency/hatred7.png"
+ },
+ "Whispering Essence of Woe": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceWoe1",
+  "icon": "currency/woe1.png"
+ },
+ "Muttering Essence of Woe": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceWoe2",
+  "icon": "currency/woe2.png"
+ },
+ "Weeping Essence of Woe": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceWoe3",
+  "icon": "currency/woe3.png"
+ },
+ "Wailing Essence of Woe": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceWoe4",
+  "icon": "currency/woe4.png"
+ },
+ "Screaming Essence of Woe": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceWoe5",
+  "icon": "currency/woe5.png"
+ },
+ "Shrieking Essence of Woe": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceWoe6",
+  "icon": "currency/woe6.png"
+ },
+ "Deafening Essence of Woe": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceWoe7",
+  "icon": "currency/woe7.png"
+ },
+ "Whispering Essence of Greed": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceGreed1",
+  "icon": "currency/greed1.png"
+ },
+ "Muttering Essence of Greed": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceGreed2",
+  "icon": "currency/greed2.png"
+ },
+ "Weeping Essence of Greed": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceGreed3",
+  "icon": "currency/greed3.png"
+ },
+ "Wailing Essence of Greed": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceGreed4",
+  "icon": "currency/greed4.png"
+ },
+ "Screaming Essence of Greed": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceGreed5",
+  "icon": "currency/greed5.png"
+ },
+ "Shrieking Essence of Greed": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceGreed6",
+  "icon": "currency/greed6.png"
+ },
+ "Deafening Essence of Greed": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceGreed7",
+  "icon": "currency/greed7.png"
+ },
+ "Whispering Essence of Contempt": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceContempt1",
+  "icon": "currency/contempt1.png"
+ },
+ "Muttering Essence of Contempt": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceContempt2",
+  "icon": "currency/contempt2.png"
+ },
+ "Weeping Essence of Contempt": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceContempt3",
+  "icon": "currency/contempt3.png"
+ },
+ "Wailing Essence of Contempt": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceContempt4",
+  "icon": "currency/contempt4.png"
+ },
+ "Screaming Essence of Contempt": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceContempt5",
+  "icon": "currency/contempt5.png"
+ },
+ "Shrieking Essence of Contempt": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceContempt6",
+  "icon": "currency/contempt6.png"
+ },
+ "Deafening Essence of Contempt": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceContempt7",
+  "icon": "currency/contempt7.png"
+ },
+ "Muttering Essence of Sorrow": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSorrow1",
+  "icon": "currency/sorrow2.png"
+ },
+ "Weeping Essence of Sorrow": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSorrow2",
+  "icon": "currency/sorrow3.png"
+ },
+ "Wailing Essence of Sorrow": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSorrow3",
+  "icon": "currency/sorrow4.png"
+ },
+ "Screaming Essence of Sorrow": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSorrow4",
+  "icon": "currency/sorrow5.png"
+ },
+ "Shrieking Essence of Sorrow": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSorrow5",
+  "icon": "currency/sorrow6.png"
+ },
+ "Deafening Essence of Sorrow": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSorrow6",
+  "icon": "currency/sorrow7.png"
+ },
+ "Muttering Essence of Anger": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceAnger1",
+  "icon": "currency/anger2.png"
+ },
+ "Weeping Essence of Anger": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceAnger2",
+  "icon": "currency/anger3.png"
+ },
+ "Wailing Essence of Anger": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceAnger3",
+  "icon": "currency/anger4.png"
+ },
+ "Screaming Essence of Anger": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceAnger4",
+  "icon": "currency/anger5.png"
+ },
+ "Shrieking Essence of Anger": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceAnger5",
+  "icon": "currency/anger6.png"
+ },
+ "Deafening Essence of Anger": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceAnger6",
+  "icon": "currency/anger7.png"
+ },
+ "Muttering Essence of Torment": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceTorment1",
+  "icon": "currency/torment2.png"
+ },
+ "Weeping Essence of Torment": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceTorment2",
+  "icon": "currency/torment3.png"
+ },
+ "Wailing Essence of Torment": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceTorment3",
+  "icon": "currency/torment4.png"
+ },
+ "Screaming Essence of Torment": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceTorment4",
+  "icon": "currency/torment5.png"
+ },
+ "Shrieking Essence of Torment": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceTorment5",
+  "icon": "currency/torment6.png"
+ },
+ "Deafening Essence of Torment": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceTorment6",
+  "icon": "currency/torment7.png"
+ },
+ "Muttering Essence of Fear": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceFear1",
+  "icon": "currency/fear2.png"
+ },
+ "Weeping Essence of Fear": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceFear2",
+  "icon": "currency/fear3.png"
+ },
+ "Wailing Essence of Fear": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceFear3",
+  "icon": "currency/fear4.png"
+ },
+ "Screaming Essence of Fear": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceFear4",
+  "icon": "currency/fear5.png"
+ },
+ "Shrieking Essence of Fear": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceFear5",
+  "icon": "currency/fear6.png"
+ },
+ "Deafening Essence of Fear": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceFear6",
+  "icon": "currency/fear7.png"
+ },
+ "Weeping Essence of Suffering": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSuffering1",
+  "icon": "currency/suffering3.png"
+ },
+ "Wailing Essence of Suffering": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSuffering2",
+  "icon": "currency/suffering4.png"
+ },
+ "Screaming Essence of Suffering": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSuffering3",
+  "icon": "currency/suffering5.png"
+ },
+ "Shrieking Essence of Suffering": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSuffering4",
+  "icon": "currency/suffering6.png"
+ },
+ "Deafening Essence of Suffering": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSuffering5",
+  "icon": "currency/suffering7.png"
+ },
+ "Weeping Essence of Rage": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceRage1",
+  "icon": "currency/rage3.png"
+ },
+ "Wailing Essence of Rage": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceRage2",
+  "icon": "currency/rage4.png"
+ },
+ "Screaming Essence of Rage": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceRage3",
+  "icon": "currency/rage5.png"
+ },
+ "Shrieking Essence of Rage": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceRage4",
+  "icon": "currency/rage6.png"
+ },
+ "Deafening Essence of Rage": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceRage5",
+  "icon": "currency/rage7.png"
+ },
+ "Weeping Essence of Wrath": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceWrath1",
+  "icon": "currency/wrath3.png"
+ },
+ "Wailing Essence of Wrath": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceWrath2",
+  "icon": "currency/wrath4.png"
+ },
+ "Screaming Essence of Wrath": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceWrath3",
+  "icon": "currency/wrath5.png"
+ },
+ "Shrieking Essence of Wrath": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceWrath4",
+  "icon": "currency/wrath6.png"
+ },
+ "Deafening Essence of Wrath": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceWrath5",
+  "icon": "currency/wrath7.png"
+ },
+ "Weeping Essence of Doubt": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceDoubt1",
+  "icon": "currency/doubt3.png"
+ },
+ "Wailing Essence of Doubt": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceDoubt2",
+  "icon": "currency/doubt4.png"
+ },
+ "Screaming Essence of Doubt": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceDoubt3",
+  "icon": "currency/doubt5.png"
+ },
+ "Shrieking Essence of Doubt": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceDoubt4",
+  "icon": "currency/doubt6.png"
+ },
+ "Deafening Essence of Doubt": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceDoubt5",
+  "icon": "currency/doubt7.png"
+ },
+ "Wailing Essence of Anguish": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceAnguish1",
+  "icon": "currency/anguish4.png"
+ },
+ "Screaming Essence of Anguish": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceAnguish2",
+  "icon": "currency/anguish5.png"
+ },
+ "Shrieking Essence of Anguish": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceAnguish3",
+  "icon": "currency/anguish6.png"
+ },
+ "Deafening Essence of Anguish": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceAnguish4",
+  "icon": "currency/anguish7.png"
+ },
+ "Wailing Essence of Loathing": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceLoathing1",
+  "icon": "currency/loathing4.png"
+ },
+ "Screaming Essence of Loathing": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceLoathing2",
+  "icon": "currency/loathing5.png"
+ },
+ "Shrieking Essence of Loathing": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceLoathing3",
+  "icon": "currency/loathing6.png"
+ },
+ "Deafening Essence of Loathing": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceLoathing4",
+  "icon": "currency/loathing7.png"
+ },
+ "Wailing Essence of Spite": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSpite1",
+  "icon": "currency/spite4.png"
+ },
+ "Screaming Essence of Spite": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSpite2",
+  "icon": "currency/spite5.png"
+ },
+ "Shrieking Essence of Spite": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSpite3",
+  "icon": "currency/spite6.png"
+ },
+ "Deafening Essence of Spite": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceSpite4",
+  "icon": "currency/spite7.png"
+ },
+ "Wailing Essence of Zeal": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceZeal1",
+  "icon": "currency/zeal4.png"
+ },
+ "Screaming Essence of Zeal": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceZeal2",
+  "icon": "currency/zeal5.png"
+ },
+ "Shrieking Essence of Zeal": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceZeal3",
+  "icon": "currency/zeal6.png"
+ },
+ "Deafening Essence of Zeal": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceZeal4",
+  "icon": "currency/zeal7.png"
+ },
+ "Screaming Essence of Misery": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceMisery1",
+  "icon": "currency/misery5.png"
+ },
+ "Shrieking Essence of Misery": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceMisery2",
+  "icon": "currency/misery6.png"
+ },
+ "Deafening Essence of Misery": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceMisery3",
+  "icon": "currency/misery7.png"
+ },
+ "Screaming Essence of Dread": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceDread1",
+  "icon": "currency/dread5.png"
+ },
+ "Shrieking Essence of Dread": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceDread2",
+  "icon": "currency/dread6.png"
+ },
+ "Deafening Essence of Dread": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceDread3",
+  "icon": "currency/dread7.png"
+ },
+ "Screaming Essence of Scorn": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceScorn1",
+  "icon": "currency/scorn5.png"
+ },
+ "Shrieking Essence of Scorn": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceScorn2",
+  "icon": "currency/scorn6.png"
+ },
+ "Deafening Essence of Scorn": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceScorn3",
+  "icon": "currency/scorn7.png"
+ },
+ "Screaming Essence of Envy": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceEnvy1",
+  "icon": "currency/envy5.png"
+ },
+ "Shrieking Essence of Envy": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceEnvy2",
+  "icon": "currency/envy6.png"
+ },
+ "Deafening Essence of Envy": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceEnvy3",
+  "icon": "currency/envy7.png"
+ },
+ "Essence of Hysteria": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceHysteria1",
+  "icon": "currency/terror1.png"
+ },
+ "Essence of Insanity": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceInsanity1",
+  "icon": "currency/insanity1.png"
+ },
+ "Essence of Horror": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceHorror1",
+  "icon": "currency/horror1.png"
+ },
+ "Essence of Delirium": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceDelirium1",
+  "icon": "currency/madness1.png"
+ },
+ "Essence of Desolation": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceFaridun1",
+  "icon": "currency/essenceofdesolation.png"
+ },
+ "Essence of Trickery": {
+  "id": "Metadata/Items/Currency/CurrencyEssenceUber1",
+  "icon": "currency/essencedelirium.png"
+ },
+ "Remnant of Corruption": {
+  "id": "Metadata/Items/Currency/CurrencyCorruptMonolith",
+  "icon": "currency/essencecorrupt.png"
+ },
+ "Simple Sextant": {
+  "id": "Metadata/Items/Currency/CurrencyAddAtlasMod",
+  "icon": "currency/atlasradiustier1.png"
+ },
+ "Prime Sextant": {
+  "id": "Metadata/Items/Currency/CurrencyAddAtlasModMid",
+  "icon": "currency/atlasradiustier2.png"
+ },
+ "Awakened Sextant": {
+  "id": "Metadata/Items/Currency/CurrencyAddAtlasModHigh",
+  "icon": "currency/atlasradiustier3.png"
+ },
+ "Elevated Sextant": {
+  "id": "Metadata/Items/Currency/CurrencyAddAtlasModMaven",
+  "icon": "currency/atlasradiustier4.png"
+ },
+ "Veiled Scarab": {
+  "id": "Metadata/Items/Currency/CurrencyStackedScarab",
+  "icon": "currency/stackedscarab.png"
+ },
+ "Frayed Thread": {
+  "id": "Metadata/Items/Currency/CurrencyStackedThread",
+  "icon": "currency/frayedthread.png"
+ },
+ "Primordial Exalted Orb": {
+  "id": "Metadata/Items/Currency/CurrencyStackedExalt",
+  "icon": "currency/primordialexaltedorb.png"
+ },
+ "Apprentice Cartographer's Seal": {
+  "id": "Metadata/Items/Currency/CurrencySealMapLow",
+  "icon": "currency/sealwhite.png"
+ },
+ "Journeyman Cartographer's Seal": {
+  "id": "Metadata/Items/Currency/CurrencySealMapMid",
+  "icon": "currency/sealyellow.png"
+ },
+ "Master Cartographer's Seal": {
+  "id": "Metadata/Items/Currency/CurrencySealMapHigh",
+  "icon": "currency/sealred.png"
+ },
+ "Unshaping Orb": {
+  "id": "Metadata/Items/Currency/CurrencyRespecShapersOrb",
+  "icon": "currency/atlasdowngrade.png"
+ },
+ "Splinter of Xoph": {
+  "id": "Metadata/Items/Currency/CurrencyBreachFireShard",
+  "icon": "currency/breachshardfire.png"
+ },
+ "Splinter of Tul": {
+  "id": "Metadata/Items/Currency/CurrencyBreachColdShard",
+  "icon": "currency/breachshardcold.png"
+ },
+ "Splinter of Esh": {
+  "id": "Metadata/Items/Currency/CurrencyBreachLightningShard",
+  "icon": "currency/breachshardlightning.png"
+ },
+ "Splinter of Uul-Netol": {
+  "id": "Metadata/Items/Currency/CurrencyBreachPhysicalShard",
+  "icon": "currency/breachshardphysical.png"
+ },
+ "Splinter of Chayula": {
+  "id": "Metadata/Items/Currency/CurrencyBreachChaosShard",
+  "icon": "currency/breachshardchaos.png"
+ },
+ "Blessing of Xoph": {
+  "id": "Metadata/Items/Currency/CurrencyBreachUpgradeUniqueFire",
+  "icon": "currency/breachupgraderfire.png"
+ },
+ "Blessing of Tul": {
+  "id": "Metadata/Items/Currency/CurrencyBreachUpgradeUniqueCold",
+  "icon": "currency/breachupgradercold.png"
+ },
+ "Blessing of Esh": {
+  "id": "Metadata/Items/Currency/CurrencyBreachUpgradeUniqueLightning",
+  "icon": "currency/breachupgraderlightning.png"
+ },
+ "Blessing of Uul-Netol": {
+  "id": "Metadata/Items/Currency/CurrencyBreachUpgradeUniquePhysical",
+  "icon": "currency/breachupgraderphysical.png"
+ },
+ "Blessing of Chayula": {
+  "id": "Metadata/Items/Currency/CurrencyBreachUpgradeUniqueChaos",
+  "icon": "currency/breachupgraderchaos.png"
+ },
+ "Flesh of Xesht": {
+  "id": "Metadata/Items/Currency/CurrencyBreachUpgradeUniqueGeneral",
+  "icon": "currency/corebreachcurrency.png"
+ },
+ "Timeless Karui Splinter": {
+  "id": "Metadata/Items/Currency/CurrencyLegionKaruiShard",
+  "icon": "currency/karuishard.png"
+ },
+ "Timeless Maraketh Splinter": {
+  "id": "Metadata/Items/Currency/CurrencyLegionMarakethShard",
+  "icon": "currency/marakethshard.png"
+ },
+ "Timeless Eternal Empire Splinter": {
+  "id": "Metadata/Items/Currency/CurrencyLegionEternalEmpireShard",
+  "icon": "currency/eternalempireshard.png"
+ },
+ "Timeless Templar Splinter": {
+  "id": "Metadata/Items/Currency/CurrencyLegionTemplarShard",
+  "icon": "currency/templarshard.png"
+ },
+ "Timeless Vaal Splinter": {
+  "id": "Metadata/Items/Currency/CurrencyLegionVaalShard",
+  "icon": "currency/vaalshard.png"
+ },
+ "Simulacrum Splinter": {
+  "id": "Metadata/Items/Currency/CurrencyAfflictionShard",
+  "icon": "currency/deliriumsplinter.png"
+ },
+ "Orb of Annulment": {
+  "id": "Metadata/Items/Currency/CurrencyRemoveMod",
+  "icon": "currency/annullorb.png"
+ },
+ "Orb of Binding": {
+  "id": "Metadata/Items/Currency/CurrencyUpgradeToRareAndSetSockets",
+  "icon": "currency/bindingorb.png"
+ },
+ "Orb of Horizons": {
+  "id": "Metadata/Items/Currency/CurrencyRerollMapType",
+  "icon": "currency/horizonorb.png"
+ },
+ "Harbinger's Orb": {
+  "id": "Metadata/Items/Currency/CurrencyUpgradeMapTier",
+  "icon": "currency/harbingerorb.png"
+ },
+ "Engineer's Orb": {
+  "id": "Metadata/Items/Currency/CurrencyStrongboxQuality",
+  "icon": "currency/engineersorb.png"
+ },
+ "Infused Engineer's Orb": {
+  "id": "Metadata/Items/Currency/CurrencyStrongboxQualityInfused",
+  "icon": "currency/infusedengineersorb.png"
+ },
+ "Ancient Orb": {
+  "id": "Metadata/Items/Currency/CurrencyRerollUnique",
+  "icon": "currency/ancientorb.png"
+ },
+ "Fracturing Orb": {
+  "id": "Metadata/Items/Currency/CurrencyFractureRare",
+  "icon": "currency/fracturingorbcombined.png"
+ },
+ "Annulment Shard": {
+  "id": "Metadata/Items/Currency/CurrencyRemoveModShard",
+  "icon": "currency/annullshard.png"
+ },
+ "Binding Shard": {
+  "id": "Metadata/Items/Currency/CurrencyUpgradeToRareAndSetSocketsShard",
+  "icon": "currency/bindingshard.png"
+ },
+ "Horizon Shard": {
+  "id": "Metadata/Items/Currency/CurrencyRerollMapTypeShard",
+  "icon": "currency/horizonshard.png"
+ },
+ "Harbinger's Shard": {
+  "id": "Metadata/Items/Currency/CurrencyUpgradeMapTierShard",
+  "icon": "currency/harbingershard.png"
+ },
+ "Engineer's Shard": {
+  "id": "Metadata/Items/Currency/CurrencyStrongboxQualityShard",
+  "icon": "currency/engineersshard.png"
+ },
+ "Ancient Shard": {
+  "id": "Metadata/Items/Currency/CurrencyRerollUniqueShard",
+  "icon": "currency/ancientshard.png"
+ },
+ "Chaos Shard": {
+  "id": "Metadata/Items/Currency/CurrencyRerollRareShard",
+  "icon": "currency/chaosshard.png"
+ },
+ "Mirror Shard": {
+  "id": "Metadata/Items/Currency/CurrencyDuplicateShard",
+  "icon": "currency/mirrorshard.png"
+ },
+ "Exalted Shard": {
+  "id": "Metadata/Items/Currency/CurrencyAddModToRareShard",
+  "icon": "currency/exaltedshard.png"
+ },
+ "Regal Shard": {
+  "id": "Metadata/Items/Currency/CurrencyUpgradeMagicToRareShard",
+  "icon": "currency/regalshard.png"
+ },
+ "Fracturing Shard": {
+  "id": "Metadata/Items/Currency/CurrencyFractureRareShard",
+  "icon": "currency/fracturingorbshard.png"
+ },
+ "Simple Rope Net": {
+  "id": "Metadata/Items/Currency/Bestiary/BestiaryNet1",
+  "icon": "currency/bestiarytrap1.png"
+ },
+ "Reinforced Rope Net": {
+  "id": "Metadata/Items/Currency/Bestiary/BestiaryNet2",
+  "icon": "currency/bestiarytrap2.png"
+ },
+ "Strong Rope Net": {
+  "id": "Metadata/Items/Currency/Bestiary/BestiaryNet3",
+  "icon": "currency/bestiarytrap3.png"
+ },
+ "Simple Iron Net": {
+  "id": "Metadata/Items/Currency/Bestiary/BestiaryNet4",
+  "icon": "currency/bestiarytrap4.png"
+ },
+ "Reinforced Iron Net": {
+  "id": "Metadata/Items/Currency/Bestiary/BestiaryNet5",
+  "icon": "currency/bestiarytrap5.png"
+ },
+ "Strong Iron Net": {
+  "id": "Metadata/Items/Currency/Bestiary/BestiaryNet6",
+  "icon": "currency/bestiarytrap6.png"
+ },
+ "Simple Steel Net": {
+  "id": "Metadata/Items/Currency/Bestiary/BestiaryNet7",
+  "icon": "currency/bestiarytrap7.png"
+ },
+ "Reinforced Steel Net": {
+  "id": "Metadata/Items/Currency/Bestiary/BestiaryNet8",
+  "icon": "currency/bestiarytrap8.png"
+ },
+ "Strong Steel Net": {
+  "id": "Metadata/Items/Currency/Bestiary/BestiaryNet9",
+  "icon": "currency/bestiarytrap9.png"
+ },
+ "Thaumaturgical Net": {
+  "id": "Metadata/Items/Currency/Bestiary/BestiaryNet10",
+  "icon": "currency/bestiarytrap10.png"
+ },
+ "Necromancy Net": {
+  "id": "Metadata/Items/Currency/Bestiary/BestiaryNet11",
+  "icon": "currency/necronet.png"
+ },
+ "Vial of Dominance": {
+  "id": "Metadata/Items/Currency/CurrencyIncursionVialTrap",
+  "icon": "currency/vialarchitectshand.png"
+ },
+ "Vial of Summoning": {
+  "id": "Metadata/Items/Currency/CurrencyIncursionVialHealing",
+  "icon": "currency/vialspiritdrinker.png"
+ },
+ "Vial of Awakening": {
+  "id": "Metadata/Items/Currency/CurrencyIncursionVialPoison",
+  "icon": "currency/vialslumber.png"
+ },
+ "Vial of the Ritual": {
+  "id": "Metadata/Items/Currency/CurrencyIncursionVialLightning",
+  "icon": "currency/vialdanceoffered.png"
+ },
+ "Vial of Fate": {
+  "id": "Metadata/Items/Currency/CurrencyIncursionVialFire",
+  "icon": "currency/vialstoryvaal.png"
+ },
+ "Vial of Consequence": {
+  "id": "Metadata/Items/Currency/CurrencyIncursionVialMinion",
+  "icon": "currency/vialcowardschains.png"
+ },
+ "Vial of the Ghost": {
+  "id": "Metadata/Items/Currency/CurrencyIncursionVialBossFlask",
+  "icon": "currency/vialsoulcatcher.png"
+ },
+ "Vial of Transcendence": {
+  "id": "Metadata/Items/Currency/CurrencyIncursionVialBossJewel",
+  "icon": "currency/vialtemperedflesh.png"
+ },
+ "Vial of Sacrifice": {
+  "id": "Metadata/Items/Currency/CurrencyIncursionVialBossAmulet",
+  "icon": "currency/vialsacrificialheart.png"
+ },
+ "Scorched Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingFire",
+  "icon": "currency/amberfirefly.png"
+ },
+ "Frigid Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingCold",
+  "icon": "currency/amberfang.png"
+ },
+ "Metallic Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingLightning",
+  "icon": "currency/metallicfossil.png"
+ },
+ "Jagged Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingPhysical",
+  "icon": "currency/jaggedfossil.png"
+ },
+ "Aberrant Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingChaos",
+  "icon": "currency/abberantfossil.png"
+ },
+ "Pristine Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingLife",
+  "icon": "currency/pristinefossil.png"
+ },
+ "Dense Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingDefences",
+  "icon": "currency/densefossil.png"
+ },
+ "Corroded Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingBleedPoison",
+  "icon": "currency/corrodedfossil.png"
+ },
+ "Prismatic Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingElemental",
+  "icon": "currency/prismaticfossil.png"
+ },
+ "Aetheric Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingCasterMods",
+  "icon": "currency/aethericfossil.png"
+ },
+ "Serrated Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingAttackMods",
+  "icon": "currency/serratedfossil.png"
+ },
+ "Lucent Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingMana",
+  "icon": "currency/lucentfossil.png"
+ },
+ "Shuddering Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingSpeed",
+  "icon": "currency/shudderingfossil.png"
+ },
+ "Bound Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingMinionsAuras",
+  "icon": "currency/resonatingfossil.png"
+ },
+ "Opulent Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingQuality",
+  "icon": "currency/perfectfossil.png"
+ },
+ "Deft Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingEnchant",
+  "icon": "currency/enchantedfossil.png"
+ },
+ "Fundamental Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingSockets",
+  "icon": "currency/encrustedfossil.png"
+ },
+ "Faceted Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingGemLevel",
+  "icon": "currency/facetedfossil.png"
+ },
+ "Bloodstained Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingVaal",
+  "icon": "currency/bloodstainedfossil.png"
+ },
+ "Hollow Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingAbyss",
+  "icon": "currency/ambereye.png"
+ },
+ "Fractured Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingMirror",
+  "icon": "currency/fracturedfossil.png"
+ },
+ "Glyphic Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingCorruptEssence",
+  "icon": "currency/glyphicfossil.png"
+ },
+ "Tangled Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingRandom",
+  "icon": "currency/tangledfossil.png"
+ },
+ "Sanctified Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingLuckyModRolls",
+  "icon": "currency/gildedfossil.png"
+ },
+ "Gilded Fossil": {
+  "id": "Metadata/Items/Currency/CurrencyDelveCraftingSellPrice",
+  "icon": "currency/sanctifiedfossil.png"
+ },
+ "Turbulent Catalyst": {
+  "id": "Metadata/Items/Currency/CurrencyJewelleryQualityElemental",
+  "icon": "currency/turbulentcatalyst.png"
+ },
+ "Imbued Catalyst": {
+  "id": "Metadata/Items/Currency/CurrencyJewelleryQualityCaster",
+  "icon": "currency/imbuedcatalyst.png"
+ },
+ "Abrasive Catalyst": {
+  "id": "Metadata/Items/Currency/CurrencyJewelleryQualityAttack",
+  "icon": "currency/abrasivecatalyst.png"
+ },
+ "Tempering Catalyst": {
+  "id": "Metadata/Items/Currency/CurrencyJewelleryQualityDefense",
+  "icon": "currency/temperingcatalyst.png"
+ },
+ "Fertile Catalyst": {
+  "id": "Metadata/Items/Currency/CurrencyJewelleryQualityResource",
+  "icon": "currency/fertilecatalyst.png"
+ },
+ "Prismatic Catalyst": {
+  "id": "Metadata/Items/Currency/CurrencyJewelleryQualityResistance",
+  "icon": "currency/prismaticcatalyst.png"
+ },
+ "Intrinsic Catalyst": {
+  "id": "Metadata/Items/Currency/CurrencyJewelleryQualityAttribute",
+  "icon": "currency/intrinsiccatalyst.png"
+ },
+ "Noxious Catalyst": {
+  "id": "Metadata/Items/Currency/CurrencyJewelleryQualityPhysicalChaos",
+  "icon": "currency/chaosphysicalcatalyst.png"
+ },
+ "Accelerating Catalyst": {
+  "id": "Metadata/Items/Currency/CurrencyJewelleryQualitySpeed",
+  "icon": "currency/speedmodifiercatalyst.png"
+ },
+ "Unstable Catalyst": {
+  "id": "Metadata/Items/Currency/CurrencyJewelleryQualityCritical",
+  "icon": "currency/criticalmodifiercatalyst.png"
+ },
+ "Tainted Catalyst": {
+  "id": "Metadata/Items/Currency/CurrencyJewelleryQualityVaal",
+  "icon": "currency/taintedcatalyst.png"
+ },
+ "Sinistral Catalyst": {
+  "id": "Metadata/Items/Currency/CurrencyJewelleryQualityPrefix",
+  "icon": "currency/qualityprefixcatalyst.png"
+ },
+ "Dextral Catalyst": {
+  "id": "Metadata/Items/Currency/CurrencyJewelleryQualitySuffix",
+  "icon": "currency/qualitysuffixcatalyst.png"
+ },
+ "Time-light Scroll": {
+  "id": "Metadata/Items/Currency/CurrencyHarbingerBlessingBelt",
+  "icon": "currency/harbingertokenbelt.png"
+ },
+ "Fragmentation Scroll": {
+  "id": "Metadata/Items/Currency/CurrencyHarbingerBlessingQuiver",
+  "icon": "currency/harbingertokenquiver.png"
+ },
+ "Deregulation Scroll": {
+  "id": "Metadata/Items/Currency/CurrencyHarbingerBlessingHelmet",
+  "icon": "currency/harbingertokenhelm.png"
+ },
+ "Electroshock Scroll": {
+  "id": "Metadata/Items/Currency/CurrencyHarbingerBlessingSword",
+  "icon": "currency/harbingertokensword.png"
+ },
+ "Haemocombustion Scroll": {
+  "id": "Metadata/Items/Currency/CurrencyHarbingerBlessingStaff",
+  "icon": "currency/harbingertokenstaff.png"
+ },
+ "Specularity Scroll": {
+  "id": "Metadata/Items/Currency/CurrencyHarbingerBlessingShield",
+  "icon": "currency/harbingertokenshield.png"
+ },
+ "Facetor's Lens": {
+  "id": "Metadata/Items/Currency/CurrencyAddGemExperience",
+  "icon": "currency/currencygemexperience.png"
+ },
+ "Magmatic Ore": {
+  "id": "Metadata/Items/Currency/CurrencyAddCrucibleExperience",
+  "icon": "currency/magmatic-ore.png"
+ },
+ "Ritual Splinter": {
+  "id": "Metadata/Items/Currency/CurrencyRitualSplinter",
+  "icon": "currency/ritualsplinter.png"
+ },
+ "Ritual Vessel": {
+  "id": "Metadata/Items/Currency/CurrencyRitualStone",
+  "icon": "currency/effigy.png"
+ },
+ "Lesser Eldritch Ember": {
+  "id": "Metadata/Items/Currency/CurrencyEldritchEmber1",
+  "icon": "currency/cleansingfireorbrank1.png"
+ },
+ "Greater Eldritch Ember": {
+  "id": "Metadata/Items/Currency/CurrencyEldritchEmber2",
+  "icon": "currency/cleansingfireorbrank2.png"
+ },
+ "Grand Eldritch Ember": {
+  "id": "Metadata/Items/Currency/CurrencyEldritchEmber3",
+  "icon": "currency/cleansingfireorbrank3.png"
+ },
+ "Exceptional Eldritch Ember": {
+  "id": "Metadata/Items/Currency/CurrencyEldritchEmber4",
+  "icon": "currency/cleansingfireorbrank4.png"
+ },
+ "Lesser Eldritch Ichor": {
+  "id": "Metadata/Items/Currency/CurrencyEldritchIchor1",
+  "icon": "currency/tangleorbrank1.png"
+ },
+ "Greater Eldritch Ichor": {
+  "id": "Metadata/Items/Currency/CurrencyEldritchIchor2",
+  "icon": "currency/tangleorbrank2.png"
+ },
+ "Grand Eldritch Ichor": {
+  "id": "Metadata/Items/Currency/CurrencyEldritchIchor3",
+  "icon": "currency/tangleorbrank3.png"
+ },
+ "Exceptional Eldritch Ichor": {
+  "id": "Metadata/Items/Currency/CurrencyEldritchIchor4",
+  "icon": "currency/tangleorbrank4.png"
+ },
+ "Orb of Conflict": {
+  "id": "Metadata/Items/Currency/CurrencyConflictOrb",
+  "icon": "currency/conflictorbrank1.png"
+ },
+ "Uncarved Gemstone": {
+  "id": "Metadata/Items/Currency/CurrencySkillGemToken",
+  "icon": "currency/redcorrupt4.png"
+ },
+ "Valdo's Puzzle Box": {
+  "id": "Metadata/Items/Currency/CurrencyValdoPuzzleBox",
+  "icon": "currency/valdospuzzlebox.png"
+ },
+ "Royal Visage": {
+  "id": "Metadata/Items/MapFragments/CurrencyIncursionUberFragment",
+  "icon": "currency/ubervaalcomplete.png"
+ },
+ "Divine Vessel": {
+  "id": "Metadata/Items/MapFragments/CurrencyFragmentPantheonFlask",
+  "icon": "currency/sinflaskempty.png"
+ },
+ "Stacked Deck": {
+  "id": "Metadata/Items/DivinationCards/DivinationCardDeck",
+  "icon": "currency/deck.png"
+ },
+ "Tainted Oil": {
+  "id": "Metadata/Items/Currency/MushruneCorrupt",
+  "icon": "currency/vaaloil.png"
+ },
+ "Reflective Oil": {
+  "id": "Metadata/Items/Currency/MushruneMirror",
+  "icon": "currency/mirroroil.png"
+ },
+ "Prismatic Oil": {
+  "id": "Metadata/Items/Currency/MushruneUber",
+  "icon": "currency/prismaticoil.png"
+ },
+ "Clear Oil": {
+  "id": "Metadata/Items/Currency/Mushrune1",
+  "icon": "currency/clearoil.png"
+ },
+ "Sepia Oil": {
+  "id": "Metadata/Items/Currency/Mushrune2",
+  "icon": "currency/sepiaoil.png"
+ },
+ "Amber Oil": {
+  "id": "Metadata/Items/Currency/Mushrune3",
+  "icon": "currency/amberoil.png"
+ },
+ "Verdant Oil": {
+  "id": "Metadata/Items/Currency/Mushrune4",
+  "icon": "currency/verdantoil.png"
+ },
+ "Teal Oil": {
+  "id": "Metadata/Items/Currency/Mushrune5",
+  "icon": "currency/tealoil.png"
+ },
+ "Azure Oil": {
+  "id": "Metadata/Items/Currency/Mushrune6",
+  "icon": "currency/azureoil.png"
+ },
+ "Indigo Oil": {
+  "id": "Metadata/Items/Currency/Mushrune6b",
+  "icon": "currency/indigooil.png"
+ },
+ "Violet Oil": {
+  "id": "Metadata/Items/Currency/Mushrune7",
+  "icon": "currency/violetoil.png"
+ },
+ "Crimson Oil": {
+  "id": "Metadata/Items/Currency/Mushrune8",
+  "icon": "currency/crimsonoil.png"
+ },
+ "Black Oil": {
+  "id": "Metadata/Items/Currency/Mushrune9",
+  "icon": "currency/blackoil.png"
+ },
+ "Opalescent Oil": {
+  "id": "Metadata/Items/Currency/Mushrune10",
+  "icon": "currency/opalescentoil.png"
+ },
+ "Silver Oil": {
+  "id": "Metadata/Items/Currency/Mushrune11",
+  "icon": "currency/silveroil.png"
+ },
+ "Golden Oil": {
+  "id": "Metadata/Items/Currency/Mushrune12",
+  "icon": "currency/goldenoil.png"
+ },
+ "Crusader's Exalted Orb": {
+  "id": "Metadata/Items/AtlasExiles/AddModToRareCrusader",
+  "icon": "currency/crusaderorb.png"
+ },
+ "Redeemer's Exalted Orb": {
+  "id": "Metadata/Items/AtlasExiles/AddModToRareRedeemer",
+  "icon": "currency/eyrieorb.png"
+ },
+ "Hunter's Exalted Orb": {
+  "id": "Metadata/Items/AtlasExiles/AddModToRareHunter",
+  "icon": "currency/basiliskorb.png"
+ },
+ "Warlord's Exalted Orb": {
+  "id": "Metadata/Items/AtlasExiles/AddModToRareWarlord",
+  "icon": "currency/conquerororb.png"
+ },
+ "Awakener's Orb": {
+  "id": "Metadata/Items/AtlasExiles/ApplyInfluence",
+  "icon": "currency/transferorb.png"
+ },
+ "Rogue's Marker": {
+  "id": "Metadata/Items/Heist/HeistCoin",
+  "icon": "currency/heistcoincurrency.png"
+ },
+ "Orb of Dominance": {
+  "id": "Metadata/Items/Currency/CurrencyUpgradeInfluenceMod",
+  "icon": "currency/mavenorb.png"
+ },
+ "Crescent Splinter": {
+  "id": "Metadata/Items/MapFragments/CurrencyMavenKeyFragment",
+  "icon": "currency/mavenkeyfragment.png"
+ },
+ "Enkindling Orb": {
+  "id": "Metadata/Items/Currency/CurrencyEnkindlingOrb",
+  "icon": "currency/flaskplate.png"
+ },
+ "Instilling Orb": {
+  "id": "Metadata/Items/Currency/CurrencyInstillingOrb",
+  "icon": "currency/flaskinjector.png"
+ },
+ "Exotic Coinage": {
+  "id": "Metadata/Items/Currency/CurrencyRefreshBarter",
+  "icon": "currency/barterrefreshcurrency.png"
+ },
+ "Scrap Metal": {
+  "id": "Metadata/Items/Currency/CurrencyRefreshDealer",
+  "icon": "currency/dealerrefreshcurrency.png"
+ },
+ "Astragali": {
+  "id": "Metadata/Items/Currency/CurrencyRefreshGambler",
+  "icon": "currency/gamblerrefreshcurrency.png"
+ },
+ "Burial Medallion": {
+  "id": "Metadata/Items/Currency/CurrencyRefreshSaga",
+  "icon": "currency/dannigrerollcurrency.png"
+ },
+ "Lesser Broken Circle Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction1_1",
+  "icon": "currency/rune16.png"
+ },
+ "Greater Broken Circle Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction1_2",
+  "icon": "currency/rune11.png"
+ },
+ "Grand Broken Circle Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction1_3",
+  "icon": "currency/rune8.png"
+ },
+ "Exceptional Broken Circle Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction1_4",
+  "icon": "currency/rune3.png"
+ },
+ "Lesser Black Scythe Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction2_1",
+  "icon": "currency/rune6.png"
+ },
+ "Greater Black Scythe Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction2_2",
+  "icon": "currency/rune15.png"
+ },
+ "Grand Black Scythe Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction2_3",
+  "icon": "currency/rune10.png"
+ },
+ "Exceptional Black Scythe Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction2_4",
+  "icon": "currency/rune20.png"
+ },
+ "Lesser Order Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction3_1",
+  "icon": "currency/rune13.png"
+ },
+ "Greater Order Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction3_2",
+  "icon": "currency/rune14.png"
+ },
+ "Grand Order Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction3_3",
+  "icon": "currency/rune7.png"
+ },
+ "Exceptional Order Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction3_4",
+  "icon": "currency/rune21.png"
+ },
+ "Lesser Sun Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction4_1",
+  "icon": "currency/rune17.png"
+ },
+ "Greater Sun Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction4_2",
+  "icon": "currency/rune2.png"
+ },
+ "Grand Sun Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction4_3",
+  "icon": "currency/rune4.png"
+ },
+ "Exceptional Sun Artifact": {
+  "id": "Metadata/Items/Expedition/ExpeditionVendorCurrencyFaction4_4",
+  "icon": "currency/rune1.png"
+ },
+ "Tainted Chromatic Orb": {
+  "id": "Metadata/Items/Currency/CurrencyHellscapeRerollSocketColours",
+  "icon": "currency/hellscapechromaticorb.png"
+ },
+ "Tainted Orb of Fusing": {
+  "id": "Metadata/Items/Currency/CurrencyHellscapeRerollSocketLinks",
+  "icon": "currency/hellscapeorboffusing.png"
+ },
+ "Tainted Jeweller's Orb": {
+  "id": "Metadata/Items/Currency/CurrencyHellscapeRerollSocketNumbers",
+  "icon": "currency/hellscapejewellersorb.png"
+ },
+ "Tainted Chaos Orb": {
+  "id": "Metadata/Items/Currency/CurrencyHellscapeRerollRare",
+  "icon": "currency/hellscapechaosorb.png"
+ },
+ "Tainted Exalted Orb": {
+  "id": "Metadata/Items/Currency/CurrencyHellscapeAddModToRare",
+  "icon": "currency/hellscapeexaltedorb.png"
+ },
+ "Tainted Mythic Orb": {
+  "id": "Metadata/Items/Currency/CurrencyHellscapeUpgradeToUnique",
+  "icon": "currency/hellscapemythicorb.png"
+ },
+ "Tainted Armourer's Scrap": {
+  "id": "Metadata/Items/Currency/CurrencyHellscapeArmourQuality",
+  "icon": "currency/hellscapearmourersscrap.png"
+ },
+ "Tainted Blacksmith's Whetstone": {
+  "id": "Metadata/Items/Currency/CurrencyHellscapeWeaponQuality",
+  "icon": "currency/hellscapeblacksmithwhetstone.png"
+ },
+ "Tainted Divine Teardrop": {
+  "id": "Metadata/Items/Currency/CurrencyHellscapeUpgradeModTier",
+  "icon": "currency/hellscapeteardroporb.png"
+ },
+ "Volatile Vaal Orb": {
+  "id": "Metadata/Items/Currency/CurrencyHellscapeModValues",
+  "icon": "currency/volatilevaalorb.png"
+ },
+ "Eldritch Chaos Orb": {
+  "id": "Metadata/Items/Currency/CurrencyEldritchRerollRare",
+  "icon": "currency/eldritchchaosorb.png"
+ },
+ "Eldritch Exalted Orb": {
+  "id": "Metadata/Items/Currency/CurrencyEldritchAddModToRare",
+  "icon": "currency/eldritchexaltedorb.png"
+ },
+ "Eldritch Orb of Annulment": {
+  "id": "Metadata/Items/Currency/CurrencyEldritchRemoveMod",
+  "icon": "currency/eldritchannulmentorb.png"
+ },
+ "Memory of Trauma": {
+  "id": "Metadata/Items/Currency/FearMemoryThread",
+  "icon": "currency/memoryincarnationoffear.png"
+ },
+ "Memory of Reverence": {
+  "id": "Metadata/Items/Currency/BenevolenceMemoryThread",
+  "icon": "currency/memoryincarnationofdread.png"
+ },
+ "Memory of Loneliness": {
+  "id": "Metadata/Items/Currency/IgnoranceMemoryThread",
+  "icon": "currency/memoryincarnationofneglect.png"
+ },
+ "Singular Scouting Report": {
+  "id": "Metadata/Items/Currency/ScoutingReports/AtlasScoutingReportUnique",
+  "icon": "currency/scoutingreport.png"
+ },
+ "Otherworldly Scouting Report": {
+  "id": "Metadata/Items/Currency/ScoutingReports/AtlasScoutingReportBreachstone",
+  "icon": "currency/scoutingreport.png"
+ },
+ "Comprehensive Scouting Report": {
+  "id": "Metadata/Items/Currency/ScoutingReports/AtlasScoutingReportMoreHidden",
+  "icon": "currency/scoutingreport.png"
+ },
+ "Vaal Scouting Report": {
+  "id": "Metadata/Items/Currency/ScoutingReports/AtlasScoutingReportCorrupted",
+  "icon": "currency/scoutingreport.png"
+ },
+ "Delirious Scouting Report": {
+  "id": "Metadata/Items/Currency/ScoutingReports/AtlasScoutingReportDelirium",
+  "icon": "currency/scoutingreport.png"
+ },
+ "Operative's Scouting Report": {
+  "id": "Metadata/Items/Currency/ScoutingReports/AtlasScoutingReportJuiced",
+  "icon": "currency/scoutingreport.png"
+ },
+ "Blighted Scouting Report": {
+  "id": "Metadata/Items/Currency/ScoutingReports/AtlasScoutingReportBlighted",
+  "icon": "currency/scoutingreport.png"
+ },
+ "Influenced Scouting Report": {
+  "id": "Metadata/Items/Currency/ScoutingReports/AtlasScoutingReportGuardian",
+  "icon": "currency/scoutingreport.png"
+ },
+ "Explorer's Scouting Report": {
+  "id": "Metadata/Items/Currency/ScoutingReports/AtlasScoutingReportExplorers",
+  "icon": "currency/scoutingreport.png"
+ },
+ "Oil Extractor": {
+  "id": "Metadata/Items/Currency/CurrencyExtractOil",
+  "icon": "currency/ichorextractor.png"
+ },
+ "Power Core": {
+  "id": "Metadata/Items/Currency/SentinelCurrencyBasic",
+  "icon": "currency/powercore.png"
+ },
+ "Transforming Power Core": {
+  "id": "Metadata/Items/Currency/SentinelCurrencyMutate",
+  "icon": "currency/transformingpowercore.png"
+ },
+ "Amplifying Power Core": {
+  "id": "Metadata/Items/Currency/SentinelCurrencyUpgradeMod",
+  "icon": "currency/amplifyingpowercore.png"
+ },
+ "Augmenting Power Core": {
+  "id": "Metadata/Items/Currency/SentinelCurrencyAddMod",
+  "icon": "currency/augmentingpowercore.png"
+ },
+ "Armour Recombinator": {
+  "id": "Metadata/Items/Currency/SentinelCurrencyArmour",
+  "icon": "currency/armourrecombinator.png"
+ },
+ "Weapon Recombinator": {
+  "id": "Metadata/Items/Currency/SentinelCurrencyWeapon",
+  "icon": "currency/jewelleryrecombinator.png"
+ },
+ "Jewellery Recombinator": {
+  "id": "Metadata/Items/Currency/SentinelCurrencyJewellery",
+  "icon": "currency/weaponrecombinator.png"
+ },
+ "Wild Crystallised Lifeforce": {
+  "id": "Metadata/Items/Currency/HarvestSeedRed",
+  "icon": "currency/wildlifeforce.png"
+ },
+ "Vivid Crystallised Lifeforce": {
+  "id": "Metadata/Items/Currency/HarvestSeedGreen",
+  "icon": "currency/vividlifeforce.png"
+ },
+ "Primal Crystallised Lifeforce": {
+  "id": "Metadata/Items/Currency/HarvestSeedBlue",
+  "icon": "currency/primallifeforce.png"
+ },
+ "Sacred Crystallised Lifeforce": {
+  "id": "Metadata/Items/Currency/HarvestSeedBoss",
+  "icon": "currency/sacredlifeforce.png"
+ },
+ "Crystallised Rancour": {
+  "id": "Metadata/Items/Currency/HarvestSeedFaridun",
+  "icon": "currency/faridunlifeforce.png"
+ },
+ "Lycia's Invocation of Minion Instability": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyMinionInstability",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Resolute Technique": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyResoluteTechnique",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Blood Magic": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyBloodMagic",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Pain Attunement": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyPainAttunement",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Elemental Equilibrium": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyElementalEquilibrium",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Iron Grip": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyIronGrip",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Point Blank": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyPointBlank",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Acrobatics": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyAcrobatics",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Ghost Reaver": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyGhostReaver",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Vaal Pact": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyVaalPact",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Elemental Overload": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyElementalOverload",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Avatar of Fire": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyAvatarOfFire",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Eldritch Battery": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyEldritchBattery",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Ancestral Bond": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyAncestralBond",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Crimson Dance": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyCrimsonDance",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Perfect Agony": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyPerfectAgony",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Runebinder": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyRunebinder",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Glancing Blows": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyGlancingBlows",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Call to Arms": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyCallToArms",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of the Agnostic": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyTheAgnostic",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Supreme Ego": {
+  "id": "Metadata/Items/Currency/SanctumCurrencySupremeEgo",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of the Impaler": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyTheImpaler",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Hex Master": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyDoomsday",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Lethe Shade": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyLetheShade",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Ghost Dance": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyGhostDance",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Versatile Combatant": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyVersatileCombatant",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Magebane": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyMagebane",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Solipsism": {
+  "id": "Metadata/Items/Currency/SanctumCurrencySolipsism",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Divine Shield": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyDivineShield",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Iron Will": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyIronWill",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Wicked Ward": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyWickedWard",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Wind Dancer": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyWindDancer",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Conduit": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyConduit",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Arrow Dancing": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyArrowDancing",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Precise Technique": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyPreciseTechnique",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Iron Reflexes": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyIronReflexes",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Unwavering Stance": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyUnwaveringStance",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Imbalanced Guard": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyImbalancedGuard",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Eternal Youth": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyEternalYouth",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Mind over Matter": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyMindoverMatter",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Lycia's Invocation of Zealot's Oath": {
+  "id": "Metadata/Items/Currency/SanctumCurrencyZealotsOath",
+  "icon": "currency/lyciacorruptcurrency.png"
+ },
+ "Igneous Geode": {
+  "id": "Metadata/Items/Currency/CrucibleGeode",
+  "icon": "currency/cruciblegeode.png"
+ },
+ "Crystalline Geode": {
+  "id": "Metadata/Items/Currency/CrucibleGeodeUber",
+  "icon": "currency/crucibleubergeode.png"
+ },
+ "Hinekora's Lock": {
+  "id": "Metadata/Items/Currency/CurrencyHinekorasLock",
+  "icon": "currency/hinekoraslock.png"
+ },
+ "Omen of Amelioration": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnDeathPreventExpLoss",
+  "icon": "currency/voodooomens1blue.png"
+ },
+ "Omen of Return": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnDeathCreatePortal",
+  "icon": "currency/voodooomens2blue.png"
+ },
+ "Omen of Death-dancing": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnCriticalLifeAvoidDamage",
+  "icon": "currency/voodooomens1yellow.png"
+ },
+ "Omen of Refreshment": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnCriticalLifeRecoverFlaskCharges",
+  "icon": "currency/voodooomens2yellow.png"
+ },
+ "Omen of the Soul Devourer": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnLevelingUpGainSoulEater",
+  "icon": "currency/voodooomens3blue.png"
+ },
+ "Omen of Acceleration": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnLevelingUpSpawnAccelerationShrine",
+  "icon": "currency/voodooomens1yellow.png"
+ },
+ "Omen of Fortune": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnChanceMakeUnique",
+  "icon": "currency/voodooomens1purple.png"
+ },
+ "Omen of the Jeweller": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnJewellersMakeFullSockets",
+  "icon": "currency/voodooomens2purple.png"
+ },
+ "Omen of Connections": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnFusingMakeFullLinks",
+  "icon": "currency/voodooomens3purple.png"
+ },
+ "Omen of Trichromatism": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnChromaticAddWhiteSockets",
+  "icon": "currency/voodooomens4purple.png"
+ },
+ "Omen of Revenge": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnDeathNearbyEnemiesMoreDamage",
+  "icon": "currency/voodooomens1blue.png"
+ },
+ "Omen of Bequeathal": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnDeathGemsGainExperience",
+  "icon": "currency/voodooomens1blue.png"
+ },
+ "Omen of Resurgence": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnCriticalLifeRecoupLife",
+  "icon": "currency/voodooomens1yellow.png"
+ },
+ "Omen of Adrenaline": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnCriticalLifeGainAdrenaline",
+  "icon": "currency/voodooomens3yellow.png"
+ },
+ "Omen of Death's Door": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnCriticalLifeGainShadeForm",
+  "icon": "currency/voodooomens4yellow.png"
+ },
+ "Omen of Brilliance": {
+  "id": "Metadata/Items/Currency/AncestralOmenOnLevelingUpGainExperienceBuff",
+  "icon": "currency/voodooomens4blue.png"
+ },
+ "Tattoo of the Ngamahu Firewalker": {
+  "id": "Metadata/Items/Currency/AncestralTattooNgamahu1",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Ngamahu Shaman": {
+  "id": "Metadata/Items/Currency/AncestralTattooNgamahu2",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Ngamahu Warrior": {
+  "id": "Metadata/Items/Currency/AncestralTattooNgamahu3",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Ngamahu Warmonger": {
+  "id": "Metadata/Items/Currency/AncestralTattooNgamahu4",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Ngamahu Woodcarver": {
+  "id": "Metadata/Items/Currency/AncestralTattooNgamahu5",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Loyalty Tattoo of Kaom": {
+  "id": "Metadata/Items/Currency/AncestralTattooNgamahu6",
+  "icon": "currency/rarestrtatttooequipment.png"
+ },
+ "Tattoo of the Ngamahu Makanga": {
+  "id": "Metadata/Items/Currency/AncestralTattooNgamahu7",
+  "icon": "currency/rarestrtatttooequipment.png"
+ },
+ "Tattoo of the Kitava Blood Drinker": {
+  "id": "Metadata/Items/Currency/AncestralTattooKitava1",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Kitava Rebel": {
+  "id": "Metadata/Items/Currency/AncestralTattooKitava2",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Kitava Warrior": {
+  "id": "Metadata/Items/Currency/AncestralTattooKitava3",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Kitava Heart Eater": {
+  "id": "Metadata/Items/Currency/AncestralTattooKitava4",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Tattoo of the Kitava Shaman": {
+  "id": "Metadata/Items/Currency/AncestralTattooKitava5",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Loyalty Tattoo of Utula": {
+  "id": "Metadata/Items/Currency/AncestralTattooKitava6",
+  "icon": "currency/rarestrtatttooequipment.png"
+ },
+ "Tattoo of the Kitava Makanga": {
+  "id": "Metadata/Items/Currency/AncestralTattooKitava7",
+  "icon": "currency/rarestrtatttooequipment.png"
+ },
+ "Tattoo of the Tukohama Shaman": {
+  "id": "Metadata/Items/Currency/AncestralTattooTukohama1",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Tukohama Warrior": {
+  "id": "Metadata/Items/Currency/AncestralTattooTukohama2",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Tukohama Brawler": {
+  "id": "Metadata/Items/Currency/AncestralTattooTukohama3",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Tukohama Warmonger": {
+  "id": "Metadata/Items/Currency/AncestralTattooTukohama4",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Tukohama Warcaller": {
+  "id": "Metadata/Items/Currency/AncestralTattooTukohama5",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Loyalty Tattoo of Akoya": {
+  "id": "Metadata/Items/Currency/AncestralTattooTukohama6",
+  "icon": "currency/rarestrtatttooequipment.png"
+ },
+ "Tattoo of the Tukohama Makanga": {
+  "id": "Metadata/Items/Currency/AncestralTattooTukohama7",
+  "icon": "currency/rarestrtatttooequipment.png"
+ },
+ "Tattoo of the Rongokurai Warrior": {
+  "id": "Metadata/Items/Currency/AncestralTattooRongokurai1",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Rongokurai Brute": {
+  "id": "Metadata/Items/Currency/AncestralTattooRongokurai2",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Rongokurai Goliath": {
+  "id": "Metadata/Items/Currency/AncestralTattooRongokurai3",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Rongokurai Turtle": {
+  "id": "Metadata/Items/Currency/AncestralTattooRongokurai4",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Tattoo of the Rongokurai Guard": {
+  "id": "Metadata/Items/Currency/AncestralTattooRongokurai5",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Loyalty Tattoo of Kahuturoa": {
+  "id": "Metadata/Items/Currency/AncestralTattooRongokurai6",
+  "icon": "currency/rarestrtatttooequipment.png"
+ },
+ "Tattoo of the Rongokurai Makanga": {
+  "id": "Metadata/Items/Currency/AncestralTattooRongokurai7",
+  "icon": "currency/rarestrtatttooequipment.png"
+ },
+ "Tattoo of the Tasalio Bladedancer": {
+  "id": "Metadata/Items/Currency/AncestralTattooTasalio1",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Tasalio Tideshifter": {
+  "id": "Metadata/Items/Currency/AncestralTattooTasalio2",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Tattoo of the Tasalio Shaman": {
+  "id": "Metadata/Items/Currency/AncestralTattooTasalio3",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Tattoo of the Tasalio Warrior": {
+  "id": "Metadata/Items/Currency/AncestralTattooTasalio4",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Tattoo of the Tasalio Scout": {
+  "id": "Metadata/Items/Currency/AncestralTattooTasalio5",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Loyalty Tattoo of Rakiata": {
+  "id": "Metadata/Items/Currency/AncestralTattooTasalio6",
+  "icon": "currency/raredextatttooequipment.png"
+ },
+ "Tattoo of the Tasalio Makanga": {
+  "id": "Metadata/Items/Currency/AncestralTattooTasalio7",
+  "icon": "currency/rareinttatttooequipment.png"
+ },
+ "Tattoo of the Arohongui Moonwarden": {
+  "id": "Metadata/Items/Currency/AncestralTattooArohongui1",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Tattoo of the Arohongui Scout": {
+  "id": "Metadata/Items/Currency/AncestralTattooArohongui2",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Tattoo of the Arohongui Warrior": {
+  "id": "Metadata/Items/Currency/AncestralTattooArohongui3",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Tattoo of the Arohongui Warmonger": {
+  "id": "Metadata/Items/Currency/AncestralTattooArohongui4",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Tattoo of the Arohongui Shaman": {
+  "id": "Metadata/Items/Currency/AncestralTattooArohongui5",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Loyalty Tattoo of Ikiaho": {
+  "id": "Metadata/Items/Currency/AncestralTattooArohongui6",
+  "icon": "currency/raredextatttooequipment.png"
+ },
+ "Tattoo of the Arohongui Makanga": {
+  "id": "Metadata/Items/Currency/AncestralTattooArohongui7",
+  "icon": "currency/raredextatttooequipment.png"
+ },
+ "Tattoo of the Ramako Scout": {
+  "id": "Metadata/Items/Currency/AncestralTattooRamako1",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Tattoo of the Ramako Archer": {
+  "id": "Metadata/Items/Currency/AncestralTattooRamako2",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Tattoo of the Ramako Sniper": {
+  "id": "Metadata/Items/Currency/AncestralTattooRamako3",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Tattoo of the Ramako Fleetfoot": {
+  "id": "Metadata/Items/Currency/AncestralTattooRamako4",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Tattoo of the Ramako Shaman": {
+  "id": "Metadata/Items/Currency/AncestralTattooRamako5",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Loyalty Tattoo of Ahuana": {
+  "id": "Metadata/Items/Currency/AncestralTattooRamako6",
+  "icon": "currency/raredextatttooequipment.png"
+ },
+ "Tattoo of the Ramako Makanga": {
+  "id": "Metadata/Items/Currency/AncestralTattooRamako7",
+  "icon": "currency/raredextatttooequipment.png"
+ },
+ "Tattoo of the Hinekora Warrior": {
+  "id": "Metadata/Items/Currency/AncestralTattooHinekora1",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Tattoo of the Hinekora Deathwarden": {
+  "id": "Metadata/Items/Currency/AncestralTattooHinekora2",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Tattoo of the Hinekora Shaman": {
+  "id": "Metadata/Items/Currency/AncestralTattooHinekora3",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Tattoo of the Hinekora Storyteller": {
+  "id": "Metadata/Items/Currency/AncestralTattooHinekora4",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Tattoo of the Hinekora Warmonger": {
+  "id": "Metadata/Items/Currency/AncestralTattooHinekora5",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Loyalty Tattoo of Tawhanuku": {
+  "id": "Metadata/Items/Currency/AncestralTattooHinekora6",
+  "icon": "currency/rareinttatttooequipment.png"
+ },
+ "Tattoo of the Hinekora Makanga": {
+  "id": "Metadata/Items/Currency/AncestralTattooHinekora7",
+  "icon": "currency/rareinttatttooequipment.png"
+ },
+ "Tattoo of the Tawhoa Naturalist": {
+  "id": "Metadata/Items/Currency/AncestralTattooTawhoa1",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Tattoo of the Tawhoa Scout": {
+  "id": "Metadata/Items/Currency/AncestralTattooTawhoa2",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Tattoo of the Tawhoa Warrior": {
+  "id": "Metadata/Items/Currency/AncestralTattooTawhoa3",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Tattoo of the Tawhoa Herbalist": {
+  "id": "Metadata/Items/Currency/AncestralTattooTawhoa4",
+  "icon": "currency/commondextatttooequipment.png"
+ },
+ "Tattoo of the Tawhoa Shaman": {
+  "id": "Metadata/Items/Currency/AncestralTattooTawhoa5",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Loyalty Tattoo of Maata": {
+  "id": "Metadata/Items/Currency/AncestralTattooTawhoa6",
+  "icon": "currency/rareinttatttooequipment.png"
+ },
+ "Tattoo of the Tawhoa Makanga": {
+  "id": "Metadata/Items/Currency/AncestralTattooTawhoa7",
+  "icon": "currency/raredextatttooequipment.png"
+ },
+ "Tattoo of the Valako Stormrider": {
+  "id": "Metadata/Items/Currency/AncestralTattooValako1",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Tattoo of the Valako Scout": {
+  "id": "Metadata/Items/Currency/AncestralTattooValako2",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Tattoo of the Valako Warrior": {
+  "id": "Metadata/Items/Currency/AncestralTattooValako3",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Tattoo of the Valako Shieldbearer": {
+  "id": "Metadata/Items/Currency/AncestralTattooValako4",
+  "icon": "currency/commonstrtatttooequipment.png"
+ },
+ "Tattoo of the Valako Shaman": {
+  "id": "Metadata/Items/Currency/AncestralTattooValako5",
+  "icon": "currency/commoninttatttooequipment.png"
+ },
+ "Loyalty Tattoo of Kiloava": {
+  "id": "Metadata/Items/Currency/AncestralTattooValako6",
+  "icon": "currency/rareinttatttooequipment.png"
+ },
+ "Tattoo of the Valako Makanga": {
+  "id": "Metadata/Items/Currency/AncestralTattooValako7",
+  "icon": "currency/rareinttatttooequipment.png"
+ },
+ "Honoured Tattoo of the Dove": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialSmallNode1",
+  "icon": "currency/hinekoracommontatttooequipment.png"
+ },
+ "Honoured Tattoo of the Sky": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialSmallNode2",
+  "icon": "currency/hinekoracommontatttooequipment.png"
+ },
+ "Honoured Tattoo of the Tuatara": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialSmallNode3",
+  "icon": "currency/hinekoracommontatttooequipment.png"
+ },
+ "Honoured Tattoo of the Pillager": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialSmallNode4",
+  "icon": "currency/hinekoracommontatttooequipment.png"
+ },
+ "Honoured Tattoo of the Turtle": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialSmallNode5",
+  "icon": "currency/hinekoracommontatttooequipment.png"
+ },
+ "Honoured Tattoo of the Oak": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialSmallNode6",
+  "icon": "currency/hinekoracommontatttooequipment.png"
+ },
+ "Honoured Tattoo of the Hatungo": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialSmallNode7",
+  "icon": "currency/hinekoracommontatttooequipment.png"
+ },
+ "Honoured Tattoo of the Flock": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialSmallNode8",
+  "icon": "currency/hinekoracommontatttooequipment.png"
+ },
+ "Honoured Tattoo of the Warlord": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialNotableStr1",
+  "icon": "currency/hinekorararestrtatttooequipment.png"
+ },
+ "Honoured Tattoo of the Mountain": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialNotableStr2",
+  "icon": "currency/hinekorararestrtatttooequipment.png"
+ },
+ "Honoured Tattoo of the Pa": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialNotableStr3",
+  "icon": "currency/hinekorararestrtatttooequipment.png"
+ },
+ "Honoured Tattoo of the Hunter": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialNotableDex1",
+  "icon": "currency/hinekorararedextatttooequipment.png"
+ },
+ "Honoured Tattoo of the Barbarian": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialNotableDex2",
+  "icon": "currency/hinekorararedextatttooequipment.png"
+ },
+ "Honoured Tattoo of the Berserker": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialNotableDex3",
+  "icon": "currency/hinekorararedextatttooequipment.png"
+ },
+ "Honoured Tattoo of the Wise": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialNotableInt1",
+  "icon": "currency/hinekorarareinttatttooequipment.png"
+ },
+ "Honoured Tattoo of the Storm": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialNotableInt2",
+  "icon": "currency/hinekorarareinttatttooequipment.png"
+ },
+ "Honoured Tattoo of the Flood": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialNotableInt3",
+  "icon": "currency/hinekorarareinttatttooequipment.png"
+ },
+ "Ancestral Tattoo of Bloodlines": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialUnique1",
+  "icon": "currency/unique1tatttooequipment.png"
+ },
+ "Honoured Tattoo of the Makanga": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialUnique2",
+  "icon": "currency/unique2tatttooequipment.png"
+ },
+ "Journey Tattoo of the Body": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialUnique3",
+  "icon": "currency/unique3tatttooequipment.png"
+ },
+ "Journey Tattoo of the Mind": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialUnique4",
+  "icon": "currency/unique3tatttooequipment.png"
+ },
+ "Journey Tattoo of the Soul": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialUnique5",
+  "icon": "currency/unique3tatttooequipment.png"
+ },
+ "Journey Tattoo of Makanui": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialUnique6",
+  "icon": "currency/unique4tatttooequipment.png"
+ },
+ "Forbidden Tattoo of the Ranger": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialUnique7Ranger",
+  "icon": "currency/randomrangertattoo.png"
+ },
+ "Forbidden Tattoo of the Duelist": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialUnique7Duelist",
+  "icon": "currency/randomduelisttattoo.png"
+ },
+ "Forbidden Tattoo of the Marauder": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialUnique7Marauder",
+  "icon": "currency/randommaraudertattoo.png"
+ },
+ "Forbidden Tattoo of the Templar": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialUnique7Templar",
+  "icon": "currency/randomtemplartattoo.png"
+ },
+ "Forbidden Tattoo of the Witch": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialUnique7Witch",
+  "icon": "currency/randomwitchtattoo.png"
+ },
+ "Forbidden Tattoo of the Shadow": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialUnique7Shadow",
+  "icon": "currency/randomshadowtattoo.png"
+ },
+ "Forbidden Tattoo of the Scion": {
+  "id": "Metadata/Items/Currency/AncestralTattooSpecialUnique7Scion",
+  "icon": "currency/randomsciontattoo.png"
+ },
+ "Vivid Wisps": {
+  "id": "Metadata/Items/Azmeri/AzmeriDustWarden",
+  "icon": "currency/primalistdustsymbol.png"
+ },
+ "Wild Wisps": {
+  "id": "Metadata/Items/Azmeri/AzmeriDustVoodooShaman",
+  "icon": "currency/voodooshamandustsymbol.png"
+ },
+ "Primal Wisps": {
+  "id": "Metadata/Items/Azmeri/AzmeriDustPrimalist",
+  "icon": "currency/wardendustsymbol.png"
+ },
+ "Sun Rune": {
+  "id": "Metadata/Items/Currency/KalguuranRune1",
+  "icon": "currency/villagerune2.png"
+ },
+ "Bound Rune": {
+  "id": "Metadata/Items/Currency/KalguuranRune2",
+  "icon": "currency/villagerune3.png"
+ },
+ "Life Rune": {
+  "id": "Metadata/Items/Currency/KalguuranRune3",
+  "icon": "currency/villagerune1.png"
+ },
+ "War Rune": {
+  "id": "Metadata/Items/Currency/KalguuranRune4",
+  "icon": "currency/villagerune4.png"
+ },
+ "River Rune": {
+  "id": "Metadata/Items/Currency/KalguuranRune5",
+  "icon": "currency/villagerune5.png"
+ },
+ "Bounty Rune": {
+  "id": "Metadata/Items/Currency/KalguuranRune6",
+  "icon": "currency/villagerune6.png"
+ },
+ "Journey Rune": {
+  "id": "Metadata/Items/Currency/KalguuranRune7",
+  "icon": "currency/villagerune7.png"
+ },
+ "Mountain Rune": {
+  "id": "Metadata/Items/Currency/KalguuranRune8",
+  "icon": "currency/villagerune8.png"
+ },
+ "Time Rune": {
+  "id": "Metadata/Items/Currency/KalguuranRune9",
+  "icon": "currency/villagerune9.png"
+ },
+ "Power Rune": {
+  "id": "Metadata/Items/Currency/KalguuranRune10",
+  "icon": "currency/villagerune10.png"
+ },
+ "Reflecting Mist": {
+  "id": "Metadata/Items/Currency/ReflectiveMist",
+  "icon": "currency/reflectivemist.png"
+ },
+ "[DNT - UNUSED] Test Runegraft": {
+  "id": "Metadata/Items/Currency/RunegraftTest",
+  "icon": "currency/villagerune2.png"
+ },
+ "Runegraft of the River": {
+  "id": "Metadata/Items/Currency/RunegraftLowLifeRestore",
+  "icon": "currency/villagerune5.png"
+ },
+ "Runegraft of the Fortress": {
+  "id": "Metadata/Items/Currency/RunegraftAttributeGlobalDefences",
+  "icon": "currency/villagerune1.png"
+ },
+ "Runegraft of the Combatant": {
+  "id": "Metadata/Items/Currency/RunegraftMatchedAttackDamage",
+  "icon": "currency/villagerune4.png"
+ },
+ "Runegraft of the Sinistral": {
+  "id": "Metadata/Items/Currency/RunegraftFlatOffhandAttackTime",
+  "icon": "currency/villagerune6.png"
+ },
+ "Runegraft of the Bound": {
+  "id": "Metadata/Items/Currency/RunegraftBootsGloves",
+  "icon": "currency/villagerune3.png"
+ },
+ "Runegraft of the Warp": {
+  "id": "Metadata/Items/Currency/RunegraftBuffScaling",
+  "icon": "currency/villagerune11.png"
+ },
+ "Runegraft of the Soulwick": {
+  "id": "Metadata/Items/Currency/RunegraftSouls",
+  "icon": "currency/villagerune12.png"
+ },
+ "Runegraft of Bellows": {
+  "id": "Metadata/Items/Currency/RunegraftWarcrySpeed",
+  "icon": "currency/villagerune13.png"
+ },
+ "Runegraft of Gemcraft": {
+  "id": "Metadata/Items/Currency/RunegraftSupportLevels",
+  "icon": "currency/villagerune14.png"
+ },
+ "Runegraft of Blasphemy": {
+  "id": "Metadata/Items/Currency/RunegraftRandomCurse",
+  "icon": "currency/villagerune15.png"
+ },
+ "Runegraft of the Gauche": {
+  "id": "Metadata/Items/Currency/RunegraftOffhandInvert",
+  "icon": "currency/villagerune16.png"
+ },
+ "[DNT - UNUSED] Arcane Orders Runegraft": {
+  "id": "Metadata/Items/Currency/RunegraftMinionCannotAttack",
+  "icon": "currency/villagerune17.png"
+ },
+ "[DNT - UNUSED] Martial Orders Runegraft": {
+  "id": "Metadata/Items/Currency/RunegraftMinionCannotCast",
+  "icon": "currency/villagerune18.png"
+ },
+ "Runegraft of Time": {
+  "id": "Metadata/Items/Currency/RunegraftCooldownRefresh",
+  "icon": "currency/villagerune19.png"
+ },
+ "Runegraft of Treachery": {
+  "id": "Metadata/Items/Currency/RunegraftTreacherousAuras",
+  "icon": "currency/villagerune20.png"
+ },
+ "Runegraft of Quaffing": {
+  "id": "Metadata/Items/Currency/RunegraftLifeFromManaFlasks",
+  "icon": "currency/villagerune21.png"
+ },
+ "Runegraft of Restitching": {
+  "id": "Metadata/Items/Currency/RunegraftCritRecoup",
+  "icon": "currency/villagerune22.png"
+ },
+ "Runegraft of Loyalty": {
+  "id": "Metadata/Items/Currency/RunegraftAilmentRedirect",
+  "icon": "currency/villagerune23.png"
+ },
+ "Runegraft of the Witchmark": {
+  "id": "Metadata/Items/Currency/RunegraftSpellLifeCost",
+  "icon": "currency/villagerune24.png"
+ },
+ "Runegraft of the Novamark": {
+  "id": "Metadata/Items/Currency/RunegraftNovaMarkedTarget",
+  "icon": "currency/villagerune25.png"
+ },
+ "Runegraft of Refraction": {
+  "id": "Metadata/Items/Currency/RunegraftChainMana",
+  "icon": "currency/villagerune7.png"
+ },
+ "Runegraft of the Jeweller": {
+  "id": "Metadata/Items/Currency/RunegraftDamagePerSocket",
+  "icon": "currency/villagerune8.png"
+ },
+ "Runegraft of Stability": {
+  "id": "Metadata/Items/Currency/RunegraftUnexciting",
+  "icon": "currency/villagerune2.png"
+ },
+ "[DNT - UNUSED] Limiting Runegraft": {
+  "id": "Metadata/Items/Currency/RunegraftMatchedSpeed",
+  "icon": "currency/villagerune9.png"
+ },
+ "Runegraft of the Angler": {
+  "id": "Metadata/Items/Currency/RunegraftFishing",
+  "icon": "currency/villagerune10.png"
+ },
+ "Runegraft of Consecration": {
+  "id": "Metadata/Items/Currency/RunegraftConsecratedGround",
+  "icon": "currency/villagerune36.png"
+ },
+ "Runegraft of Fury": {
+  "id": "Metadata/Items/Currency/RunegraftLifeFlaskRage",
+  "icon": "currency/villagerune34.png"
+ },
+ "Runegraft of Rallying": {
+  "id": "Metadata/Items/Currency/RunegraftFortificationBanner",
+  "icon": "currency/villagerune37.png"
+ },
+ "Runegraft of Rotblood": {
+  "id": "Metadata/Items/Currency/RunegraftPoisonConversion",
+  "icon": "currency/villagerune33.png"
+ },
+ "Runegraft of the Imbued": {
+  "id": "Metadata/Items/Currency/RunegraftTinctures",
+  "icon": "currency/villagerune30.png"
+ },
+ "Runegraft of the Agile": {
+  "id": "Metadata/Items/Currency/RunegraftElusive",
+  "icon": "currency/villagerune32.png"
+ },
+ "Runegraft of Suffering": {
+  "id": "Metadata/Items/Currency/RunegraftSuffering",
+  "icon": "currency/villagerune27.png"
+ },
+ "Runegraft of the Spellbound": {
+  "id": "Metadata/Items/Currency/RunegraftSpellbound",
+  "icon": "currency/villagerune26.png"
+ },
+ "Runegraft of Resurgence": {
+  "id": "Metadata/Items/Currency/RunegraftResurgence",
+  "icon": "currency/villagerune31.png"
+ },
+ "Runegraft of Connection": {
+  "id": "Metadata/Items/Currency/RunegraftConnection",
+  "icon": "currency/villagerune29.png"
+ },
+ "[DNT - UNUSED] Allflame Ember of Rats": {
+  "id": "Metadata/Items/MapFragments/RatsAllflamePack",
+  "icon": "currency/allflameembersbaseother.png"
+ },
+ "Allflame Ember of Kulemak": {
+  "id": "Metadata/Items/MapFragments/BetrayalAllflamePack",
+  "icon": "currency/allflamebetrayal.png"
+ },
+ "Allflame Ember of Resplendence": {
+  "id": "Metadata/Items/MapFragments/ResplendenceAllflamePack",
+  "icon": "currency/allflamebeetle.png"
+ },
+ "Allflame Ember of Propagation": {
+  "id": "Metadata/Items/MapFragments/PropagationAllflamePack",
+  "icon": "currency/allflamefungus.png"
+ },
+ "Allflame Ember of Flesh": {
+  "id": "Metadata/Items/MapFragments/MeatSackAllflamePack",
+  "icon": "currency/allflamemeatsack.png"
+ },
+ "Allflame Ember of the Wildwood": {
+  "id": "Metadata/Items/MapFragments/WildwoodAllflamePack",
+  "icon": "currency/allflamewildwood.png"
+ },
+ "Allflame Ember of the Ethereal": {
+  "id": "Metadata/Items/MapFragments/CleansedAllflamePack",
+  "icon": "currency/allflamecleansed.png"
+ },
+ "Allflame Ember of the Gilded": {
+  "id": "Metadata/Items/MapFragments/GoldAllflamePack",
+  "icon": "currency/allflamegold.png"
+ },
+ "Allflame Ember of Toads": {
+  "id": "Metadata/Items/MapFragments/ToadAllflamePack",
+  "icon": "currency/allflametoad.png"
+ },
+ "Allflame Ember of the Cloister": {
+  "id": "Metadata/Items/MapFragments/CloisterAllflamePack",
+  "icon": "currency/allflamecloister.png"
+ },
+ "Allflame Ember of the Multitude": {
+  "id": "Metadata/Items/MapFragments/AtlasAllflamePack",
+  "icon": "currency/allflameatlas.png"
+ },
+ "Allflame Ember of the Divine": {
+  "id": "Metadata/Items/MapFragments/PantheonAllflamePack",
+  "icon": "currency/allflamepantheon.png"
+ },
+ "Coin of Restoration": {
+  "id": "Metadata/Items/Currency/CurrencyWishConvertUnique",
+  "icon": "currency/wishcurrencyitem.png"
+ },
+ "Coin of Desecration": {
+  "id": "Metadata/Items/Currency/CurrencyWishConvertUniqueCorrupt",
+  "icon": "currency/corruptedwishcurrencyitem.png"
+ },
+ "Soul Core of Intellect": {
+  "id": "Metadata/Items/Currency/CurrencyWishSupportGemBlue",
+  "icon": "currency/soulcoregenericintelligence.png"
+ },
+ "Soul Core of Might": {
+  "id": "Metadata/Items/Currency/CurrencyWishSupportGemRed",
+  "icon": "currency/soulcoregenericstrength.png"
+ },
+ "Soul Core of Finesse": {
+  "id": "Metadata/Items/Currency/CurrencyWishSupportGemGreen",
+  "icon": "currency/soulcoregenericdexterity.png"
+ },
+ "Soul Core of Instability": {
+  "id": "Metadata/Items/Currency/CurrencyWishSupportGem",
+  "icon": "currency/soulcoregeneric.png"
+ },
+ "Djinn-Touched Vaal Orb": {
+  "id": "Metadata/Items/Currency/CurrencyMoreCorrupt",
+  "icon": "currency/supervaal.png"
+ },
+ "Fading Reflecting Mist": {
+  "id": "Metadata/Items/Currency/ReflectiveMistWeak",
+  "icon": "currency/reflectivemist.png"
+ },
+ "Gemcutters Lens": {
+  "id": "Metadata/Items/Currency/CurrencyRerollGem",
+  "icon": "currency/gemcutterslense.png"
+ },
+ "Templar Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeGeneric",
+  "icon": "currency/atlasmissiongeneric.png"
+ },
+ "Fruiting Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeHarvest",
+  "icon": "currency/atlasmissionharvest.png"
+ },
+ "Lightless Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeAbyss",
+  "icon": "currency/atlasmissionabyss.png"
+ },
+ "Grasping Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeBreach",
+  "icon": "currency/atlasmissionbreach.png"
+ },
+ "Nameless Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeRitual",
+  "icon": "currency/atlasmissionritual.png"
+ },
+ "Fungal Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeBlight",
+  "icon": "currency/atlasmissionblight.png"
+ },
+ "Chaotic Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeUltimatum",
+  "icon": "currency/atlasmissionultimatum.png"
+ },
+ "Deceptive Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeDelirium",
+  "icon": "currency/atlasmissiondelirium.png"
+ },
+ "Timeless Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeLegion",
+  "icon": "currency/atlasmissionlegion.png"
+ },
+ "Runic Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeExpedition",
+  "icon": "currency/atlasmissionexpedition.png"
+ },
+ "Prospecting Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeSettlers",
+  "icon": "currency/atlasmissionsettlers.png"
+ },
+ "Immortal Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeBetrayal",
+  "icon": "currency/atlasmissionbetrayal.png"
+ },
+ "Feral Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeBestiary",
+  "icon": "currency/atlasmissionbestiary.png"
+ },
+ "Royal Astrolabe": {
+  "id": "Metadata/Items/Currency/AstrolabeIncursion",
+  "icon": "currency/atlasmissionincursion.png"
+ },
+ "Cryptic Astrolabe": {
+  "id": "Metadata/Items/Currency/StackedAstrolabe",
+  "icon": "currency/atlasmissionmystery.png"
+ },
+ "Karui Enshrouding Crystal": {
+  "id": "Metadata/Items/Currency/LegionCocoonGloves",
+  "icon": "currency/karuienshroudingcrystal.png"
+ },
+ "Imperial Enshrouding Crystal": {
+  "id": "Metadata/Items/Currency/LegionCocoonBoots",
+  "icon": "currency/imperialenshroudingcrystal.png"
+ },
+ "Vaal Enshrouding Crystal": {
+  "id": "Metadata/Items/Currency/LegionCocoonHelmet",
+  "icon": "currency/vaalenshroudingcrystal.png"
+ },
+ "Templar Enshrouding Crystal": {
+  "id": "Metadata/Items/Currency/LegionCocoonShield",
+  "icon": "currency/templarenshroudingcrystal.png"
+ },
+ "Maraketh Enshrouding Crystal": {
+  "id": "Metadata/Items/Currency/LegionCocoonBodyArmour",
+  "icon": "currency/marakethenshroudingcrystal.png"
+ },
+ "Afarud Enshrouding Crystal": {
+  "id": "Metadata/Items/Currency/LegionCocoonQuiver",
+  "icon": "currency/afarudenshroudingcrystal.png"
+ },
+ "Merrick's Ducat": {
+  "id": "Metadata/Items/Deepwater/DeepwaterAbyssCurrency",
+  "icon": "currency/ducatabyssal.png"
+ },
+ "Cyaxan's Ducat": {
+  "id": "Metadata/Items/Deepwater/DeepwaterMercenaryCurrency",
+  "icon": "currency/ducattrarthan.png"
+ },
+ "[DNT] UNUSED": {
+  "id": "Metadata/Items/Deepwater/DeepwaterAtlasEncounterCurrency",
+  "icon": "currency/atlasmissiongeneric.png"
+ },
+ "Dead Man's Sulphur": {
+  "id": "Metadata/Items/Currency/CurrencyDeepwater",
+  "icon": "currency/deepwatercoral.png"
+ },
+ "Message in a Bottle": {
+  "id": "Metadata/Items/Deepwater/DeepwaterBottledItem",
+  "icon": "currency/messageinabottleitem.png"
+ },
+ "The Changeling's Ducat": {
+  "id": "Metadata/Items/Deepwater/DeepwaterBlankCurrency",
+  "icon": "currency/ducatmysterious.png"
+ },
+ "The Genteel's Ducat": {
+  "id": "Metadata/Items/Deepwater/DeepwaterAttributeSwap",
+  "icon": "currency/ducatattributeswap.png"
+ },
+ "Kishara's Ducat": {
+  "id": "Metadata/Items/Deepwater/DeepwaterItemSplit",
+  "icon": "currency/ducatsplitting.png"
+ },
+ "Telesia's Ducat": {
+  "id": "Metadata/Items/Deepwater/DeepwaterChartReroll",
+  "icon": "currency/ducatchartreroll.png"
+ },
+ "Rotmother's Ducat": {
+  "id": "Metadata/Items/Deepwater/DeepwaterSaboteur",
+  "icon": "currency/ducatsaboteur.png"
+ },
+ "Brinehook's Ducat": {
+  "id": "Metadata/Items/Deepwater/DeepwaterPantheon",
+  "icon": "currency/ducatpantheon.png"
+ },
+ "Katakohi's Ducat": {
+  "id": "Metadata/Items/Deepwater/DeepwaterTatttoo",
+  "icon": "currency/ducattattooification.png"
+ },
+ "Tzamoto's Ducat": {
+  "id": "Metadata/Items/Deepwater/DeepwaterGhostbuster",
+  "icon": "currency/ducatreducing.png"
+ },
+ "Ukatoa's Ducat": {
+  "id": "Metadata/Items/Deepwater/DeepwaterEldritch",
+  "icon": "currency/ducateldritch.png"
+ }
+}

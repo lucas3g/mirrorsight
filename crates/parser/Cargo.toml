@@ -1,0 +1,13 @@
+[package]
+name = "mirrorsight-parser"
+description = "Parser puro do texto de item copiado do Path of Exile."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+mirrorsight-domain.workspace = true
+serde.workspace = true
+
+[lints]
+workspace = true

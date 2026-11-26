@@ -1,0 +1,31 @@
+Item Class: Gloves
+Rarity: Rare
+Doom Grip
+Sorcerer Gloves
+--------
+Quality: +20% (augmented)
+Energy Shield: 112 (augmented)
+--------
+Requirements:
+Level: 70
+Int: 98
+--------
+Sockets: B-B-R G
+--------
+Item Level: 86
+--------
+{ Prefix Modifier "Fecund" (Tier: 2) — Life }
++78(70-79) to maximum Life (fractured)
+{ Suffix Modifier "of the Volcano" (Tier: 1) — Elemental, Fire, Resistance }
++45(42-45)% to Fire Resistance
+{ Suffix Modifier "of the Ice" (Tier: 2) — Elemental, Cold, Resistance }
++41(36-41)% to Cold Resistance
+{ Prefix Modifier "Gleaming" (Tier: 4) — Damage, Physical, Attack }
+Adds 12(9-15) to 21(18-24) Physical Damage to Attacks
+{ Suffix Modifier "of the Wind" (Tier: 3) — Attribute }
++38(33-42) to Dexterity
+{ Master Crafted Suffix Modifier "of Craft" (Rank: 3) — Chaos, Resistance }
++16(12-16)% to Chaos Resistance (crafted)
+--------
+Hunter Item
+Fractured Item

@@ -1,0 +1,84 @@
+/* Design tokens — conceito "Aurora" v1.0 (grafite violeta, acento menta, lavanda para o
+   preço sugerido, dourado só em preços). Superfícies sólidas: nada de transparência/fade. */
+:root {
+  --ms-bg: #09090f;
+  --ms-surface-0: #0f0f17;
+  --ms-surface-1: #14141e;
+  --ms-surface-2: #1b1b28;
+  --ms-surface-3: #242434;
+  /* Trilho do switch desligado, barras vazias. */
+  --ms-surface-4: #2e2e42;
+  --ms-border: #25253a;
+  --ms-border-strong: #36364e;
+
+  --ms-text: #f2f1f8;
+  --ms-text-2: #b0afc4;
+  /* Subiu de #80809a para passar 4.5:1 sobre surface-1. */
+  --ms-text-3: #8a8aa3;
+
+  --ms-accent: #4ff0c4;
+  --ms-accent-2: #9af8de;
+  --ms-accent-soft: #12332d;
+  --ms-accent-line: #1f5c4f;
+  --ms-on-accent: #03231b;
+
+  /* Preço sugerido (Compra / Justo / Venda). */
+  --ms-suggest: #a98cff;
+  --ms-suggest-soft: #241d3d;
+
+  --ms-price: #ffcf6e;
+  --ms-price-soft: #3a2d12;
+
+  --ms-success: #5ee08f;
+  --ms-warning: #ffb547;
+  --ms-danger: #ff5d73;
+  --ms-info: #6cb6ff;
+
+  /* Fundos sólidos dos estados (sem rgba). */
+  --ms-success-soft: #173a26;
+  --ms-warning-soft: #2a2112;
+  --ms-warning-line: #5d4718;
+  --ms-danger-soft: #2a1119;
+  --ms-danger-line: #5a2230;
+
+  /* Raridades do jogo, ajustadas para contraste sobre grafite. */
+  --ms-normal: #c8c8c8;
+  --ms-magic: #8f95ff;
+  --ms-rare: #ffee77;
+  --ms-unique: #d7803c;
+  --ms-gem: #2bc2b9;
+  --ms-currency: #cdbe93;
+  --ms-divination: #2ec4ff;
+  --ms-corrupted: #f0444b;
+  --ms-fractured: #c8b27a;
+  --ms-crafted: #b8b4ff;
+  --ms-enchant: #dcc4ff;
+  --ms-explicit: #a5abff;
+  --ms-implicit: #c2c9d6;
+  --ms-pseudo: #7fd8ff;
+
+  --ms-r-sm: 6px;
+  --ms-r-md: 9px;
+  --ms-r-lg: 14px;
+  /* Paleta de comandos e overlay. */
+  --ms-r-xl: 18px;
+
+  --ms-shadow: 0 28px 64px -16px #000, 0 8px 20px -8px #000;
+  --ms-shadow-pop: 0 40px 80px -20px #000;
+  --ms-focus: 0 0 0 2px var(--ms-bg), 0 0 0 4px var(--ms-accent-line);
+
+  --ms-t-fast: 120ms;
+  --ms-t-base: 220ms;
+  --ms-ease: cubic-bezier(0.2, 0.9, 0.25, 1);
+  --ms-spring: cubic-bezier(0.3, 1.35, 0.5, 1);
+  --ms-ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  --ms-font: 'Inter', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  --ms-mono: 'JetBrains Mono', 'Cascadia Code', 'Cascadia Mono', Consolas, monospace;
+
+  --ms-row-h: 40px;
+}
+
+:root.density-compact {
+  --ms-row-h: 32px;
+}

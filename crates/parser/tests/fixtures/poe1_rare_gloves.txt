@@ -1,0 +1,25 @@
+Item Class: Gloves
+Rarity: Rare
+Doom Grip
+Sorcerer Gloves
+--------
+Quality: +20% (augmented)
+Energy Shield: 112 (augmented)
+--------
+Requirements:
+Level: 70
+Int: 98
+--------
+Sockets: B-B-R G
+--------
+Item Level: 86
+--------
++78 to maximum Life (fractured)
++45% to Fire Resistance
++41% to Cold Resistance
+Adds 12 to 21 Physical Damage to Attacks
++38 to Dexterity
++16% to Chaos Resistance (crafted)
+--------
+Hunter Item
+Fractured Item
