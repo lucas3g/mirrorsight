@@ -5,6 +5,7 @@
   import QuickPriceCard from '$lib/features/quick/QuickPriceCard.svelte';
   import ProblemState from '$lib/features/shared/ProblemState.svelte';
   import Icon from '$lib/ui/Icon.svelte';
+  import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
   import IdleView from './IdleView.svelte';
   import PriceCheckPanel from './PriceCheckPanel.svelte';
 
@@ -27,7 +28,7 @@
     <IdleView />
   {:else if variant === 'problem' && priceCheck.phase.kind === 'error'}
     <div class="panel problem enter-up">
-      <button class="ib close" onclick={() => priceCheck.close()} title="Fechar (Esc)"><Icon name="x" /></button>
+      <button class="ib close" onclick={() => priceCheck.close()} title={pm.closeEsc}><Icon name="x" /></button>
       <ProblemState phase={priceCheck.phase} />
     </div>
   {:else if variant === 'quick'}

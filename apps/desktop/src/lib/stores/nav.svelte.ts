@@ -1,22 +1,19 @@
+import { settingsMsgs } from '$lib/i18n/messages/settings';
+
 /** Navegação da janela principal: tela atual, seção das configurações e menu lateral. */
 export type Screen = 'price' | 'history' | 'settings';
 export type SettingsPane = 'general' | 'hotkeys' | 'price-check' | 'appearance' | 'about';
 
 const RAIL_KEY = 'mirrorsight.rail.collapsed';
 
-export const SCREEN_LABEL: Record<Screen, string> = {
-  price: 'Price Check',
-  history: 'Histórico',
-  settings: 'Configurações',
-};
+/** Nomes das telas/seções no idioma atual (`SCREEN_LABEL[id]` é reativo em templates e `$derived`). */
+function labelMap<K extends string>(pick: () => Record<K, string>): Record<K, string> {
+  return new Proxy({} as Record<K, string>, { get: (_t, k) => pick()[k as K] });
+}
 
-export const PANE_LABEL: Record<SettingsPane, string> = {
-  general: 'Geral',
-  hotkeys: 'Hotkeys',
-  'price-check': 'Price check',
-  appearance: 'Aparência',
-  about: 'Sobre',
-};
+export const SCREEN_LABEL = labelMap<Screen>(() => settingsMsgs.screens);
+
+export const PANE_LABEL = labelMap<SettingsPane>(() => settingsMsgs.panes);
 
 class NavStore {
   screen = $state<Screen>('price');

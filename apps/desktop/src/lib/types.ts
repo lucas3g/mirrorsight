@@ -148,7 +148,7 @@ export interface PriceCheckOutput {
   icon?: string | null;
   summary: PriceSummary | null;
   /** Motivo da ausência de listagens quando a trade falhou e o poe.ninja respondeu. */
-  trade_error: string | null;
+  trade_error: AppError | null;
 }
 
 export type HotkeyAction = 'price-check' | 'price-check-locked' | 'toggle-overlay' | 'open-settings';
@@ -166,7 +166,10 @@ export interface Settings {
   schema_version: number;
   game: GameVersion;
   league: string;
+  /** Idioma do cliente do jogo (como o PoE copia o item). */
   language: string;
+  /** Idioma da interface (schema v3); `null` = automático (idioma do sistema). */
+  ui_language: string | null;
   restore_clipboard: boolean;
   launch_on_startup: boolean;
   client_log_path: string | null;
@@ -238,6 +241,30 @@ export type AppError =
   | { code: 'nothing-copied' }
   | { code: 'item-not-recognized'; data: { detail: string } }
   | { code: 'rate-limited'; data: { retry_after_ms: number } }
-  | { code: 'network'; data: { message: string } }
-  | { code: 'invalid-settings'; data: { message: string } }
-  | { code: 'internal'; data: { message: string } };
+  | { code: 'network'; data: { message: string; reason?: ErrorReason } }
+  | { code: 'invalid-settings'; data: { message: string; reason?: ErrorReason } }
+  | { code: 'internal'; data: { message: string; reason?: ErrorReason } };
+
+/**
+ * Motivo estruturado de um erro (`Reason` em crates/domain/src/error.rs,
+ * `#[serde(tag = "key", content = "args")]`). A UI traduz pelo `key`; `message` vira fallback.
+ */
+export type ErrorReason =
+  | { key: 'invalid-hotkey'; args: { hotkey: string } }
+  | { key: 'reserved-hotkey'; args: { hotkey: string } }
+  | { key: 'duplicate-hotkey'; args: { hotkey: string } }
+  | { key: 'preset-name-empty' }
+  | { key: 'preset-name-too-long'; args: { max: number } }
+  | { key: 'preset-no-mods' }
+  | { key: 'ui-scale-range' }
+  | { key: 'mod-range-range' }
+  | { key: 'unknown-ui-language'; args: { lang: string } }
+  | { key: 'game-elevated' }
+  | { key: 'input-blocked' }
+  | { key: 'clipboard-unavailable' }
+  | { key: 'clipboard-read' }
+  | { key: 'clipboard-write' }
+  | { key: 'game-window-not-found' }
+  | { key: 'timeout' }
+  | { key: 'unexpected-response' }
+  | { key: 'trade-unavailable' };

@@ -1,4 +1,5 @@
 import { backend, describeError, toAppError } from '$lib/backend';
+import { historyMsgs } from '$lib/i18n/messages/history';
 import type { HistoryEntry } from '$lib/types';
 import { toasts } from './toasts.svelte';
 
@@ -40,7 +41,7 @@ class HistoryStore {
     try {
       await backend.clearHistory();
       this.entries = [];
-      toasts.push('success', 'Histórico limpo');
+      toasts.push('success', historyMsgs.cleared);
     } catch (err) {
       toasts.push('error', describeError(toAppError(err)));
     }

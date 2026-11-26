@@ -6,6 +6,11 @@
   import Segmented from '$lib/ui/Segmented.svelte';
   import Toggle from '$lib/ui/Toggle.svelte';
   import SettingRow from './SettingRow.svelte';
+  import { LOCALES, resolveLocale } from '$lib/i18n/core.svelte';
+  import { LANGUAGE_KEYWORDS, languageMsgs } from '$lib/i18n/messages/language';
+  import { SETTINGS_KEYWORDS as KW, settingsMsgs } from '$lib/i18n/messages/settings';
+
+  const m = $derived(settingsMsgs.general);
 
   let { current }: { current: Settings } = $props();
 
@@ -18,6 +23,10 @@
     { value: 'es', label: 'Español' },
   ];
 
+  /** Valor do `<select>` para `ui_language = null` (segue o sistema). */
+  const AUTO = 'auto';
+  const systemLabel = LOCALES.find((l) => l.code === resolveLocale(null))?.label ?? 'English';
+
   // Ligas e troca de jogo vêm do store compartilhado com a barra de título.
   $effect(() => {
     void leagues.load(current.game);
@@ -25,33 +34,40 @@
 </script>
 
 <div class="group">
-  <SettingRow label="Jogo" description="Define parser, base de mods e API usada" keywords="poe path of exile 2 versão">
+  <SettingRow label={languageMsgs.label} description={languageMsgs.description} keywords={LANGUAGE_KEYWORDS}>
+    <select class="field" style="width:220px" value={current.ui_language ?? AUTO}
+      onchange={(e) => settings.update({ ui_language: e.currentTarget.value === AUTO ? null : e.currentTarget.value })}>
+      <option value={AUTO}>{languageMsgs.automatic(systemLabel)}</option>
+      {#each LOCALES as loc (loc.code)}<option value={loc.code}>{loc.label}</option>{/each}
+    </select>
+  </SettingRow>
+  <SettingRow label={m.game.label} description={m.game.description} keywords={KW.game}>
     <Segmented
       size="lg"
-      ariaLabel="Jogo"
+      ariaLabel={m.game.label}
       options={[{ value: 'poe1', label: 'Path of Exile' }, { value: 'poe2', label: 'Path of Exile 2' }]}
       value={current.game}
       onchange={(game: GameVersion) => leagues.changeGame(game)}
     />
   </SettingRow>
   <SettingRow
-    label="Liga"
-    description={leagues.error ? 'Não foi possível carregar as ligas — usando a salva' : 'A primeira é a liga de desafio atual'}
-    keywords="league temporada"
+    label={m.league.label}
+    description={leagues.error ? m.leagueError : m.league.description}
+    keywords={KW.league}
   >
     <select class="field league" value={current.league} disabled={leagues.loading}
       onchange={(e) => leagues.changeLeague(e.currentTarget.value)}>
       {#each leagues.list as league (league)}<option value={league}>{league}</option>{/each}
     </select>
   </SettingRow>
-  <SettingRow label="Idioma do cliente" description="Idioma em que o jogo copia os itens" keywords="language lingua">
+  <SettingRow label={languageMsgs.gameLabel} description={languageMsgs.gameDescription} keywords={KW.gameLanguage}>
     <select class="field" style="width:200px" value={current.language} onchange={(e) => settings.update({ language: e.currentTarget.value })}>
       {#each LANGUAGES as lang (lang.value)}<option value={lang.value}>{lang.label}</option>{/each}
     </select>
   </SettingRow>
-  <SettingRow label="Moeda de exibição" description="Valores acima de 1 divine sempre aparecem em divine" keywords="chaos divine conversão">
+  <SettingRow label={m.currency.label} description={m.currency.description} keywords={KW.currency}>
     <Segmented
-      ariaLabel="Moeda de exibição"
+      ariaLabel={m.currency.label}
       options={[{ value: 'chaos', label: 'Chaos' }, { value: 'divine', label: 'Divine' }]}
       value={current.display_currency}
       onchange={(display_currency: DisplayCurrency) => settings.update({ display_currency })}
@@ -62,12 +78,12 @@
 </div>
 
 <div class="group">
-  <SettingRow label="Restaurar clipboard" description="Devolve o conteúdo anterior após copiar o item" keywords="clipboard área de transferência">
-    <Toggle label="Restaurar clipboard" checked={current.restore_clipboard}
+  <SettingRow label={m.restoreClipboard.label} description={m.restoreClipboard.description} keywords={KW.restoreClipboard}>
+    <Toggle label={m.restoreClipboard.label} checked={current.restore_clipboard}
       onchange={(restore_clipboard) => settings.update({ restore_clipboard })} />
   </SettingRow>
-  <SettingRow label="Iniciar com o Windows" description="Fica na bandeja do sistema" keywords="startup inicialização bandeja">
-    <Toggle label="Iniciar com o Windows" checked={current.launch_on_startup}
+  <SettingRow label={m.startup.label} description={m.startup.description} keywords={KW.startup}>
+    <Toggle label={m.startup.label} checked={current.launch_on_startup}
       onchange={(launch_on_startup) => settings.update({ launch_on_startup })} />
   </SettingRow>
 </div>

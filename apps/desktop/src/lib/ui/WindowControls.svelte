@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { backend } from '$lib/backend';
+  import { shellMsgs } from '$lib/i18n/messages/shell';
   import Icon from './Icon.svelte';
 
   /** Botões de janela da barra de título própria (a moldura nativa do Windows foi removida). */
   let maximized = $state(false);
+  const m = $derived(shellMsgs.window);
 
   async function refresh() {
     maximized = await backend.isWindowMaximized();
@@ -19,18 +21,18 @@
 
 {#if backend.hasWindowControls}
   <div class="controls">
-    <button type="button" title="Minimizar" aria-label="Minimizar" onclick={() => backend.minimizeWindow()}>
+    <button type="button" title={m.minimize} aria-label={m.minimize} onclick={() => backend.minimizeWindow()}>
       <Icon name="win-minimize" size={16} />
     </button>
     <button
       type="button"
-      title={maximized ? 'Restaurar' : 'Maximizar'}
-      aria-label={maximized ? 'Restaurar' : 'Maximizar'}
+      title={maximized ? m.restore : m.maximize}
+      aria-label={maximized ? m.restore : m.maximize}
       onclick={() => backend.toggleMaximizeWindow()}
     >
       <Icon name={maximized ? 'win-restore' : 'win-maximize'} size={16} />
     </button>
-    <button type="button" class="close" title="Fechar (continua na bandeja)" aria-label="Fechar" onclick={() => backend.closeWindow()}>
+    <button type="button" class="close" title={m.closeTitle} aria-label={m.close} onclick={() => backend.closeWindow()}>
       <Icon name="win-close" size={16} />
     </button>
   </div>

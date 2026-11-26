@@ -4,6 +4,7 @@
  * aqui só se escolhe a moeda de exibição e se monta a nota `~b/o`.
  */
 import { currencyName } from '$lib/currency';
+import { priceCheckMsgs } from '$lib/i18n/messages/priceCheck';
 import type { IndexedPrice, PriceCheckOutput, PriceSummary, SuggestedLevel } from '$lib/types';
 
 export interface DisplayAmount {
@@ -60,24 +61,18 @@ export interface LevelMeta {
   sentence: (value: string) => string;
 }
 
+const LEVEL_TAG: Record<SuggestedLevel, string> = { buy: 'p25', fair: 'p50', sell: 'p75' };
+
+/** Textos no idioma atual (getters: reativo em templates/`$derived`). */
 export const LEVEL_META: Record<SuggestedLevel, LevelMeta> = {
-  buy: {
-    name: 'Compra',
-    tag: 'p25',
-    hint: 'Pague até isso',
-    sentence: (v) => `25% dos anúncios custam até ${v} — bom teto para comprar.`,
+  get buy() {
+    return { ...priceCheckMsgs.levels.buy, tag: LEVEL_TAG.buy };
   },
-  fair: {
-    name: 'Justo',
-    tag: 'p50',
-    hint: 'Mediana do mercado',
-    sentence: (v) => `Metade dos anúncios custa até ${v} — vende em algumas horas.`,
+  get fair() {
+    return { ...priceCheckMsgs.levels.fair, tag: LEVEL_TAG.fair };
   },
-  sell: {
-    name: 'Venda',
-    tag: 'p75',
-    hint: 'Liste e espere',
-    sentence: (v) => `75% dos anúncios custam até ${v} — vende mais devagar.`,
+  get sell() {
+    return { ...priceCheckMsgs.levels.sell, tag: LEVEL_TAG.sell };
   },
 };
 

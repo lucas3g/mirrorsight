@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { GameVersion, HistoryEntry } from '$lib/types';
   import { RARITY_COLOR, normalize, relativeWhen } from '$lib/format';
+  import { historyMsgs as m } from '$lib/i18n/messages/history';
   import { HISTORY_LIMIT, history } from '$lib/stores/history.svelte';
   import { nav } from '$lib/stores/nav.svelte';
   import { priceCheck } from '$lib/stores/priceCheck.svelte';
@@ -58,17 +59,17 @@
 <div class="hist">
   <header class="top">
     <div>
-      <h1>Histórico de price checks</h1>
-      <p>Os últimos {HISTORY_LIMIT} price checks, salvos só neste computador. Reabra para buscar de novo com os mesmos filtros.</p>
+      <h1>{m.title}</h1>
+      <p>{m.intro(HISTORY_LIMIT)}</p>
     </div>
     <div class="controls">
       <label class="filter">
         <Icon name="search" size={14} />
-        <input placeholder="Filtrar por nome…" aria-label="Filtrar por nome" bind:value={query} />
+        <input placeholder={m.filterPlaceholder} aria-label={m.filterAria} bind:value={query} />
       </label>
       <Segmented
-        ariaLabel="Jogo"
-        options={[{ value: 'all', label: 'Todos' }, { value: 'poe1', label: 'PoE 1' }, { value: 'poe2', label: 'PoE 2' }]}
+        ariaLabel={m.game}
+        options={[{ value: 'all', label: m.all }, { value: 'poe1', label: 'PoE 1' }, { value: 'poe2', label: 'PoE 2' }]}
         bind:value={game}
       />
       <button
@@ -77,19 +78,19 @@
         disabled={history.entries.length === 0}
         onclick={() => (nav.confirmClearHistory = !nav.confirmClearHistory)}
       >
-        <Icon name="trash" size={14} />Limpar histórico
+        <Icon name="trash" size={14} />{m.clearHistory}
       </button>
     </div>
   </header>
 
   {#if nav.confirmClearHistory && history.entries.length > 0}
-    <Popover anchor={clearBtn} align="end" width={280} label="Confirmar limpeza" onclose={() => (nav.confirmClearHistory = false)}>
+    <Popover anchor={clearBtn} align="end" width={280} label={m.confirmLabel} onclose={() => (nav.confirmClearHistory = false)}>
       <div class="confirm">
-        <b>Apagar os {history.entries.length} price checks?</b>
-        <p>Não dá para desfazer. Presets e configurações não são afetados.</p>
+        <b>{m.confirmTitle(history.entries.length)}</b>
+        <p>{m.confirmBody}</p>
         <div class="btns">
-          <button class="btn btn-ghost btn-sm" onclick={() => (nav.confirmClearHistory = false)}>Cancelar</button>
-          <button class="btn btn-danger btn-sm" onclick={confirmClear}>Limpar</button>
+          <button class="btn btn-ghost btn-sm" onclick={() => (nav.confirmClearHistory = false)}>{m.cancel}</button>
+          <button class="btn btn-danger btn-sm" onclick={confirmClear}>{m.clear}</button>
         </div>
       </div>
     </Popover>
@@ -99,16 +100,16 @@
     {#if history.entries.length === 0}
       <div class="empty">
         <div class="ill"><Icon name="clock" size={26} /></div>
-        <b>Nenhum price check ainda</b>
-        <span>Os itens que você precificar aparecem aqui.</span>
+        <b>{m.emptyTitle}</b>
+        <span>{m.emptyBody}</span>
       </div>
     {:else}
       <div class="scroll wrap">
         <table>
           <thead>
             <tr>
-              <th>Item</th><th>Jogo</th><th>Liga</th><th class="r">Compra</th><th class="r">Justo</th><th class="r">Venda</th>
-              <th class="r">Anúncios</th><th>Quando</th><th></th>
+              <th>{m.cols.item}</th><th>{m.cols.game}</th><th>{m.cols.league}</th><th class="r">{m.cols.buy}</th><th class="r">{m.cols.fair}</th><th class="r">{m.cols.sell}</th>
+              <th class="r">{m.cols.listings}</th><th>{m.cols.when}</th><th></th>
             </tr>
           </thead>
           <tbody>
@@ -139,24 +140,24 @@
                   <button
                     class="btn btn-sm"
                     disabled={otherGame}
-                    title={otherGame ? `Troque para PoE ${entry.game === 'poe2' ? '2' : '1'} para reabrir` : 'Refazer o price check com os mesmos filtros'}
+                    title={otherGame ? m.switchToReopen(entry.game === 'poe2' ? '2' : '1') : m.reopenTitle}
                     onclick={() => reopen(entry)}
                   >
-                    Reabrir
+                    {m.reopen}
                   </button>
-                  <button class="ib sm del" title="Remover do histórico" aria-label="Remover do histórico" onclick={() => history.remove(entry.id)}>
+                  <button class="ib sm del" title={m.remove} aria-label={m.remove} onclick={() => history.remove(entry.id)}>
                     <Icon name="x" size={14} />
                   </button>
                 </td>
               </tr>
             {:else}
-              <tr><td colspan="9" class="none-row">Nada encontrado para esse filtro.</td></tr>
+              <tr><td colspan="9" class="none-row">{m.noMatch}</td></tr>
             {/each}
           </tbody>
         </table>
       </div>
       <footer class="foot">
-        <b>{history.entries.length} de {HISTORY_LIMIT}</b> · os mais antigos saem quando chega a {HISTORY_LIMIT}
+        <b>{m.count(history.entries.length, HISTORY_LIMIT)}</b> · {m.rotation(HISTORY_LIMIT)}
       </footer>
     {/if}
   </section>

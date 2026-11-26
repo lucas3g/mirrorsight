@@ -2,17 +2,17 @@
   import { APP_VERSION } from '$lib/version';
   import { backend } from '$lib/backend';
   import Logo from '$lib/ui/Logo.svelte';
+  import { settingsMsgs } from '$lib/i18n/messages/settings';
+
+  const m = $derived(settingsMsgs.about);
 </script>
 
 <div class="about">
   <Logo size={64} />
   <h4>Mirrorsight</h4>
-  <p>Versão {APP_VERSION} · Rust + Tauri 2 + Svelte 5</p>
-  {#if backend.kind === 'demo'}<span class="chip">Modo demonstração (fora do Tauri)</span>{/if}
-  <p class="fine">
-    Projeto independente, não afiliado à Grinding Gear Games. Ícones de itens © Grinding Gear Games,
-    extraídos da instalação local do jogo.
-  </p>
+  <p>{m.version(APP_VERSION)}</p>
+  {#if backend.kind === 'demo'}<span class="chip">{m.demo}</span>{/if}
+  <p class="fine">{m.credits}</p>
 </div>
 
 <style>

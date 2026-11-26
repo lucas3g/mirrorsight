@@ -1,7 +1,8 @@
 <script lang="ts">
   import { backend } from '$lib/backend';
-  import type { Item, Rarity } from '$lib/types';
+  import type { Item } from '$lib/types';
   import { INFLUENCE_LABEL, RARITY_COLOR, maxLinks } from '$lib/format';
+  import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
   import { priceCheck } from '$lib/stores/priceCheck.svelte';
   import { toasts } from '$lib/stores/toasts.svelte';
   import Icon from '$lib/ui/Icon.svelte';
@@ -15,28 +16,17 @@
     icon = null,
   }: { item: Item | null; webUrl?: string | null; icon?: string | null } = $props();
 
-  const RARITY_NAME: Record<Rarity, string> = {
-    normal: 'Normal',
-    magic: 'Mágico',
-    rare: 'Raro',
-    unique: 'Único',
-    gem: 'Gema',
-    currency: 'Currency',
-    divinationcard: 'Divination Card',
-    other: 'Item',
-  };
-
   const links = $derived(item?.sockets ? maxLinks(item.sockets) : 0);
   const hasTiers = $derived(item?.modifiers.some((m) => m.tier !== null) ?? false);
   const fractured = $derived(item?.modifiers.some((m) => m.kind === 'fractured') ?? false);
 
   function togglePin() {
     priceCheck.pinned = !priceCheck.pinned;
-    toasts.push('info', priceCheck.pinned ? 'Painel fixado — não fecha ao voltar ao jogo' : 'Painel desafixado');
+    toasts.push('info', priceCheck.pinned ? pm.pinnedToast : pm.unpinnedToast);
   }
 </script>
 
-<section class="card hero rarity" style:--rar={item ? RARITY_COLOR[item.rarity] : 'var(--ms-border-strong)'} aria-label="Item">
+<section class="card hero rarity" style:--rar={item ? RARITY_COLOR[item.rarity] : 'var(--ms-border-strong)'} aria-label={pm.itemAria}>
   <div class="top">
     <div class="art">
       {#if item}<ItemArt {item} {icon} size="lg" />{:else}<Icon name="item" size={28} />{/if}
@@ -44,18 +34,18 @@
 
     {#if item}
       <div class="ident">
-        <span class="label rar">{RARITY_NAME[item.rarity]} · {item.item_class}</span>
+        <span class="label rar">{pm.rarity[item.rarity]} · {item.item_class}</span>
         <h2>{item.name ?? item.base_type}</h2>
         {#if item.name}<p class="base">{item.base_type}</p>{/if}
         <div class="props">
           {#if item.item_level}<span class="prop">iLvl <b>{item.item_level}</b></span>{/if}
-          {#if item.quality}<span class="prop">Qualidade <b>+{item.quality}%</b></span>{/if}
+          {#if item.quality}<span class="prop">{pm.quality} <b>+{item.quality}%</b></span>{/if}
           {#if item.sockets}<Sockets sockets={item.sockets} />{#if links >= 2}<span class="prop"><b>{links}L</b></span>{/if}{/if}
           {#each item.influences as influence (influence)}<span class="prop inf">{INFLUENCE_LABEL[influence]}</span>{/each}
           {#if fractured}<span class="prop frac">Fractured</span>{/if}
-          {#if item.corrupted}<span class="prop bad">Corrompido</span>{/if}
-          {#if !item.identified}<span class="prop">Não identificado</span>{/if}
-          {#if hasTiers}<span class="prop" title="Item copiado no modo avançado">Tiers <b>Ctrl+Alt+C</b></span>{/if}
+          {#if item.corrupted}<span class="prop bad">{pm.corrupted}</span>{/if}
+          {#if !item.identified}<span class="prop">{pm.unidentified}</span>{/if}
+          {#if hasTiers}<span class="prop" title={pm.advancedCopy}>Tiers <b>Ctrl+Alt+C</b></span>{/if}
         </div>
       </div>
     {:else}
@@ -68,13 +58,13 @@
     {/if}
 
     <div class="actions">
-      <button class="ib" class:on={priceCheck.pinned} onclick={togglePin} title="Fixar painel" aria-pressed={priceCheck.pinned}>
+      <button class="ib" class:on={priceCheck.pinned} onclick={togglePin} title={pm.pinPanel} aria-pressed={priceCheck.pinned}>
         <Icon name="pin" />
       </button>
       {#if webUrl}
-        <button class="ib" onclick={() => backend.openExternal(webUrl)} title="Abrir no site de trade"><Icon name="ext" /></button>
+        <button class="ib" onclick={() => backend.openExternal(webUrl)} title={pm.openTrade}><Icon name="ext" /></button>
       {/if}
-      <button class="ib" onclick={() => priceCheck.close()} title="Fechar (Esc)"><Icon name="x" /></button>
+      <button class="ib" onclick={() => priceCheck.close()} title={pm.closeEsc}><Icon name="x" /></button>
     </div>
   </div>
 </section>

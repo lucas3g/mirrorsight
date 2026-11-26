@@ -23,7 +23,7 @@ pub struct PriceCheckOutput {
     /// Estatística das listagens em chaos.
     pub summary: Option<PriceSummary>,
     /// Motivo da ausência de listagens quando a trade falhou e o índice respondeu.
-    pub trade_error: Option<String>,
+    pub trade_error: Option<AppError>,
     /// Imagem do item: do índice, de uma listagem da mesma base ou a arte genérica da base.
     pub icon: Option<String>,
 }
@@ -100,7 +100,7 @@ impl PriceCheckItem {
             Err(err @ PortError::RateLimited { .. }) => return Err(err.into()),
             Err(err) if indexed.is_some() => {
                 tracing::warn!(%err, "trade falhou; usando só o poe.ninja");
-                (None, Some(err.to_string()))
+                (None, Some(AppError::from(err)))
             }
             Err(err) => return Err(err.into()),
         };
@@ -229,7 +229,10 @@ mod tests {
         assert!(out.trade.is_none());
         assert!(out.summary.is_none());
         assert_eq!(out.indexed.map(|i| i.chaos_value), Some(12.0));
-        assert_eq!(out.trade_error.as_deref(), Some("trade API: Unknown item"));
+        assert!(matches!(
+            out.trade_error,
+            Some(AppError::Internal { ref message, reason: None }) if message == "trade API: Unknown item"
+        ));
     }
 
     #[tokio::test]

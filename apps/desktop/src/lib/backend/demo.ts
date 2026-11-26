@@ -1,6 +1,7 @@
 import type {
   AppError,
   CatalogStat,
+  ErrorReason,
   GameVersion,
   HistoryEntry,
   HotkeyBinding,
@@ -9,7 +10,7 @@ import type {
   SearchFilters,
   Settings,
 } from '$lib/types';
-import type { Backend, PeekSide, PriceCheckRequest, WindowRole } from './port';
+import type { Backend, PeekSide, PriceCheckRequest, TrayLabels, WindowRole } from './port';
 import {
   DEMO_FEW,
   DEMO_GLOVES,
@@ -30,10 +31,11 @@ const HISTORY_LIMIT = 50;
 const PRESET_NAME_MAX = 40;
 
 const DEFAULT_SETTINGS: Settings = {
-  schema_version: 2,
+  schema_version: 3,
   game: 'poe1',
   league: 'Standard',
   language: 'en',
+  ui_language: null,
   restore_clipboard: true,
   launch_on_startup: false,
   client_log_path: null,
@@ -60,6 +62,9 @@ const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const fail = (err: AppError): never => {
   throw err;
 };
+
+/** Mesmo formato do Rust: a UI traduz pelo `reason`. */
+const invalid = (reason: ErrorReason): AppError => ({ code: 'invalid-settings', data: { message: reason.key, reason } });
 
 function readJson<T>(key: string, fallback: T): T {
   try {
@@ -101,8 +106,8 @@ export class DemoBackend implements Backend {
     const seen = new Set<string>();
     for (const { hotkey } of bindings) {
       const key = hotkey.toLowerCase();
-      if (RESERVED.includes(key)) fail({ code: 'invalid-settings', data: { message: `a tecla ${hotkey} é reservada pelo jogo` } });
-      if (seen.has(key)) fail({ code: 'invalid-settings', data: { message: `a tecla ${hotkey} já está atribuída a outra ação` } });
+      if (RESERVED.includes(key)) fail(invalid({ key: 'reserved-hotkey', args: { hotkey } }));
+      if (seen.has(key)) fail(invalid({ key: 'duplicate-hotkey', args: { hotkey } }));
       seen.add(key);
     }
   }
@@ -135,6 +140,10 @@ export class DemoBackend implements Backend {
 
   async openExternal(url: string): Promise<void> {
     window.open(url, '_blank', 'noopener');
+  }
+
+  async setTrayLabels(_labels: TrayLabels): Promise<void> {
+    // Sem bandeja no navegador.
   }
 
   async setUiScale(_scale: number): Promise<void> {
@@ -177,11 +186,11 @@ export class DemoBackend implements Backend {
   /** Mesmas regras de `ModPreset::validated` no domínio Rust. */
   async upsertPreset(preset: ModPreset): Promise<ModPreset[]> {
     const name = preset.name.trim();
-    if (!name) fail({ code: 'invalid-settings', data: { message: 'dê um nome ao preset' } });
+    if (!name) fail(invalid({ key: 'preset-name-empty' }));
     if ([...name].length > PRESET_NAME_MAX) {
-      fail({ code: 'invalid-settings', data: { message: `o nome do preset pode ter até ${PRESET_NAME_MAX} caracteres` } });
+      fail(invalid({ key: 'preset-name-too-long', args: { max: PRESET_NAME_MAX } }));
     }
-    if (preset.mods.length === 0) fail({ code: 'invalid-settings', data: { message: 'ligue ao menos um mod para salvar o preset' } });
+    if (preset.mods.length === 0) fail(invalid({ key: 'preset-no-mods' }));
 
     const book = this.presetBook();
     const clean = { ...preset, name };

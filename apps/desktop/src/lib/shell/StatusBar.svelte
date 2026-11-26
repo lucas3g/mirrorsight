@@ -1,6 +1,7 @@
 <script lang="ts">
   import { APP_VERSION } from '$lib/version';
   import { formatAmount } from '$lib/format';
+  import { shellMsgs } from '$lib/i18n/messages/shell';
   import { priceCheck } from '$lib/stores/priceCheck.svelte';
   import { settings } from '$lib/stores/settings.svelte';
 
@@ -14,6 +15,7 @@
     if (rate) lastDivine = rate;
   });
 
+  const m = $derived(shellMsgs.status);
   const phase = $derived(priceCheck.phase);
 
   $effect(() => {
@@ -24,11 +26,11 @@
 
   const api = $derived.by(() => {
     if (phase.kind === 'rate-limited') {
-      return { tone: 'warn', text: `Rate limit · ${Math.max(0, Math.ceil((phase.until - now) / 1000))}s` };
+      return { tone: 'warn', text: m.apiRateLimit(Math.max(0, Math.ceil((phase.until - now) / 1000))) };
     }
-    if (phase.kind === 'error' && phase.error.code === 'network') return { tone: 'bad', text: 'Trade API com erro' };
-    if (phase.kind === 'loading') return { tone: 'ok', text: 'Trade API · buscando…' };
-    return { tone: 'ok', text: 'Trade API ok' };
+    if (phase.kind === 'error' && phase.error.code === 'network') return { tone: 'bad', text: m.apiError };
+    if (phase.kind === 'loading') return { tone: 'ok', text: m.apiLoading };
+    return { tone: 'ok', text: m.apiOk };
   });
 
   const key = (action: string, fallback: string) =>
@@ -42,10 +44,10 @@
   {/if}
   <span class="grow"></span>
   <span class="it keys">
-    <kbd class="kbd">{key('price-check', 'Ctrl + D')}</kbd> price check
-    <kbd class="kbd">{key('price-check-locked', 'Ctrl + Alt + D')}</kbd> fixado
-    <kbd class="kbd">Ctrl K</kbd> comandos
-    <kbd class="kbd">Esc</kbd> fechar
+    <kbd class="kbd">{key('price-check', 'Ctrl + D')}</kbd> {m.keyPriceCheck}
+    <kbd class="kbd">{key('price-check-locked', 'Ctrl + Alt + D')}</kbd> {m.keyLocked}
+    <kbd class="kbd">Ctrl K</kbd> {m.keyCommands}
+    <kbd class="kbd">Esc</kbd> {m.keyClose}
   </span>
   <span class="ver mono">v{APP_VERSION}</span>
 </footer>

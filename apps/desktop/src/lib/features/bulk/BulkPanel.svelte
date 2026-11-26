@@ -1,6 +1,7 @@
 <script lang="ts">
   import { backend } from '$lib/backend';
   import { formatAmount, relativeAge } from '$lib/format';
+  import { bulkMsgs as m } from '$lib/i18n/messages/bulk';
   import { priceCheck } from '$lib/stores/priceCheck.svelte';
   import CurrencyIcon from '$lib/ui/CurrencyIcon.svelte';
   import Icon from '$lib/ui/Icon.svelte';
@@ -29,7 +30,7 @@
         </div>
       </div>
       <div class="rate">
-        <span class="label">Taxa de referência</span>
+        <span class="label">{m.refRate}</span>
         {#if indexed}
           <div class="big"><ChaosValue chaos={indexed.chaos_value} {divineRate} size={30} itemName={output.item.base_type} /></div>
           <div class="sub">
@@ -43,14 +44,14 @@
           <div class="big"><b class="mono none">—</b></div>
         {/if}
       </div>
-      <button class="ib close" onclick={() => priceCheck.close()} title="Fechar (Esc)"><Icon name="x" /></button>
+      <button class="ib close" onclick={() => priceCheck.close()} title={m.closeTitle}><Icon name="x" /></button>
     </header>
 
     <div class="col-head">
-      <span class="label">Ofertas {#if output.trade}<span class="cnt">{output.trade.total}</span>{/if}</span>
+      <span class="label">{m.offers} {#if output.trade}<span class="cnt">{output.trade.total}</span>{/if}</span>
       {#if output.trade?.web_url}
         <button class="btn-text" onclick={() => output.trade?.web_url && backend.openExternal(output.trade.web_url)}>
-          Abrir no site <Icon name="ext" size={12} />
+          {m.openSite} <Icon name="ext" size={12} />
         </button>
       {/if}
     </div>
@@ -59,10 +60,10 @@
       {#if phase.kind === 'error' || phase.kind === 'rate-limited'}
         <ProblemState {phase} />
       {:else if listings.length === 0}
-        <StateMessage icon="empty" title="Nenhuma oferta encontrada" />
+        <StateMessage icon="empty" title={m.noOffers} />
       {:else}
         <table>
-          <thead><tr><th>Preço / un.</th><th>Estoque</th><th>Vendedor</th><th class="r">Idade</th></tr></thead>
+          <thead><tr><th>{m.cols.price}</th><th>{m.cols.stock}</th><th>{m.cols.seller}</th><th class="r">{m.cols.age}</th></tr></thead>
           <tbody>
             {#each listings as l, i (i)}
               <tr style:--i={i}>

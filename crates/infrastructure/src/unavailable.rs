@@ -19,7 +19,7 @@ impl TradeApiPort for UnavailableTradeApi {
         _item: &Item,
         _filters: &SearchFilters,
     ) -> PortResult<PriceCheckResult> {
-        Err(PortError::Other("trade API ainda não implementada (fase 4)".into()))
+        Err(PortError::Known(mirrorsight_domain::error::Reason::TradeUnavailable))
     }
 }
 

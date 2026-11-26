@@ -1,11 +1,31 @@
 /** Helpers de apresentação. Sem regra de negócio — só formatação para a UI. */
 import type { Influence, ModifierKind, Rarity, StatRoll } from '$lib/types';
+import { i18n } from '$lib/i18n/core.svelte';
+import { common } from '$lib/i18n/messages/common';
 
-const small = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 });
-const large = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 });
+const numberFormats = new Map<string, { small: Intl.NumberFormat; large: Intl.NumberFormat }>();
 
+function formatsFor(locale: string) {
+  let f = numberFormats.get(locale);
+  if (!f) {
+    f = {
+      small: new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }),
+      large: new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }),
+    };
+    numberFormats.set(locale, f);
+  }
+  return f;
+}
+
+/** Número no formato do idioma da interface (reativo ao idioma). */
 export function formatAmount(n: number): string {
-  return Math.abs(n) >= 1000 ? large.format(n) : small.format(n);
+  const f = formatsFor(i18n.locale);
+  return Math.abs(n) >= 1000 ? f.large.format(n) : f.small.format(n);
+}
+
+/** Mapa por tipo de mod que sempre lê do idioma atual. */
+function kindMap(pick: () => Record<ModifierKind, string>): Record<ModifierKind, string> {
+  return new Proxy({} as Record<ModifierKind, string>, { get: (_t, k) => pick()[k as ModifierKind] });
 }
 
 /** "2m", "3h", "1d" a partir de um ISO-8601. */
@@ -13,7 +33,7 @@ export function relativeAge(iso: string, now = Date.now()): string {
   const t = Date.parse(iso);
   if (Number.isNaN(t)) return '—';
   const minutes = Math.max(0, (now - t) / 60_000);
-  if (minutes < 1) return 'agora';
+  if (minutes < 1) return common.now;
   if (minutes < 60) return `${Math.floor(minutes)}m`;
   const hours = minutes / 60;
   if (hours < 24) return `${Math.floor(hours)}h`;
@@ -56,17 +76,7 @@ export const RARITY_COLOR: Record<Rarity, string> = {
   other: 'var(--ms-text)',
 };
 
-export const KIND_LABEL: Record<ModifierKind, string> = {
-  implicit: 'implicit',
-  explicit: 'explicit',
-  crafted: 'crafted',
-  fractured: 'fractured',
-  enchant: 'enchant',
-  rune: 'rune',
-  desecrated: 'desecrated',
-  pseudo: 'pseudo',
-  property: 'atributo',
-};
+export const KIND_LABEL = kindMap(() => common.kindShort);
 
 export const INFLUENCE_LABEL: Record<Influence, string> = {
   shaper: 'Shaper',
@@ -107,31 +117,11 @@ export function maxLinks(raw: string | null): number {
   return Math.max(0, ...parseSockets(raw).map((g) => g.colors.length));
 }
 
-/** Rótulos em português (singular), para badges. */
-export const KIND_NAME: Record<ModifierKind, string> = {
-  implicit: 'Implícito',
-  explicit: 'Explícito',
-  crafted: 'Craftado',
-  fractured: 'Fractured',
-  enchant: 'Enchant',
-  rune: 'Runa',
-  desecrated: 'Desecrated',
-  pseudo: 'Pseudo',
-  property: 'Atributo',
-};
+/** Rótulos no singular, para badges. */
+export const KIND_NAME = kindMap(() => common.kindName);
 
 /** Títulos dos grupos no editor de mods. */
-export const KIND_LABEL_PLURAL: Record<ModifierKind, string> = {
-  explicit: 'Explícitos',
-  fractured: 'Fractured',
-  implicit: 'Implícitos',
-  crafted: 'Craftados',
-  enchant: 'Enchants',
-  rune: 'Runas',
-  desecrated: 'Desecrated',
-  pseudo: 'Pseudo (totais)',
-  property: 'Atributos',
-};
+export const KIND_LABEL_PLURAL = kindMap(() => common.kindPlural);
 
 /** Ordem dos grupos no editor de mods. */
 export const KIND_ORDER: ModifierKind[] = ['property', 'explicit', 'fractured', 'implicit', 'crafted', 'enchant', 'rune', 'desecrated', 'pseudo'];
@@ -148,17 +138,17 @@ export const KIND_COLOR: Record<ModifierKind, string> = {
   property: 'var(--ms-text)',
 };
 
-/** "há 4 min", "há 3 h", "ontem", "23/11". */
+/** "há 4 min", "há 3 h", "ontem", "23/11" — no idioma da interface. */
 export function relativeWhen(ms: number, now = Date.now()): string {
   const minutes = Math.max(0, (now - ms) / 60_000);
-  if (minutes < 1) return 'agora';
-  if (minutes < 60) return `há ${Math.floor(minutes)} min`;
+  if (minutes < 1) return common.now;
+  if (minutes < 60) return common.minutesAgo(Math.floor(minutes));
   const then = new Date(ms);
   const today = new Date(now);
   const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
-  if (ms >= startOfToday) return `há ${Math.floor(minutes / 60)} h`;
-  if (ms >= startOfToday - 86_400_000) return 'ontem';
-  return `${String(then.getDate()).padStart(2, '0')}/${String(then.getMonth() + 1).padStart(2, '0')}`;
+  if (ms >= startOfToday) return common.hoursAgo(Math.floor(minutes / 60));
+  if (ms >= startOfToday - 86_400_000) return common.yesterday;
+  return then.toLocaleDateString(i18n.locale, { day: '2-digit', month: '2-digit' });
 }
 
 /** Minúsculas e sem acentos, para buscas ("historico" acha "Histórico"). */

@@ -10,6 +10,7 @@
   import Segmented from '$lib/ui/Segmented.svelte';
   import Toggle from '$lib/ui/Toggle.svelte';
   import SettingRow from './SettingRow.svelte';
+  import { SETTINGS_KEYWORDS as KW, settingsMsgs } from '$lib/i18n/messages/settings';
 
   let { current }: { current: Settings } = $props();
 
@@ -19,19 +20,25 @@
     range = current.mod_range_percent;
   });
 
-  const KINDS: { kind: ModifierKind; label: string }[] = [
+  const m = $derived(settingsMsgs.priceCheck);
+
+  // Tipos de mod são termos do jogo; só `property` é traduzido.
+  const KINDS: { kind: ModifierKind; label: string }[] = $derived([
     { kind: 'explicit', label: 'Explicit' },
     { kind: 'fractured', label: 'Fractured' },
     { kind: 'implicit', label: 'Implicit' },
     { kind: 'crafted', label: 'Crafted' },
     { kind: 'enchant', label: 'Enchant' },
-    { kind: 'property', label: 'Atributos (defesas/DPS)' },
-  ];
+    { kind: 'property', label: m.propertyKind },
+  ]);
 
-  const LEVELS = (['buy', 'fair', 'sell'] as const).map((value) => ({
-    value,
-    label: `${LEVEL_META[value].name} · ${LEVEL_META[value].tag}`,
-  }));
+  // `$derived`: os nomes dos níveis podem acompanhar o idioma.
+  const LEVELS = $derived(
+    (['buy', 'fair', 'sell'] as const).map((value) => ({
+      value,
+      label: `${LEVEL_META[value].name} · ${LEVEL_META[value].tag}`,
+    })),
+  );
 
   /** Contagem de presets dos dois jogos (o store só guarda o jogo atual). */
   let presetCount = $state<{ poe1: number; poe2: number } | null>(null);
@@ -58,17 +65,17 @@
   }
 </script>
 
-<div class="label sub">Busca</div>
+<div class="label sub">{m.searchSection}</div>
 <div class="group">
-  <SettingRow label="Range dos mods" description="Mínimo pré-preenchido = valor rolado − %" keywords="porcentagem filtro mínimo margem">
+  <SettingRow label={m.modRange.label} description={m.modRange.description} keywords={KW.modRange}>
     <input class="slider" type="range" min="0" max="50" style="--p:{(range / 50) * 100}%" bind:value={range}
       onchange={() => settings.update({ mod_range_percent: range })} />
     <span class="mono val">{range}%</span>
   </SettingRow>
-  <SettingRow label="Mostrar vendedores offline" description="Por padrão só online" keywords="offline afk">
-    <Toggle label="Mostrar vendedores offline" checked={current.show_offline} onchange={(show_offline) => settings.update({ show_offline })} />
+  <SettingRow label={m.showOffline.label} description={m.showOffline.description} keywords={KW.showOffline}>
+    <Toggle label={m.showOffline.label} checked={current.show_offline} onchange={(show_offline) => settings.update({ show_offline })} />
   </SettingRow>
-  <SettingRow label="Filtros marcados por padrão" description="Tipos de mod que já vêm selecionados" keywords="explicit fractured implicit crafted enchant" wrap>
+  <SettingRow label={m.defaultFilters.label} description={m.defaultFilters.description} keywords={KW.defaultFilters} wrap>
     {#each KINDS as k (k.kind)}
       <button class="chip" class:on={current.default_filter_kinds.includes(k.kind)} aria-pressed={current.default_filter_kinds.includes(k.kind)}
         onclick={() => toggleKind(k.kind)}>
@@ -78,12 +85,12 @@
   </SettingRow>
 </div>
 
-<div class="label sub">Preço sugerido <span class="new">NOVO</span></div>
+<div class="label sub">{m.suggestedSection} <span class="new">{m.newBadge}</span></div>
 <div class="group">
-  <SettingRow label="Nível padrão" description="Qual dos três níveis vem selecionado e vai para a nota ~b/o" keywords="compra justo venda percentil p25 p50 p75 mediana sugerido estratégia">
+  <SettingRow label={m.defaultLevel.label} description={m.defaultLevel.description} keywords={KW.defaultLevel}>
     <Segmented
       tone="suggest"
-      ariaLabel="Nível padrão do preço sugerido"
+      ariaLabel={m.defaultLevelAria}
       options={LEVELS}
       value={current.suggested_level}
       onchange={(suggested_level: SuggestedLevel) => settings.update({ suggested_level })}
@@ -91,37 +98,34 @@
   </SettingRow>
   <div class="info">
     <Icon name="info" size={15} />
-    <p>
-      Os níveis são percentis dos anúncios carregados, em chaos: Compra = p25, Justo = mediana, Venda = p75.
-      Com menos de 5 anúncios os três mostram “—”.
-    </p>
+    <p>{m.levelsInfo(LEVEL_META.buy.name, LEVEL_META.fair.name, LEVEL_META.sell.name)}</p>
   </div>
 </div>
 
-<div class="label sub">Dados locais</div>
+<div class="label sub">{m.localSection}</div>
 <div class="group">
-  <SettingRow label="Histórico" description="{history.entries.length} de {HISTORY_LIMIT} price checks salvos neste computador" keywords="histórico apagar limpar recentes">
-    <button class="btn btn-ghost btn-sm" onclick={() => nav.go('history')}>Ver histórico</button>
+  <SettingRow label={m.history.label} description={m.history.description(history.entries.length, HISTORY_LIMIT)} keywords={KW.history}>
+    <button class="btn btn-ghost btn-sm" onclick={() => nav.go('history')}>{m.viewHistory}</button>
     <button class="btn btn-ghost btn-sm danger" bind:this={clearBtn} disabled={history.entries.length === 0}
-      onclick={() => (confirming = !confirming)}>Limpar</button>
+      onclick={() => (confirming = !confirming)}>{m.clear}</button>
   </SettingRow>
   <SettingRow
-    label="Presets de mods"
-    description={presetCount ? `${presetCount.poe1} no PoE 1 · ${presetCount.poe2} no PoE 2` : 'Não foi possível contar os presets'}
-    keywords="preset salvos mods seleção"
+    label={m.presets.label}
+    description={presetCount ? m.presets.description(presetCount.poe1, presetCount.poe2) : m.presets.error}
+    keywords={KW.presets}
   >
-    <span class="note">Gerencie pelo menu Preset no Price Check</span>
+    <span class="note">{m.presetsNote}</span>
   </SettingRow>
 </div>
 
 {#if confirming}
-  <Popover anchor={clearBtn} align="end" width={280} label="Confirmar limpeza" onclose={() => (confirming = false)}>
+  <Popover anchor={clearBtn} align="end" width={280} label={m.confirmLabel} onclose={() => (confirming = false)}>
     <div class="confirm">
-      <b>Apagar os {history.entries.length} price checks?</b>
-      <p>Não dá para desfazer. Presets e configurações não são afetados.</p>
+      <b>{m.confirmTitle(history.entries.length)}</b>
+      <p>{m.confirmBody}</p>
       <div class="actions">
-        <button class="btn btn-ghost btn-sm" onclick={() => (confirming = false)}>Cancelar</button>
-        <button class="btn btn-danger btn-sm" onclick={clearHistory}>Limpar</button>
+        <button class="btn btn-ghost btn-sm" onclick={() => (confirming = false)}>{m.cancel}</button>
+        <button class="btn btn-danger btn-sm" onclick={clearHistory}>{m.clear}</button>
       </div>
     </div>
   </Popover>

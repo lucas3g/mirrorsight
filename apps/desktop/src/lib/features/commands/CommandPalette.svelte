@@ -1,5 +1,6 @@
 <script lang="ts">
   import { tick } from 'svelte';
+  import { commandsMsgs as m } from '$lib/i18n/messages/commands';
   import { commands, type Command } from '$lib/stores/commands.svelte';
   import Icon from '$lib/ui/Icon.svelte';
   import { portal } from '$lib/ui/portal';
@@ -57,14 +58,14 @@
 
 {#if commands.open}
   <div class="scrim" use:portal role="presentation" onpointerdown={(e) => e.target === e.currentTarget && commands.close()}>
-    <div class="palette" role="dialog" tabindex="-1" aria-modal="true" aria-label="Paleta de comandos" data-popover onkeydown={onKeydown}>
+    <div class="palette" role="dialog" tabindex="-1" aria-modal="true" aria-label={m.paletteAria} data-popover onkeydown={onKeydown}>
       <label class="field-row">
         <Icon name="command" size={17} />
         <input
           bind:this={input}
           bind:value={query}
-          placeholder="O que você quer fazer?"
-          aria-label="Buscar comando"
+          placeholder={m.placeholder}
+          aria-label={m.searchAria}
           role="combobox"
           aria-expanded="true"
           aria-controls="ms-command-list"
@@ -75,7 +76,7 @@
 
       <div class="list scroll" id="ms-command-list" role="listbox" bind:this={list}>
         {#if flat.length === 0}
-          <div class="empty">{query.trim() ? `Nada encontrado para “${query.trim()}”` : 'Nenhum comando disponível agora'}</div>
+          <div class="empty">{query.trim() ? m.notFound(query.trim()) : m.noneAvailable}</div>
         {:else}
           {#each groups as group (group.title)}
             <div class="label grp">{group.title}</div>
@@ -103,8 +104,8 @@
       </div>
 
       <div class="foot">
-        <span>↑ ↓ navegar · ↵ executar</span>
-        <span><kbd class="kbd">Ctrl</kbd> <kbd class="kbd">K</kbd> abrir/fechar</span>
+        <span>{m.hintNav}</span>
+        <span><kbd class="kbd">Ctrl</kbd> <kbd class="kbd">K</kbd> {m.hintToggle}</span>
       </div>
     </div>
   </div>

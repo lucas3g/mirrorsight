@@ -3,6 +3,8 @@
   import type { CatalogStat, GameVersion, ModifierKind } from '$lib/types';
   import { stats } from '$lib/stores/stats.svelte';
   import Icon from '$lib/ui/Icon.svelte';
+  import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
+  import { modsMsgs as mm } from '$lib/i18n/messages/mods';
 
   /** Busca no catálogo de stats do jogo para adicionar um mod ao filtro. */
   let {
@@ -29,10 +31,10 @@
   const chips = $derived(
     (
       [
-        { value: 'all', label: 'Todos' },
+        { value: 'all', label: mm.all },
         { value: 'pseudo', label: 'Pseudo' },
-        { value: 'explicit', label: 'Explícito' },
-        { value: 'implicit', label: 'Implícito' },
+        { value: 'explicit', label: KIND_NAME.explicit },
+        { value: 'implicit', label: KIND_NAME.implicit },
       ] as { value: KindFilter; label: string }[]
     ).filter((c) => c.value === 'all' || available.has(c.value)),
   );
@@ -72,9 +74,9 @@
   <div class="top">
     <label class="search">
       <Icon name="search" size={15} />
-      <input bind:this={input} bind:value={query} placeholder="Buscar mod…" aria-label="Buscar mod" />
+      <input bind:this={input} bind:value={query} placeholder={mm.searchPlaceholder} aria-label={mm.searchAria} />
     </label>
-    <button class="ib sm" title="Fechar (Esc)" aria-label="Fechar busca" onclick={onclose}><Icon name="x" size={14} /></button>
+    <button class="ib sm" title={pm.closeEsc} aria-label={mm.closeSearch} onclick={onclose}><Icon name="x" size={14} /></button>
   </div>
   <div class="chips">
     {#each chips as c (c.value)}
@@ -82,15 +84,15 @@
     {/each}
   </div>
 
-  <div class="results scroll" bind:this={list} role="listbox" aria-label="Mods encontrados">
+  <div class="results scroll" bind:this={list} role="listbox" aria-label={mm.resultsAria}>
     {#if stats.loading}
-      <div class="empty"><span class="spinner"></span>Carregando catálogo de mods…</div>
+      <div class="empty"><span class="spinner"></span>{mm.loadingCatalog}</div>
     {:else if stats.error}
-      <div class="empty">Não foi possível carregar o catálogo de mods.</div>
+      <div class="empty">{mm.catalogError}</div>
     {:else if !query.trim()}
-      <div class="empty">Digite parte do texto do mod, ex.: “life”, “resist”, “attack speed”.</div>
+      <div class="empty">{mm.typeHint}</div>
     {:else if flat.length === 0}
-      <div class="empty">Nenhum mod encontrado para “{query.trim()}”</div>
+      <div class="empty">{mm.noResults(query.trim())}</div>
     {:else}
       {#each groups as group (group.kind)}
         <div class="label grp">{KIND_NAME[group.kind]}</div>
@@ -115,7 +117,7 @@
       {/each}
     {/if}
   </div>
-  <div class="foot">↑ ↓ navegar · ↵ adicionar · Esc fechar</div>
+  <div class="foot">{mm.searchFoot}</div>
 </div>
 
 <style>

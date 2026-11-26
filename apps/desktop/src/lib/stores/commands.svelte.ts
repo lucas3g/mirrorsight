@@ -3,10 +3,12 @@ import { tick } from 'svelte';
 import { backend } from '$lib/backend';
 import type { IconName } from '$lib/ui/Icon.svelte';
 import { normalize } from '$lib/format';
+import { COMMAND_KEYWORDS, commandsMsgs as m } from '$lib/i18n/messages/commands';
+import { shellMsgs } from '$lib/i18n/messages/shell';
 import { buyoutNote, suggestedFor } from '$lib/pricing';
 import { history } from './history.svelte';
 import { leagues } from './leagues.svelte';
-import { nav } from './nav.svelte';
+import { SCREEN_LABEL, nav } from './nav.svelte';
 import { presets } from './presets.svelte';
 import { priceCheck } from './priceCheck.svelte';
 import { settings } from './settings.svelte';
@@ -17,6 +19,8 @@ export interface Command {
   icon: IconName;
   label: string;
   detail?: string;
+  /** Termos extras para a busca (`COMMAND_KEYWORDS`). */
+  keywords?: string;
   kbd?: string;
   run: () => void | Promise<void>;
 }
@@ -31,15 +35,15 @@ export async function copySuggestedNote(): Promise<void> {
   const summary = priceCheck.output?.summary;
   const chaos = suggestedFor(summary, priceCheck.level);
   if (chaos === null || !summary) {
-    toasts.push('warning', 'Poucos anúncios para sugerir preço');
+    toasts.push('warning', m.fewListings);
     return;
   }
   const note = buyoutNote(chaos, summary.divine_chaos, settings.current?.display_currency === 'divine');
   try {
     await navigator.clipboard.writeText(note);
-    toasts.push('success', `Nota copiada: ${note}`);
+    toasts.push('success', m.noteCopied(note));
   } catch {
-    toasts.push('error', 'Não foi possível copiar a nota');
+    toasts.push('error', m.noteCopyFailed);
   }
 }
 
@@ -49,9 +53,9 @@ export function applyPresetWithToast(id: string): void {
   if (!preset) return;
   const missing = priceCheck.applyPreset(preset);
   if (missing > 0) {
-    toasts.push('warning', missing === 1 ? '1 mod do preset não está neste item' : `${missing} mods do preset não estão neste item`);
+    toasts.push('warning', m.presetMissing(missing));
   } else {
-    toasts.push('info', `Preset “${preset.name}” aplicado — buscando…`);
+    toasts.push('info', m.presetApplied(preset.name));
   }
 }
 
@@ -89,14 +93,15 @@ class CommandsStore {
       const chaos = suggestedFor(summary, priceCheck.level);
       const note = chaos !== null && summary ? buyoutNote(chaos, summary.divine_chaos, settings.current?.display_currency === 'divine') : null;
       const item: Command[] = [
-        { id: 'search', icon: 'search', label: 'Refazer busca', run: () => priceCheck.search() },
+        { id: 'search', icon: 'search', label: m.searchAgain, keywords: COMMAND_KEYWORDS.search, run: () => priceCheck.search() },
       ];
-      if (note) item.push({ id: 'copy-note', icon: 'copy', label: 'Copiar preço sugerido', detail: note, run: copySuggestedNote });
+      if (note) item.push({ id: 'copy-note', icon: 'copy', label: m.copyNote, detail: note, keywords: COMMAND_KEYWORDS['copy-note'], run: copySuggestedNote });
       if (hasItem) {
         item.push({
           id: 'relax',
           icon: 'reset',
-          label: 'Relaxar filtros −10%',
+          label: m.relax,
+          keywords: COMMAND_KEYWORDS.relax,
           run: () => {
             priceCheck.relax(10);
             void priceCheck.search();
@@ -104,8 +109,8 @@ class CommandsStore {
         });
       }
       const url = output.trade?.web_url;
-      if (url) item.push({ id: 'trade', icon: 'ext', label: 'Abrir no site de trade', run: () => backend.openExternal(url) });
-      groups.push({ title: `Item atual · ${output.item.name ?? output.item.base_type}`, commands: item });
+      if (url) item.push({ id: 'trade', icon: 'ext', label: m.openTrade, keywords: COMMAND_KEYWORDS.trade, run: () => backend.openExternal(url) });
+      groups.push({ title: m.currentItem(output.item.name ?? output.item.base_type), commands: item });
     }
 
     if (hasItem && presets.list.length > 0) {
@@ -114,8 +119,9 @@ class CommandsStore {
         commands: presets.list.map((p) => ({
           id: `preset-${p.id}`,
           icon: 'layers',
-          label: `Aplicar preset “${p.name}”`,
-          detail: `${p.mods.length} ${p.mods.length === 1 ? 'mod' : 'mods'}`,
+          label: m.applyPreset(p.name),
+          detail: m.modCount(p.mods.length),
+          keywords: COMMAND_KEYWORDS.preset,
           run: () => applyPresetWithToast(p.id),
         })),
       });
@@ -123,42 +129,44 @@ class CommandsStore {
 
     if (role === 'main') {
       groups.push({
-        title: 'Ir para',
+        title: m.goTo,
         commands: [
-          { id: 'go-price', icon: 'tag', label: 'Price Check', run: () => nav.go('price') },
-          { id: 'go-history', icon: 'clock', label: 'Histórico', detail: `${history.entries.length} price checks`, run: () => nav.go('history') },
-          { id: 'go-settings', icon: 'gear', label: 'Configurações', run: () => nav.openSettings() },
+          { id: 'go-price', icon: 'tag', label: SCREEN_LABEL.price, keywords: COMMAND_KEYWORDS['go-price'], run: () => nav.go('price') },
+          { id: 'go-history', icon: 'clock', label: SCREEN_LABEL.history, detail: m.historyDetail(history.entries.length), keywords: COMMAND_KEYWORDS['go-history'], run: () => nav.go('history') },
+          { id: 'go-settings', icon: 'gear', label: SCREEN_LABEL.settings, keywords: COMMAND_KEYWORDS['go-settings'], run: () => nav.openSettings() },
         ],
       });
 
       const game = settings.current?.game ?? 'poe1';
       const other = game === 'poe1' ? 'poe2' : 'poe1';
       const system: Command[] = [
-        { id: 'game', icon: 'reset', label: `Trocar jogo para PoE ${other === 'poe2' ? '2' : '1'}`, run: () => leagues.changeGame(other) },
-        { id: 'league', icon: 'layers', label: 'Trocar liga…', detail: settings.current?.league, run: () => void tick().then(() => (nav.leagueMenuOpen = true)) },
+        { id: 'game', icon: 'reset', label: m.switchGame(other === 'poe2' ? '2' : '1'), keywords: COMMAND_KEYWORDS.game, run: () => leagues.changeGame(other) },
+        { id: 'league', icon: 'layers', label: m.switchLeague, keywords: COMMAND_KEYWORDS.league, detail: settings.current?.league, run: () => void tick().then(() => (nav.leagueMenuOpen = true)) },
       ];
       // Com o histórico vazio não há o que confirmar (o pedido ficaria pendente para depois).
       if (history.entries.length > 0) {
         system.push({
           id: 'clear-history',
           icon: 'trash',
-          label: 'Limpar histórico',
+          label: m.clearHistory,
+          keywords: COMMAND_KEYWORDS['clear-history'],
           run: () => {
             nav.go('history');
             nav.confirmClearHistory = true;
           },
         });
       }
-      groups.push({ title: 'Sistema', commands: system });
+      groups.push({ title: shellMsgs.nav.system, commands: system });
 
       if (query.trim()) {
         groups.push({
-          title: 'Histórico',
+          title: SCREEN_LABEL.history,
           // Parser, catálogo e liga dependem do jogo: como no HistoryView, só reabre itens do jogo atual.
           commands: history.entries.filter((e) => e.game === settings.current?.game).map((e) => ({
             id: `hist-${e.id}`,
             icon: 'clock',
-            label: `Reabrir ${e.item.name ?? e.item.base_type}`,
+            label: m.reopen(e.item.name ?? e.item.base_type),
+            keywords: COMMAND_KEYWORDS.hist,
             detail: e.item.name ? e.item.base_type : undefined,
             run: () => {
               nav.go('price');
@@ -176,7 +184,7 @@ class CommandsStore {
       .map((g) => ({
         title: g.title,
         commands: g.commands.filter((c) => {
-          const hay = normalize(`${c.label} ${c.detail ?? ''} ${g.title}`);
+          const hay = normalize(`${c.label} ${c.detail ?? ''} ${c.keywords ?? ''} ${g.title}`);
           return terms.every((t) => hay.includes(t));
         }),
       }))

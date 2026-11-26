@@ -6,6 +6,7 @@ use std::time::Duration;
 use async_trait::async_trait;
 use thiserror::Error;
 
+use crate::error::Reason;
 use crate::history::HistoryEntry;
 use crate::item::Item;
 use crate::log_event::GameLogEvent;
@@ -28,6 +29,9 @@ pub enum PortError {
     Timeout,
     #[error("{0}")]
     Other(String),
+    /// Falha conhecida, com motivo que a UI sabe traduzir.
+    #[error("{0}")]
+    Known(Reason),
 }
 
 pub type PortResult<T> = Result<T, PortError>;

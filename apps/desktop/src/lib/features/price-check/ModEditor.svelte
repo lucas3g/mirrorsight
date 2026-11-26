@@ -5,6 +5,8 @@
   import { priceCheck } from '$lib/stores/priceCheck.svelte';
   import { settings } from '$lib/stores/settings.svelte';
   import Icon from '$lib/ui/Icon.svelte';
+  import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
+  import { modsMsgs as mm } from '$lib/i18n/messages/mods';
   import Segmented from '$lib/ui/Segmented.svelte';
   import Tabs from '$lib/ui/Tabs.svelte';
   import AddModSearch from './AddModSearch.svelte';
@@ -114,20 +116,20 @@
   }
 </script>
 
-<section class="card mods" class:compact aria-label="Modificadores">
+<section class="card mods" class:compact aria-label={mm.modsAria}>
   {#if compact}
     <header class="chead">
-      <span class="label">Mods <span class="cnt">{enabledCount}/{stats.length}</span></span>
+      <span class="label">{mm.modsShort} <span class="cnt">{enabledCount}/{stats.length}</span></span>
       <span class="grow"></span>
       {#if filters}<PresetMenu />{/if}
-      <button class="btn-text" disabled={!filters} onclick={() => priceCheck.setAllStats(false)}>Nenhum</button>
+      <button class="btn-text" disabled={!filters} onclick={() => priceCheck.setAllStats(false)}>{mm.none}</button>
     </header>
   {:else}
     <Tabs
-      ariaLabel="Editor de filtros"
+      ariaLabel={mm.editorAria}
       tabs={[
-        { value: 'mods', label: 'Modificadores', count: filters ? `${enabledCount}/${stats.length}` : null },
-        { value: 'props', label: 'Propriedades' },
+        { value: 'mods', label: mm.tabMods, count: filters ? `${enabledCount}/${stats.length}` : null },
+        { value: 'props', label: mm.tabProps },
       ]}
       value={tab}
       onchange={(t: Tab) => (tab = t)}
@@ -137,20 +139,20 @@
   {#if tab === 'mods' || compact}
     {#if !compact}
       <div class="toolbar">
-        <button class="chip" disabled={!filters} onclick={() => priceCheck.setAllStats(true)}>Todos</button>
-        <button class="chip" disabled={!filters} onclick={() => priceCheck.setAllStats(false)}>Nenhum</button>
+        <button class="chip" disabled={!filters} onclick={() => priceCheck.setAllStats(true)}>{mm.all}</button>
+        <button class="chip" disabled={!filters} onclick={() => priceCheck.setAllStats(false)}>{mm.none}</button>
         <button
           class="chip"
           disabled={!hasTiers}
-          title={hasTiers ? 'Liga só os mods T1 e T2' : 'Copie o item com Ctrl+Alt+C para ver os tiers'}
+          title={hasTiers ? mm.onlyT12Title : mm.needTiersTitle}
           onclick={() => priceCheck.enableWhere((s) => s.tier !== null && s.tier <= 2)}
         >
-          Só T1–T2
+          {mm.onlyT12}
         </button>
         <span class="divider"></span>
         {#if filters}<PresetMenu />{/if}
-        <label class="margin" title="Mínimo dos mods ligados = valor rolado − margem">
-          Margem
+        <label class="margin" title={mm.marginTitle}>
+          {mm.margin}
           <input
             class="slider"
             type="range"
@@ -164,7 +166,7 @@
           <b class="mono">−{priceCheck.margin}%</b>
         </label>
       </div>
-      <div class="colhead label"><span></span><span></span><span>Mod</span><span>Tier</span><span>Mín</span><span>Máx</span></div>
+      <div class="colhead label"><span></span><span></span><span>{mm.colMod}</span><span>{mm.colTier}</span><span>{mm.colMin}</span><span>{mm.colMax}</span></div>
     {/if}
 
     <div class="list scroll" bind:this={listEl}>
@@ -174,7 +176,7 @@
         {/each}
       {:else}
         {#if stats.length === 0 && !adding}
-          <p class="hint">Nenhum modificador reconhecido neste item. Use “Adicionar mod” para buscar por texto.</p>
+          <p class="hint">{mm.noMods}</p>
         {/if}
         {#each groups as group (group.kind)}
           {@const on = groupEnabled(group.indices)}
@@ -182,7 +184,7 @@
             <span class="gt">{KIND_LABEL_PLURAL[group.kind]}</span>
             <span class="gc mono">{on}/{group.indices.length}</span>
             <span class="ln"></span>
-            <button onclick={() => priceCheck.setGroup(group.kind, on === 0)}>{on === 0 ? 'Marcar grupo' : 'Desmarcar grupo'}</button>
+            <button onclick={() => priceCheck.setGroup(group.kind, on === 0)}>{on === 0 ? mm.checkGroup : mm.uncheckGroup}</button>
           </div>
           {#each group.indices as index, pos (index)}
             {@const stat = stats[index]}
@@ -208,11 +210,11 @@
           <AddModSearch {game} onpick={pick} onclose={() => (adding = false)} />
         {:else}
           <button class="addbtn" onclick={() => (adding = true)}>
-            <Icon name="plus" size={14} />Adicionar mod
-            {#if !compact}<small>busca por texto · pseudo incluídos</small>{/if}
+            <Icon name="plus" size={14} />{mm.addMod}
+            {#if !compact}<small>{mm.addModSub}</small>{/if}
           </button>
           {#if !compact && stats.length > 1}
-            <p class="kbhint">Também por teclado: foco na alça + <kbd class="kbd">Alt ↑</kbd> <kbd class="kbd">Alt ↓</kbd></p>
+            <p class="kbhint">{mm.kbHint} <kbd class="kbd">Alt ↑</kbd> <kbd class="kbd">Alt ↓</kbd></p>
           {/if}
         {/if}
       {/if}
@@ -220,17 +222,17 @@
   {:else if filters}
     <div class="propgrid">
       <label class="pfield">
-        <span>Item level mín.<small>item: {item?.item_level ?? '—'}</small></span>
+        <span>{mm.itemLevelMin}<small>{mm.itemValue(String(item?.item_level ?? '—'))}</small></span>
         <input class="num" inputmode="numeric" placeholder={item?.item_level?.toString() ?? '—'} value={filters.item_level_min ?? ''}
           oninput={(e) => priceCheck.setFilter('item_level_min', toInt(e.currentTarget.value))} />
       </label>
       <label class="pfield">
-        <span>Qualidade mín.<small>item: {item?.quality ? `${item.quality}%` : '—'}</small></span>
+        <span>{mm.qualityMin}<small>{mm.itemValue(item?.quality ? `${item.quality}%` : '—')}</small></span>
         <input class="num" inputmode="numeric" placeholder={item?.quality?.toString() ?? '—'} value={filters.quality_min ?? ''}
           oninput={(e) => priceCheck.setFilter('quality_min', toInt(e.currentTarget.value))} />
       </label>
       <label class="pfield">
-        <span>Links mín.<small>item: {item?.sockets ? `${maxLinks(item.sockets)}L` : '—'}</small></span>
+        <span>{mm.linksMin}<small>{mm.itemValue(item?.sockets ? `${maxLinks(item.sockets)}L` : '—')}</small></span>
         <input class="num" inputmode="numeric" placeholder={item?.sockets ? String(maxLinks(item.sockets)) : '—'} value={filters.links_min ?? ''}
           oninput={(e) => priceCheck.setFilter('links_min', toInt(e.currentTarget.value))} />
       </label>
@@ -242,15 +244,15 @@
   {#if !compact}
     <footer class="foot">
       <Segmented
-        ariaLabel="Vendedores"
-        options={[{ value: 'online', label: 'Online' }, { value: 'any', label: 'Qualquer' }]}
+        ariaLabel={pm.sellers}
+        options={[{ value: 'online', label: pm.online }, { value: 'any', label: pm.any }]}
         value={onlineMode}
         onchange={(v: OnlineMode) => priceCheck.setFilter('online_only', v === 'online')}
       />
-      {#if priceCheck.dirty}<span class="dirty"><Icon name="info" size={13} />Filtros alterados</span>{/if}
+      {#if priceCheck.dirty}<span class="dirty"><Icon name="info" size={13} />{pm.filtersChanged}</span>{/if}
       <span class="grow"></span>
-      <button class="btn btn-ghost btn-sm" disabled={!filters} onclick={() => priceCheck.relax(10)}>Relaxar −10%</button>
-      {#if loading}<span class="busy"><span class="spinner"></span>Buscando…</span>{/if}
+      <button class="btn btn-ghost btn-sm" disabled={!filters} onclick={() => priceCheck.relax(10)}>{pm.relax10}</button>
+      {#if loading}<span class="busy"><span class="spinner"></span>{pm.searching}</span>{/if}
     </footer>
   {/if}
 </section>

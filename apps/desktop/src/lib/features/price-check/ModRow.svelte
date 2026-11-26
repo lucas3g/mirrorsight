@@ -5,6 +5,7 @@
   import ModText from '$lib/features/shared/ModText.svelte';
   import Icon from '$lib/ui/Icon.svelte';
   import Toggle from '$lib/ui/Toggle.svelte';
+  import { modsMsgs as mm } from '$lib/i18n/messages/mods';
 
   /**
    * Linha de mod: alça de arraste, switch, texto com barra de roll, tier e mín/máx.
@@ -115,29 +116,29 @@
 >
   <button
     class="grip"
-    aria-label="Reordenar (arraste ou Alt+↑/↓)"
-    title="Arraste para reordenar · Alt+↑/↓"
+    aria-label={mm.reorderAria}
+    title={mm.reorderTitle}
     onpointerdown={(e) => ongrip(e, index)}
     onkeydown={onGripKey}
   >
     <Icon name="grip" size={compact ? 12 : 14} />
   </button>
 
-  <Toggle label={stat.enabled ? 'Desligar mod' : 'Ligar mod'} checked={stat.enabled} onchange={(enabled) => priceCheck.setStat(index, { enabled })} />
+  <Toggle label={stat.enabled ? mm.disableMod : mm.enableMod} checked={stat.enabled} onchange={(enabled) => priceCheck.setStat(index, { enabled })} />
 
   <div class="body">
     <div class="line">
       <span class="text"><ModText text={stat.text} /></span>
       {#if added}
-        <span class="added">ADICIONADO</span>
-        <button class="rm" title="Remover mod adicionado" aria-label="Remover mod adicionado" onclick={() => priceCheck.removeStat(index)}>
+        <span class="added">{mm.added}</span>
+        <button class="rm" title={mm.removeAdded} aria-label={mm.removeAdded} onclick={() => priceCheck.removeStat(index)}>
           <Icon name="x" size={12} />
         </button>
       {/if}
     </div>
     {#if !compact && (percent !== null || range)}
       <div class="roll">
-        <span class="track" title={percent !== null ? `Roll no percentil ${Math.round(percent)} do tier` : undefined}>
+        <span class="track" title={percent !== null ? mm.rollPercentile(Math.round(percent)) : undefined}>
           <i style:transform="scaleX({(percent ?? 0) / 100})"></i>
         </span>
         <span class="range mono">{stat.tier !== null ? `T${stat.tier} · ` : ''}{range ?? ''}</span>
@@ -146,7 +147,7 @@
   </div>
 
   {#if !compact}
-    <span class="tier" class:t1={stat.tier === 1} class:t2={stat.tier === 2} class:none={stat.tier === null} title="Tier do mod">
+    <span class="tier" class:t1={stat.tier === 1} class:t2={stat.tier === 2} class:none={stat.tier === null} title={mm.tierTitle}>
       {stat.tier !== null ? `T${stat.tier}` : '—'}
     </span>
   {/if}
@@ -154,9 +155,9 @@
   <input
     class="num min"
     inputmode="decimal"
-    placeholder="mín"
-    aria-label="Mínimo"
-    title="Clique e use a roda do mouse para ajustar (Shift ×10)"
+    placeholder={mm.minPlaceholder}
+    aria-label={mm.minAria}
+    title={mm.wheelHint}
     use:wheelStep={'min'}
     value={stat.min ?? ''}
     oninput={(e) => onType(e, 'min')}
@@ -164,11 +165,11 @@
   <input
     class="num max"
     inputmode="decimal"
-    placeholder="máx"
-    aria-label="Máximo"
+    placeholder={mm.maxPlaceholder}
+    aria-label={mm.maxAria}
     title={tierMax !== null
-      ? `Clique para usar o máximo do tier (${tierMax}) · roda do mouse ajusta (Shift ×10)`
-      : 'Clique e use a roda do mouse para ajustar (Shift ×10)'}
+      ? mm.maxTierHint(tierMax)
+      : mm.wheelHint}
     use:wheelStep={'max'}
     value={stat.max ?? ''}
     onclick={fillMax}

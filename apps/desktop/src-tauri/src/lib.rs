@@ -56,6 +56,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             commands::get_settings,
             commands::save_settings,
+            commands::set_tray_labels,
             commands::validate_hotkeys,
             commands::list_leagues,
             commands::price_check_text,

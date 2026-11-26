@@ -1,5 +1,6 @@
 import { backend, describeError, toAppError } from '$lib/backend';
 import type { GameVersion, ModPreset, StatFilter } from '$lib/types';
+import { modsMsgs } from '$lib/i18n/messages/mods';
 import { toasts } from './toasts.svelte';
 
 function newId(): string {
@@ -34,18 +35,18 @@ class PresetsStore {
         .filter((s) => s.enabled)
         .map((s) => ({ trade_id: s.trade_id, text: s.text, kind: s.kind, min: s.min, max: s.max })),
     };
-    return this.upsert(preset, `Preset “${name.trim()}” salvo`);
+    return this.upsert(preset, modsMsgs.savedToast(name.trim()));
   }
 
   async rename(preset: ModPreset, name: string): Promise<boolean> {
-    return this.upsert({ ...$state.snapshot(preset), name }, 'Preset renomeado');
+    return this.upsert({ ...$state.snapshot(preset), name }, modsMsgs.renamedToast);
   }
 
   async remove(preset: ModPreset): Promise<void> {
     try {
       await backend.deletePreset(preset.id);
       this.list = this.list.filter((p) => p.id !== preset.id);
-      toasts.push('info', `Preset “${preset.name}” excluído`);
+      toasts.push('info', modsMsgs.deletedToast(preset.name));
     } catch (err) {
       toasts.push('error', describeError(toAppError(err)));
     }

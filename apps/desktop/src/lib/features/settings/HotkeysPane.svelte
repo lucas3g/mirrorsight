@@ -5,18 +5,23 @@
   import Icon from '$lib/ui/Icon.svelte';
   import Keycaps from '$lib/ui/Keycaps.svelte';
   import SettingRow from './SettingRow.svelte';
+  import { SETTINGS_KEYWORDS as KW, settingsMsgs } from '$lib/i18n/messages/settings';
 
   let { current }: { current: Settings } = $props();
 
-  const LABELS: Record<HotkeyAction, { name: string; description: string; fallback: string }> = {
-    'price-check': { name: 'Price check', description: 'Painel completo do item sob o cursor', fallback: 'Ctrl + D' },
-    'price-check-locked': { name: 'Price check fixado', description: 'Abre o painel já fixado na tela', fallback: 'Ctrl + Alt + D' },
-    'toggle-overlay': { name: 'Mostrar/ocultar overlay', description: 'Alterna a visibilidade dos painéis', fallback: 'Shift + Space' },
-    'open-settings': { name: 'Abrir configurações', description: 'Esta janela', fallback: 'Ctrl + Shift + O' },
+  const m = $derived(settingsMsgs.hotkeys);
+
+  /** Combinação padrão de cada ação (nome e descrição vêm de `m.actions`). */
+  const FALLBACK: Record<HotkeyAction, string> = {
+    'price-check': 'Ctrl + D',
+    'price-check-locked': 'Ctrl + Alt + D',
+    'toggle-overlay': 'Shift + Space',
+    'open-settings': 'Ctrl + Shift + O',
   };
 
   let capturing = $state<HotkeyAction | null>(null);
-  let feedback = $state<{ action: HotkeyAction; ok: boolean; message: string } | null>(null);
+  /** `message` é função para acompanhar o idioma (erros do backend já vêm prontos). */
+  let feedback = $state<{ action: HotkeyAction; ok: boolean; message: () => string } | null>(null);
   let shaking = $state<HotkeyAction | null>(null);
 
   const MODIFIERS = new Set(['Control', 'Alt', 'Shift', 'Meta']);
@@ -49,20 +54,21 @@
       await backend.validateHotkeys(bindings);
       capturing = null;
       if (await settings.update({ hotkeys: bindings })) {
-        feedback = { action, ok: true, message: 'Salvo' };
+        feedback = { action, ok: true, message: () => m.saved };
       }
     } catch (err) {
-      feedback = { action, ok: false, message: describeError(toAppError(err)) };
+      const message = describeError(toAppError(err));
+      feedback = { action, ok: false, message: () => message };
       shaking = action;
       setTimeout(() => (shaking = null), 300);
     }
   }
 
   async function reset(action: HotkeyAction) {
-    const hotkey = LABELS[action].fallback;
+    const hotkey = FALLBACK[action];
     const bindings = current.hotkeys.map((b) => (b.action === action ? { action, hotkey } : b));
     capturing = null;
-    if (await settings.update({ hotkeys: bindings })) feedback = { action, ok: true, message: 'Padrão restaurado' };
+    if (await settings.update({ hotkeys: bindings })) feedback = { action, ok: true, message: () => m.defaultRestored };
   }
 </script>
 
@@ -70,11 +76,11 @@
 
 <div class="group">
   {#each current.hotkeys as binding (binding.action)}
-    {@const meta = LABELS[binding.action]}
-    <SettingRow label={meta.name} description={meta.description} keywords="hotkey atalho tecla">
+    {@const meta = m.actions[binding.action]}
+    <SettingRow label={meta.label} description={meta.description} keywords={KW.hotkey}>
       {#snippet extra()}
         {#if feedback?.action === binding.action}
-          <span class="msg" class:ok={feedback.ok}>{feedback.ok ? '✓ ' : ''}{feedback.message}</span>
+          <span class="msg" class:ok={feedback.ok}>{feedback.ok ? '✓ ' : ''}{feedback.message()}</span>
         {/if}
       {/snippet}
       <button
@@ -84,13 +90,13 @@
         onclick={() => start(binding.action)}
         onblur={() => capturing === binding.action && (capturing = null)}
       >
-        {#if capturing === binding.action}Pressione a combinação…{:else}<Keycaps combo={binding.hotkey} />{/if}
+        {#if capturing === binding.action}{m.pressCombo}{:else}<Keycaps combo={binding.hotkey} />{/if}
       </button>
-      <button class="icon-btn" title="Restaurar padrão" onclick={() => reset(binding.action)}><Icon name="reset" size={14} /></button>
+      <button class="icon-btn" title={m.restoreDefault} onclick={() => reset(binding.action)}><Icon name="reset" size={14} /></button>
     </SettingRow>
   {/each}
-  <SettingRow label="Paleta de comandos" description="Só dentro do Mirrorsight · não editável" keywords="hotkey atalho ctrl k comandos busca">
-    <span class="cap fixed" title="Atalho fixo"><Keycaps combo="Ctrl + K" /></span>
+  <SettingRow label={m.palette.label} description={m.palette.description} keywords={KW.palette}>
+    <span class="cap fixed" title={m.fixedShortcut}><Keycaps combo="Ctrl + K" /></span>
     <span class="ib-spacer" aria-hidden="true"></span>
   </SettingRow>
 </div>

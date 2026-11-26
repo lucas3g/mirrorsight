@@ -63,7 +63,7 @@ impl GameWindowPort for Win32GameWindow {
     }
 
     fn focus_game(&self) -> PortResult<()> {
-        let hwnd = self.last().ok_or_else(|| PortError::NotFound("janela do jogo".into()))?;
+        let hwnd = self.last().ok_or(PortError::Known(mirrorsight_domain::error::Reason::GameWindowNotFound))?;
         force_foreground(hwnd);
         Ok(())
     }
@@ -226,7 +226,7 @@ fn send(inputs: &[INPUT]) -> PortResult<()> {
         Ok(())
     } else {
         // Acontece quando o jogo roda como administrador e nós não (UIPI).
-        Err(PortError::Other("o Windows bloqueou o envio de teclas ao jogo".into()))
+        Err(PortError::Known(mirrorsight_domain::error::Reason::InputBlocked))
     }
 }
 

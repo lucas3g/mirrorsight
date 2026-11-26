@@ -7,6 +7,7 @@
   import CurrencyIcon from '$lib/ui/CurrencyIcon.svelte';
   import Sparkline from '$lib/ui/Sparkline.svelte';
   import SuggestedPrice from './SuggestedPrice.svelte';
+  import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
 
   /** Cartão de preço: estimativa, confiança, mín/mediana/máx, poe.ninja e preço sugerido. */
   let {
@@ -15,19 +16,17 @@
     loading,
   }: { summary: PriceSummary | null; indexed?: IndexedPrice | null; loading: boolean } = $props();
 
-  const CONFIDENCE = ['nenhuma', 'baixa', 'média', 'alta'];
-
   const big = $derived(summary ? displayAmount(summary.estimate_chaos, summary.divine_chaos, settings.current?.display_currency === 'divine') : null);
   const ninjaChange = $derived(indexed?.change_24h_percent ?? null);
   /** Cotação do divine derivada do próprio poe.ninja, para quando não há listagens. */
   const ninjaDivine = $derived(ninjaDivineRate(indexed));
 </script>
 
-<section class="card price" aria-label="Preço">
+<section class="card price" aria-label={pm.priceAria}>
   {#if loading}<div class="loadbar"></div>{/if}
   <div class="row">
     <div class="main">
-      <span class="label">Preço estimado</span>
+      <span class="label">{pm.estimatedPrice}</span>
       {#if loading}
         <div class="sk" style="width:180px;height:40px;margin-top:6px"></div>
         <div class="sk" style="width:220px;height:12px;margin-top:10px"></div>
@@ -47,21 +46,21 @@
               <i class:on={summary.confidence >= level} class:low={summary.confidence === 1 && level === 1}></i>
             {/each}
           </span>
-          Confiança {CONFIDENCE[summary.confidence] ?? '—'} · <b class="mono">{summary.sample_size}</b> anúncios
+          {pm.confidence(summary.confidence)} · <b class="mono">{summary.sample_size}</b> {pm.listingsUnit(summary.sample_size)}
         </div>
       {:else if indexed}
         <div class="big ninja-big">
           <ChaosValue chaos={indexed.chaos_value} divineRate={ninjaDivine} size={26} />
         </div>
-        <div class="eq">preço do poe.ninja · sem listagens</div>
+        <div class="eq">{pm.ninjaPriceNoListings}</div>
       {:else}
         <div class="big"><b class="mono none">—</b></div>
-        <div class="eq">sem listagens precificadas</div>
+        <div class="eq">{pm.noPricedListings}</div>
       {/if}
     </div>
 
     <div class="rng">
-      {#each [['Mínimo', summary?.min_chaos], ['Mediana', summary?.median_chaos], ['Máximo', summary?.max_chaos]] as [name, value] (name)}
+      {#each [[pm.min, summary?.min_chaos], [pm.median, summary?.median_chaos], [pm.max, summary?.max_chaos]] as [name, value] (name)}
         <div>
           <span>{name}</span>
           {#if loading}<span class="sk" style="width:48px;height:12px"></span>
@@ -73,7 +72,7 @@
   </div>
 
   {#if indexed && !loading}
-    <div class="ninja" title="Preço de referência do poe.ninja">
+    <div class="ninja" title={pm.ninjaReference}>
       poe.ninja <ChaosValue chaos={indexed.chaos_value} divineRate={summary?.divine_chaos ?? ninjaDivine} size={14} />
       <Sparkline values={indexed.sparkline} width={64} height={16} color={ninjaChange !== null && ninjaChange < 0 ? 'var(--ms-danger)' : 'var(--ms-success)'} />
       {#if ninjaChange !== null}

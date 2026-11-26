@@ -10,63 +10,75 @@
   import PriceCheckPane from './PriceCheckPane.svelte';
   import AppearancePane from './AppearancePane.svelte';
   import AboutPane from './AboutPane.svelte';
+  import { LANGUAGE_KEYWORDS, languageMsgs } from '$lib/i18n/messages/language';
+  import { SETTINGS_KEYWORDS as KW, settingsMsgs as m } from '$lib/i18n/messages/settings';
 
   /**
    * `search`: `[rótulo, descrição + palavras-chave]` de cada `SettingRow` da seção, na forma estática
    * (sem as contagens que algumas descrições mostram). A busca consulta esta lista sem montar as
    * seções e acha a linha na tela pelo rótulo exato; ao criar ou renomear um ajuste, atualize aqui.
+   * Usa as mesmas mensagens/palavras-chave das seções, então acompanha o idioma.
    */
-  const PANES: { id: SettingsPane; icon: IconName; description: string; search: [label: string, text: string][] }[] = [
-    {
-      id: 'general',
-      icon: 'gear',
-      description: 'Jogo, liga e comportamento básico do overlay.',
-      search: [
-        ['Jogo', 'Define parser, base de mods e API usada poe path of exile 2 versão'],
-        ['Liga', 'A primeira é a liga de desafio atual Não foi possível carregar as ligas league temporada'],
-        ['Idioma do cliente', 'Idioma em que o jogo copia os itens language lingua'],
-        ['Moeda de exibição', 'Valores acima de 1 divine sempre aparecem em divine chaos divine conversão'],
-        ['Restaurar clipboard', 'Devolve o conteúdo anterior após copiar o item clipboard área de transferência'],
-        ['Iniciar com o Windows', 'Fica na bandeja do sistema startup inicialização bandeja'],
-      ],
-    },
-    {
-      id: 'hotkeys',
-      icon: 'key',
-      description: 'Clique numa tecla e pressione a nova combinação. Esc cancela.',
-      search: [
-        ['Price check', 'Painel completo do item sob o cursor hotkey atalho tecla'],
-        ['Price check fixado', 'Abre o painel já fixado na tela hotkey atalho tecla'],
-        ['Mostrar/ocultar overlay', 'Alterna a visibilidade dos painéis hotkey atalho tecla'],
-        ['Abrir configurações', 'Esta janela hotkey atalho tecla'],
-        ['Paleta de comandos', 'Só dentro do Mirrorsight · não editável hotkey atalho ctrl k comandos busca'],
-      ],
-    },
-    {
-      id: 'price-check',
-      icon: 'tag',
-      description: 'Filtros padrão, ranges da busca, preço sugerido e dados locais.',
-      search: [
-        ['Range dos mods', 'Mínimo pré-preenchido = valor rolado − % porcentagem filtro mínimo margem'],
-        ['Mostrar vendedores offline', 'Por padrão só online offline afk'],
-        ['Filtros marcados por padrão', 'Tipos de mod que já vêm selecionados explicit fractured implicit crafted enchant'],
-        ['Nível padrão', 'Qual dos três níveis vem selecionado e vai para a nota ~b/o compra justo venda percentil p25 p50 p75 mediana sugerido estratégia'],
-        ['Histórico', 'price checks salvos neste computador histórico apagar limpar recentes'],
-        ['Presets de mods', 'no PoE 1 no PoE 2 preset salvos mods seleção'],
-      ],
-    },
-    {
-      id: 'appearance',
-      icon: 'brush',
-      description: 'Escala, densidade e movimento.',
-      search: [
-        ['Escala da interface', 'Para monitores 1440p/4K zoom tamanho'],
-        ['Densidade', 'Altura das linhas de listagem compacto'],
-        ['Reduzir animações', 'Troca instantânea, sem movimento motion acessibilidade'],
-      ],
-    },
-    { id: 'about', icon: 'info', description: 'Versão e créditos.', search: [] },
+  type Pane = { id: SettingsPane; icon: IconName; description: string; search: [label: string, text: string][] };
+  const row = (r: { label: string; description: string }, keywords: string, extra = ''): [string, string] => [
+    r.label,
+    `${r.description} ${extra} ${keywords}`,
   ];
+  const PANES: Pane[] = $derived.by(() => {
+    const g = m.general;
+    const h = m.hotkeys;
+    const p = m.priceCheck;
+    const a = m.appearance;
+    const d = m.paneDescriptions;
+    return [
+      {
+        id: 'general',
+        icon: 'gear',
+        description: d.general,
+        search: [
+          row(g.game, KW.game),
+          row(g.league, KW.league, g.leagueError),
+          [languageMsgs.label, `${languageMsgs.description} ${LANGUAGE_KEYWORDS}`],
+          [languageMsgs.gameLabel, `${languageMsgs.gameDescription} ${KW.gameLanguage}`],
+          row(g.currency, KW.currency),
+          row(g.restoreClipboard, KW.restoreClipboard),
+          row(g.startup, KW.startup),
+        ],
+      },
+      {
+        id: 'hotkeys',
+        icon: 'key',
+        description: d.hotkeys,
+        search: [
+          row(h.actions['price-check'], KW.hotkey),
+          row(h.actions['price-check-locked'], KW.hotkey),
+          row(h.actions['toggle-overlay'], KW.hotkey),
+          row(h.actions['open-settings'], KW.hotkey),
+          row(h.palette, KW.palette),
+        ],
+      },
+      {
+        id: 'price-check',
+        icon: 'tag',
+        description: d['price-check'],
+        search: [
+          row(p.modRange, KW.modRange),
+          row(p.showOffline, KW.showOffline),
+          row(p.defaultFilters, KW.defaultFilters),
+          row(p.defaultLevel, KW.defaultLevel),
+          [p.history.label, `${p.history.search} ${KW.history}`],
+          [p.presets.label, `${p.presets.search} ${KW.presets}`],
+        ],
+      },
+      {
+        id: 'appearance',
+        icon: 'brush',
+        description: d.appearance,
+        search: [row(a.scale, KW.scale), row(a.density, KW.density), row(a.reduceMotion, KW.reduceMotion)],
+      },
+      { id: 'about', icon: 'info', description: d.about, search: [] },
+    ];
+  });
 
   let query = $state('');
   let content: HTMLElement | undefined = $state();
@@ -75,8 +87,6 @@
   let searchSeq = 0;
 
   const pane = $derived(PANES.find((p) => p.id === nav.settingsPane) ?? PANES[0]!);
-
-  type Pane = (typeof PANES)[number];
 
   /**
    * Busca nos textos das seções (sem montar nenhuma), por termos: "historico price" acha
@@ -125,11 +135,11 @@
   }
 </script>
 
-<article class="settings" aria-label="Configurações">
-  <nav class="side" aria-label="Seções das configurações">
+<article class="settings" aria-label={m.view.aria}>
+  <nav class="side" aria-label={m.view.sectionsAria}>
     <label class="search">
       <Icon name="search" size={14} />
-      <input class="field" placeholder="Buscar ajuste…" aria-label="Buscar ajuste" bind:value={query} oninput={search} />
+      <input class="field" placeholder={m.view.searchPlaceholder} aria-label={m.view.searchAria} bind:value={query} oninput={search} />
     </label>
     {#each PANES as p (p.id)}
       <button class="nav-item" aria-current={nav.settingsPane === p.id ? 'page' : undefined} onclick={() => (nav.settingsPane = p.id)}>
@@ -155,7 +165,7 @@
         </div>
       {/key}
     {:else}
-      <p class="error">{settings.loadError ?? 'Carregando…'}</p>
+      <p class="error">{settings.loadError ?? m.view.loading}</p>
     {/if}
   </div>
 </article>

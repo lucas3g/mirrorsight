@@ -5,6 +5,8 @@
   import CurrencyIcon from '$lib/ui/CurrencyIcon.svelte';
   import ModText from '$lib/features/shared/ModText.svelte';
   import { portal } from '$lib/ui/portal';
+  import { common } from '$lib/i18n/messages/common';
+  import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
 
   /** Detalhe do item de uma listagem, exibido ao passar o mouse no olho. */
   let {
@@ -16,6 +18,10 @@
   }: { listing: Listing; item: Item; matchedIds: Set<string>; left: number; top: number } = $props();
 
   const hasMatches = $derived(item.modifiers.some((m) => matchedIds.has(m.trade_id)));
+  const listedLine = $derived.by(() => {
+    const age = relativeAge(listing.indexed_at);
+    return age === common.now ? pm.listedNow : pm.listedAgo(age);
+  });
 </script>
 
 <div class="card" use:portal style:left="{left}px" style:top="{top}px" style:--rar={RARITY_COLOR[item.rarity]} role="tooltip">
@@ -42,7 +48,7 @@
           {#if mod.tier !== null}<span class="tier" class:t1={mod.tier === 1} class:t2={mod.tier === 2}>T{mod.tier}</span>{:else}<span></span>{/if}
         </div>
       {/each}
-      {#if hasMatches}<p class="legend"><span class="hit"></span>bate com seus filtros</p>{/if}
+      {#if hasMatches}<p class="legend"><span class="hit"></span>{pm.matchesFilters}</p>{/if}
     </section>
   {/if}
 
@@ -50,7 +56,7 @@
     <span class="p mono"><CurrencyIcon currency={listing.price.currency} size={22} />{formatAmount(listing.price.amount)}</span>
     <span class="s">
       <span class="dot" class:on={listing.online} class:afk={!listing.online}></span>
-      {listing.account}<br />listado há {relativeAge(listing.indexed_at)}
+      {listing.account}<br />{listedLine}
     </span>
   </footer>
 </div>

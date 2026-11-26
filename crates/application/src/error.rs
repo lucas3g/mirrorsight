@@ -2,6 +2,7 @@ use serde::Serialize;
 use thiserror::Error;
 
 use mirrorsight_domain::ports::{ItemParseError, PortError};
+use mirrorsight_domain::error::Reason;
 use mirrorsight_domain::DomainError;
 
 /// Erro que atravessa a fronteira para a UI. Cada variante vira um `code` estável.
@@ -14,12 +15,45 @@ pub enum AppError {
     ItemNotRecognized { detail: String },
     #[error("limite de requisições: tente novamente em {retry_after_ms} ms")]
     RateLimited { retry_after_ms: u64 },
+    /// `reason` presente → a UI traduz pelo motivo; senão mostra `message` (técnica, do transporte).
     #[error("falha de rede: {message}")]
-    Network { message: String },
+    Network {
+        message: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        reason: Option<Reason>,
+    },
     #[error("configuração inválida: {message}")]
-    InvalidSettings { message: String },
+    InvalidSettings {
+        message: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        reason: Option<Reason>,
+    },
     #[error("erro interno: {message}")]
-    Internal { message: String },
+    Internal {
+        message: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        reason: Option<Reason>,
+    },
+}
+
+impl AppError {
+    /// Validação recusada, com motivo traduzível.
+    #[must_use]
+    pub fn invalid(reason: Reason) -> Self {
+        Self::InvalidSettings { message: reason.to_string(), reason: Some(reason) }
+    }
+
+    /// Falha conhecida fora da validação (clipboard, jogo como admin…).
+    #[must_use]
+    pub fn known(reason: Reason) -> Self {
+        Self::Internal { message: reason.to_string(), reason: Some(reason) }
+    }
+
+    /// Falha inesperada: só a mensagem técnica.
+    #[must_use]
+    pub fn internal(message: impl Into<String>) -> Self {
+        Self::Internal { message: message.into(), reason: None }
+    }
 }
 
 impl From<PortError> for AppError {
@@ -28,13 +62,13 @@ impl From<PortError> for AppError {
             PortError::RateLimited { retry_after } => Self::RateLimited {
                 retry_after_ms: u64::try_from(retry_after.as_millis()).unwrap_or(u64::MAX),
             },
-            PortError::Network(message) => Self::Network { message },
+            PortError::Network(message) => Self::Network { message, reason: None },
             PortError::Timeout => Self::Network {
                 message: "timeout".into(),
+                reason: Some(Reason::Timeout),
             },
-            other => Self::Internal {
-                message: other.to_string(),
-            },
+            PortError::Known(reason) => Self::known(reason),
+            other => Self::internal(other.to_string()),
         }
     }
 }
@@ -49,8 +83,6 @@ impl From<ItemParseError> for AppError {
 
 impl From<DomainError> for AppError {
     fn from(err: DomainError) -> Self {
-        Self::InvalidSettings {
-            message: err.to_string(),
-        }
+        Self::invalid(err.reason())
     }
 }

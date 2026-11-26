@@ -9,6 +9,8 @@ import type {
   SearchFilters,
   Settings,
 } from '$lib/types';
+import { common } from '$lib/i18n/messages/common';
+import { describeReason } from '$lib/i18n/messages/reasons';
 
 /**
  * Porta única entre a UI e o mundo externo (Dependency Inversion).
@@ -28,6 +30,8 @@ export interface Backend {
   openExternal(url: string): Promise<void>;
   /** Zoom nativo do webview (mantém coordenadas de layout consistentes). */
   setUiScale(scale: number): Promise<void>;
+  /** Traduz menu e tooltip da bandeja (no navegador não faz nada). */
+  setTrayLabels(labels: TrayLabels): Promise<void>;
 
   /** Catálogo de stats do jogo (busca "Adicionar mod"). */
   listStats(game: GameVersion): Promise<CatalogStat[]>;
@@ -73,6 +77,13 @@ export interface Backend {
   onWindowResized(handler: () => void): Promise<() => void>;
 }
 
+export interface TrayLabels {
+  open: string;
+  settings: string;
+  quit: string;
+  tooltip: string;
+}
+
 export type WindowRole = 'main' | 'overlay';
 
 /** `inside` = sem espaço no monitor: o card fica sobre o próprio painel. */
@@ -105,20 +116,20 @@ export function toAppError(err: unknown): AppError {
   return { code: 'internal', data: { message } };
 }
 
-/** Mensagem curta, em português, para exibir ao usuário. */
+/** Mensagem curta, no idioma da interface, para exibir ao usuário. */
 export function describeError(err: AppError): string {
   switch (err.code) {
     case 'nothing-copied':
-      return 'Nenhum item foi copiado. O jogo está em foco?';
+      return common.errors.nothingCopied;
     case 'item-not-recognized':
-      return 'O texto copiado não parece um item do Path of Exile.';
+      return common.errors.itemNotRecognized;
     case 'rate-limited':
-      return 'Limite da API atingido. Aguarde um instante.';
+      return common.errors.rateLimited;
     case 'network':
-      return `Falha de rede: ${err.data.message}`;
+      return err.data.reason ? describeReason(err.data.reason) : common.errors.network(err.data.message);
     case 'invalid-settings':
-      return err.data.message;
     case 'internal':
-      return err.data.message;
+      // Sem motivo conhecido, a mensagem é técnica (ex.: erro da trade API) e vai como veio.
+      return err.data.reason ? describeReason(err.data.reason) : err.data.message;
   }
 }

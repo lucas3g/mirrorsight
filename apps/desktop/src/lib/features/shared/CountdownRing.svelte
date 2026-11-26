@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
   /** Contagem regressiva circular (84px, âmbar) até `until` (epoch ms). */
   let { until, totalMs }: { until: number; totalMs: number } = $props();
 
@@ -17,7 +18,7 @@
   const offset = $derived(CIRCUMFERENCE * (1 - remaining / Math.max(1, totalMs)));
 </script>
 
-<div class="ring" role="timer" aria-label="{seconds} segundos">
+<div class="ring" role="timer" aria-label={pm.seconds(seconds)}>
   <svg width="84" height="84" viewBox="0 0 84 84" aria-hidden="true">
     <circle class="track" cx="42" cy="42" r={RADIUS} />
     <circle class="bar" cx="42" cy="42" r={RADIUS} stroke-dasharray={CIRCUMFERENCE} stroke-dashoffset={offset} />

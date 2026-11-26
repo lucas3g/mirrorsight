@@ -5,6 +5,7 @@
   import ItemArt from '$lib/ui/ItemArt.svelte';
   import Sparkline from '$lib/ui/Sparkline.svelte';
   import ChaosValue from '$lib/features/shared/ChaosValue.svelte';
+  import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
 
   /** Card compacto com o preço de referência (poe.ninja). Some sozinho; pausa no hover. */
   const LIFETIME_MS = 6000;
@@ -67,12 +68,12 @@
     <div class="spark">
       <Sparkline values={indexed.sparkline} width={290} height={44} color={change !== null && change < 0 ? 'var(--ms-danger)' : 'var(--ms-success)'} />
     </div>
-    <div class="bot"><span>poe.ninja · 7 dias</span><button class="more" onclick={() => (priceCheck.mode = 'full')}>Ver listagens →</button></div>
+    <div class="bot"><span>{pm.ninja7d}</span><button class="more" onclick={() => (priceCheck.mode = 'full')}>{pm.seeListings}</button></div>
     <div class="timer"><i class:paused style:animation-duration="{LIFETIME_MS}ms"></i></div>
   {:else}
     <div class="empty">
-      <p>Sem preço de referência no poe.ninja para este item.</p>
-      <button class="btn btn-primary btn-sm" onclick={() => (priceCheck.mode = 'full')}>Abrir price check completo</button>
+      <p>{pm.noReference}</p>
+      <button class="btn btn-primary btn-sm" onclick={() => (priceCheck.mode = 'full')}>{pm.openFull}</button>
     </div>
   {/if}
 </div>

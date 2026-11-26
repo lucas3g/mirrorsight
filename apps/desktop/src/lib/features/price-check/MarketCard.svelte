@@ -1,7 +1,9 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import type { Listing } from '$lib/types';
+  import { describeError } from '$lib/backend';
   import { formatAmount } from '$lib/format';
+  import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
   import { suggestedFor } from '$lib/pricing';
   import { priceCheck } from '$lib/stores/priceCheck.svelte';
   import { settings } from '$lib/stores/settings.svelte';
@@ -33,7 +35,7 @@
   const shown = $derived(listings);
   const summary = $derived(phase.kind === 'loading' ? null : (priceCheck.output?.summary ?? null));
   const scope = $derived(
-    priceCheck.filters ? `${priceCheck.filters.online_only ? 'só online' : 'todos'} · ${settings.current?.league ?? '—'}` : '',
+    priceCheck.filters ? `${priceCheck.filters.online_only ? pm.scopeOnline : pm.scopeAll} · ${settings.current?.league ?? '—'}` : '',
   );
 
   /** trade_ids dos filtros ativos na última busca: marcam mods "que batem" no card. */
@@ -129,9 +131,9 @@
     if (!listing.whisper) return;
     try {
       await navigator.clipboard.writeText(listing.whisper);
-      toasts.push('success', `Whisper para ${listing.account} copiado`);
+      toasts.push('success', pm.whisperCopied(listing.account));
     } catch {
-      toasts.push('error', 'Não foi possível copiar o whisper');
+      toasts.push('error', pm.whisperFailed);
     }
   }
 
@@ -169,19 +171,19 @@
   const selectedChaos = $derived(suggestedFor(summary, priceCheck.level));
 </script>
 
-<section class="card market" class:compact bind:this={self} aria-label="Mercado">
+<section class="card market" class:compact bind:this={self} aria-label={pm.market}>
   {#if phase.kind === 'loading'}<div class="loadbar"></div>{/if}
   {#if compact}
     <header class="chead">
-      <span class="label">Listagens {#if trade}<span class="cnt">{trade.total}</span>{/if}</span>
-      <span class="scope">{priceCheck.filters?.online_only === false ? 'todos' : 'só online'}</span>
+      <span class="label">{pm.listings} {#if trade}<span class="cnt">{trade.total}</span>{/if}</span>
+      <span class="scope">{priceCheck.filters?.online_only === false ? pm.scopeAll : pm.scopeOnline}</span>
     </header>
   {:else}
     <Tabs
-      ariaLabel="Mercado"
+      ariaLabel={pm.market}
       tabs={[
-        { value: 'listings', label: 'Listagens', count: trade ? trade.total : null },
-        { value: 'dist', label: 'Distribuição' },
+        { value: 'listings', label: pm.listings, count: trade ? trade.total : null },
+        { value: 'dist', label: pm.distribution },
       ]}
       value={tab}
       onchange={(t: Tab) => (tab = t)}
@@ -192,9 +194,9 @@
 
   {#if tab === 'listings' || compact}
     {#if compact}
-      <div class="lhead label clh"><span>Preço</span><span class="c">iLvl</span><span>Vendedor</span><span class="r">Listado</span><span></span></div>
+      <div class="lhead label clh"><span>{pm.colPrice}</span><span class="c">iLvl</span><span>{pm.colSeller}</span><span class="r">{pm.colListed}</span><span></span></div>
     {:else}
-      <div class="lhead label"><span>Preço</span><span>Vendedor</span><span class="r">Idade</span><span></span></div>
+      <div class="lhead label"><span>{pm.colPrice}</span><span>{pm.colSeller}</span><span class="r">{pm.colAge}</span><span></span></div>
     {/if}
     <div class="body scroll" onscroll={closePeek}>
       {#if phase.kind === 'loading'}
@@ -208,19 +210,19 @@
       {:else if phase.kind === 'error' || phase.kind === 'rate-limited'}
         <ProblemState {phase} />
       {:else if priceCheck.output && !trade && priceCheck.output.trade_error}
-        <StateMessage icon="empty" title="Sem listagens" text="A trade falhou. Mostrando só o preço do poe.ninja.">
-          <span class="why" title={priceCheck.output.trade_error}>{priceCheck.output.trade_error}</span>
-          <button class="btn btn-ghost btn-sm" onclick={() => void priceCheck.search()}>Tentar novamente</button>
+        <StateMessage icon="empty" title={pm.noListings} text={pm.tradeFailed}>
+          <span class="why" title={describeError(priceCheck.output.trade_error)}>{describeError(priceCheck.output.trade_error)}</span>
+          <button class="btn btn-ghost btn-sm" onclick={() => void priceCheck.search()}>{pm.retry}</button>
         </StateMessage>
       {:else if listings.length === 0}
-        <StateMessage icon="empty" title="Nenhuma listagem encontrada" text="Desligue alguns mods ou reduza os mínimos para ampliar a busca.">
+        <StateMessage icon="empty" title={pm.noneFound} text={pm.noneFoundHint}>
           <button class="btn btn-primary btn-sm" onclick={() => { priceCheck.relax(10); void priceCheck.search(); }}>
-            Relaxar filtros 10%
+            {pm.relaxFilters10}
           </button>
         </StateMessage>
       {:else}
         {#if priceCheck.dirty}
-          <div class="stale">● Filtros alterados — buscando em instantes…</div>
+          <div class="stale">{pm.staleFilters}</div>
         {/if}
         <div class:stale-list={priceCheck.dirty}>
           {#each shown as listing, i (i)}
@@ -241,7 +243,7 @@
   {:else}
     <div class="dist scroll">
       {#if summary}
-        <div class="hist" aria-label="Distribuição de preços">
+        <div class="hist" aria-label={pm.histogramAria}>
           {#each summary.histogram as count, i (i)}
             <i class:in={inBand(i)} style:height="{Math.max(2, (count / peak) * 100)}%" style:--i={i}></i>
           {/each}
@@ -251,7 +253,7 @@
             </span>
           {/each}
           {#if markers.length === 0}
-            <span class="mark" style:left="{at(summary.median_chaos)}%"><span class="mono">med</span></span>
+            <span class="mark" style:left="{at(summary.median_chaos)}%"><span class="mono">{pm.medianShort}</span></span>
           {/if}
         </div>
         <div class="axis mono">
@@ -260,15 +262,15 @@
           <span>{formatAmount(summary.max_chaos)} c</span>
         </div>
         <div class="kpis">
-          <div><span class="label">Mínimo</span><ChaosValue chaos={summary.min_chaos} divineRate={summary.divine_chaos} /></div>
-          <div><span class="label">Mediana</span><ChaosValue chaos={summary.median_chaos} divineRate={summary.divine_chaos} /></div>
-          <div><span class="label">Máximo</span><ChaosValue chaos={summary.max_chaos} divineRate={summary.divine_chaos} /></div>
-          <div><span class="label">Anúncios</span><b class="mono">{summary.sample_size}</b></div>
+          <div><span class="label">{pm.min}</span><ChaosValue chaos={summary.min_chaos} divineRate={summary.divine_chaos} /></div>
+          <div><span class="label">{pm.median}</span><ChaosValue chaos={summary.median_chaos} divineRate={summary.divine_chaos} /></div>
+          <div><span class="label">{pm.max}</span><ChaosValue chaos={summary.max_chaos} divineRate={summary.divine_chaos} /></div>
+          <div><span class="label">{pm.listingsKpi}</span><b class="mono">{summary.sample_size}</b></div>
         </div>
       {:else if phase.kind === 'loading'}
         <div class="sk" style="height:170px"></div>
       {:else}
-        <StateMessage icon="empty" title="Sem dados para a distribuição" />
+        <StateMessage icon="empty" title={pm.noDistData} />
       {/if}
     </div>
   {/if}

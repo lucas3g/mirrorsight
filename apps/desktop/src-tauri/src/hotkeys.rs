@@ -143,14 +143,7 @@ async fn dispatch(app: &AppHandle, action: HotkeyAction) -> tauri::Result<()> {
 async fn price_check(app: &AppHandle, locked: bool) -> tauri::Result<()> {
     let state = app.state::<AppState>();
     if state.game_window.has_elevation_mismatch() {
-        return overlay::error(
-            app,
-            &AppError::Internal {
-                message: "O jogo está rodando como administrador. Abra o Mirrorsight como administrador também \
-                          para que ele consiga copiar os itens."
-                    .into(),
-            },
-        );
+        return overlay::error(app, &AppError::known(mirrorsight_domain::error::Reason::GameElevated));
     }
 
     let restore = state.settings_repo.load().map(|s| s.restore_clipboard).unwrap_or(true);

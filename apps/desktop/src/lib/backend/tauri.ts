@@ -15,7 +15,7 @@ import type {
   SearchFilters,
   Settings,
 } from '$lib/types';
-import type { Backend, PeekSide, PriceCheckRequest, WindowRole } from './port';
+import type { Backend, PeekSide, PriceCheckRequest, TrayLabels, WindowRole } from './port';
 
 /** Nomes dos eventos emitidos por `src-tauri/src/overlay.rs`. */
 const EVENT_REQUEST = 'overlay:price-check';
@@ -50,6 +50,10 @@ export class TauriBackend implements Backend {
 
   openExternal(url: string): Promise<void> {
     return openUrl(url);
+  }
+
+  setTrayLabels(labels: TrayLabels): Promise<void> {
+    return invoke('set_tray_labels', { labels });
   }
 
   setUiScale(scale: number): Promise<void> {

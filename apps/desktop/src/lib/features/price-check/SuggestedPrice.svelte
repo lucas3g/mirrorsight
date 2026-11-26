@@ -7,6 +7,7 @@
   import { settings } from '$lib/stores/settings.svelte';
   import CurrencyIcon from '$lib/ui/CurrencyIcon.svelte';
   import Icon from '$lib/ui/Icon.svelte';
+  import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
 
   /**
    * Preço sugerido em três níveis (Compra p25 / Justo p50 / Venda p75), dica do nível
@@ -48,11 +49,11 @@
 
 <div class="sugg" class:compact>
   <div class="head">
-    <span class="label">Preço sugerido</span>
-    {#if !compact && ready}<span class="sub">· percentis dos {sample} anúncios</span>{/if}
+    <span class="label">{pm.suggestedPrice}</span>
+    {#if !compact && ready}<span class="sub">{pm.percentilesOf(sample)}</span>{/if}
   </div>
 
-  <div class="levels" role="radiogroup" aria-label="Nível do preço sugerido" tabindex="-1" onkeydown={onKeydown}>
+  <div class="levels" role="radiogroup" aria-label={pm.levelAria} tabindex="-1" onkeydown={onKeydown}>
     {#each LEVELS as level (level)}
       {@const meta = LEVEL_META[level]}
       {@const value = shown(level)}
@@ -82,14 +83,14 @@
       {#if !compact}
         <p class="tip"><Icon name="bolt" size={13} />{sentence}</p>
       {/if}
-      <button class="btn btn-sm copy" onclick={copySuggestedNote} title="Copiar nota de preço">
+      <button class="btn btn-sm copy" onclick={copySuggestedNote} title={pm.copyNote}>
         <Icon name="copy" size={13} /><span class="mono">{note}</span>
       </button>
     {:else if summary}
       <div class="warn-box few">
         <Icon name="warning" size={14} />
-        <span>Só {sample} {sample === 1 ? 'anúncio' : 'anúncios'} — poucos para sugerir preço.</span>
-        <button class="btn btn-ghost btn-sm" onclick={relax}>Relaxar −10%</button>
+        <span>{pm.tooFew(sample)}</span>
+        <button class="btn btn-ghost btn-sm" onclick={relax}>{pm.relax10}</button>
       </div>
     {/if}
   {/if}

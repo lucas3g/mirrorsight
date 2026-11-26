@@ -8,6 +8,7 @@
     SAMPLE_RARE_TEXT,
   } from '$lib/backend/demo-fixtures';
   import { RARITY_COLOR } from '$lib/format';
+  import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
   import { history } from '$lib/stores/history.svelte';
   import { priceCheck } from '$lib/stores/priceCheck.svelte';
   import { settings } from '$lib/stores/settings.svelte';
@@ -25,19 +26,19 @@
 <div class="idle">
   <div class="in enter-up">
     <div class="orb"><Logo size={54} /></div>
-    <h1>Pronto para precificar</h1>
-    <p class="lead">No jogo, passe o mouse sobre um item e pressione <Keycaps combo={priceCheckKey} /></p>
+    <h1>{pm.readyTitle}</h1>
+    <p class="lead">{pm.leadBefore} <Keycaps combo={priceCheckKey} />{pm.leadAfter}</p>
     <p class="note">
       <Icon name="info" size={13} />
-      Sem o jogo? Cole o item com <Keycaps combo="Ctrl + V" /> · <Keycaps combo="Ctrl + Shift + V" /> = Quick Price
+      {pm.pasteBefore} <Keycaps combo="Ctrl + V" />{pm.pasteAfter} · <Keycaps combo="Ctrl + Shift + V" /> = Quick Price
     </p>
 
     {#if recent.length > 0}
       <div class="recent">
-        <span class="label">Recentes</span>
+        <span class="label">{pm.recent}</span>
         <div class="row">
           {#each recent as entry (entry.id)}
-            <button class="chip" onclick={() => priceCheck.reopen(entry)} title="Reabrir com os mesmos filtros">
+            <button class="chip" onclick={() => priceCheck.reopen(entry)} title={pm.reopenSame}>
               <Icon name="clock" size={13} />
               <span style:color={RARITY_COLOR[entry.item.rarity]}>{entry.item.name ?? entry.item.base_type}</span>
             </button>
@@ -48,15 +49,15 @@
 
     {#if backend.kind === 'demo'}
       <div class="demo">
-        <span class="label">Modo demonstração</span>
+        <span class="label">{pm.demoMode}</span>
         <div class="row">
-          <button class="btn btn-primary btn-sm" onclick={() => priceCheck.check(SAMPLE_RARE_TEXT)}>Item raro</button>
+          <button class="btn btn-primary btn-sm" onclick={() => priceCheck.check(SAMPLE_RARE_TEXT)}>{pm.demoRare}</button>
           <button class="btn btn-ghost btn-sm" onclick={() => priceCheck.check(SAMPLE_CURRENCY_TEXT)}>Currency (bulk)</button>
           <button class="btn btn-ghost btn-sm" onclick={() => priceCheck.check(SAMPLE_CURRENCY_TEXT, 'quick')}>Quick price</button>
-          <button class="btn btn-ghost btn-sm" onclick={() => priceCheck.check(`${SAMPLE_RARE_TEXT}\n${DEMO_FEW}`)}>Poucos anúncios</button>
+          <button class="btn btn-ghost btn-sm" onclick={() => priceCheck.check(`${SAMPLE_RARE_TEXT}\n${DEMO_FEW}`)}>{pm.demoFew}</button>
           <button class="btn btn-ghost btn-sm" onclick={() => priceCheck.check(`${SAMPLE_RARE_TEXT}\n${DEMO_RATE_LIMIT}`)}>Rate limit</button>
-          <button class="btn btn-ghost btn-sm" onclick={() => priceCheck.check(`${SAMPLE_RARE_TEXT}\n${DEMO_NETWORK}`)}>Erro de rede</button>
-          <button class="btn btn-ghost btn-sm" onclick={() => priceCheck.check('texto qualquer')}>Não reconhecido</button>
+          <button class="btn btn-ghost btn-sm" onclick={() => priceCheck.check(`${SAMPLE_RARE_TEXT}\n${DEMO_NETWORK}`)}>{pm.demoNetwork}</button>
+          <button class="btn btn-ghost btn-sm" onclick={() => priceCheck.check('texto qualquer')}>{pm.demoUnrecognized}</button>
         </div>
       </div>
     {/if}

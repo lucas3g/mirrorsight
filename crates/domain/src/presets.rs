@@ -3,6 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::item::ModifierKind;
+use crate::error::Reason;
 use crate::{DomainError, GameVersion};
 
 /// Tamanho máximo do nome de um preset (em caracteres).
@@ -34,15 +35,13 @@ impl ModPreset {
     pub fn validated(mut self) -> Result<Self, DomainError> {
         let name = self.name.trim();
         if name.is_empty() {
-            return Err(DomainError::InvalidPreset("dê um nome ao preset".into()));
+            return Err(DomainError::InvalidPreset(Reason::PresetNameEmpty));
         }
         if name.chars().count() > PRESET_NAME_MAX {
-            return Err(DomainError::InvalidPreset(format!(
-                "o nome do preset pode ter até {PRESET_NAME_MAX} caracteres"
-            )));
+            return Err(DomainError::InvalidPreset(Reason::PresetNameTooLong { max: PRESET_NAME_MAX }));
         }
         if self.mods.is_empty() {
-            return Err(DomainError::InvalidPreset("ligue ao menos um mod para salvar o preset".into()));
+            return Err(DomainError::InvalidPreset(Reason::PresetNoMods));
         }
         self.name = name.to_owned();
         Ok(self)

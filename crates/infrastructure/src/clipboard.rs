@@ -1,12 +1,16 @@
 //! Clipboard do sistema via `arboard`.
 
+use mirrorsight_domain::error::Reason;
 use mirrorsight_domain::ports::{ClipboardPort, PortError, PortResult};
 
 #[derive(Default)]
 pub struct SystemClipboard;
 
 fn open() -> PortResult<arboard::Clipboard> {
-    arboard::Clipboard::new().map_err(|e| PortError::Other(format!("clipboard indisponível: {e}")))
+    arboard::Clipboard::new().map_err(|e| {
+        tracing::warn!(%e, "clipboard indisponível");
+        PortError::Known(Reason::ClipboardUnavailable)
+    })
 }
 
 impl ClipboardPort for SystemClipboard {
@@ -15,13 +19,19 @@ impl ClipboardPort for SystemClipboard {
             Ok(text) => Ok(Some(text)),
             // Clipboard vazio ou com conteúdo não-texto (imagem, arquivos).
             Err(arboard::Error::ContentNotAvailable) => Ok(None),
-            Err(e) => Err(PortError::Other(format!("falha ao ler o clipboard: {e}"))),
+            Err(e) => {
+                tracing::warn!(%e, "falha ao ler o clipboard");
+                Err(PortError::Known(Reason::ClipboardRead))
+            }
         }
     }
 
     fn write_text(&self, text: &str) -> PortResult<()> {
         open()?
             .set_text(text)
-            .map_err(|e| PortError::Other(format!("falha ao escrever no clipboard: {e}")))
+            .map_err(|e| {
+            tracing::warn!(%e, "falha ao escrever no clipboard");
+            PortError::Known(Reason::ClipboardWrite)
+        })
     }
 }

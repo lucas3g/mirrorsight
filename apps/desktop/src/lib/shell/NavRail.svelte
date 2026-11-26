@@ -1,6 +1,7 @@
 <script lang="ts">
   import { history } from '$lib/stores/history.svelte';
-  import { nav, type Screen } from '$lib/stores/nav.svelte';
+  import { shellMsgs as m } from '$lib/i18n/messages/shell';
+  import { SCREEN_LABEL, nav, type Screen } from '$lib/stores/nav.svelte';
   import { settings } from '$lib/stores/settings.svelte';
   import Icon, { type IconName } from '$lib/ui/Icon.svelte';
 
@@ -13,27 +14,26 @@
 
   interface Item {
     screen: Screen;
-    label: string;
     icon: IconName;
   }
   const MARKET: Item[] = [
-    { screen: 'price', label: 'Price Check', icon: 'tag' },
-    { screen: 'history', label: 'Histórico', icon: 'clock' },
+    { screen: 'price', icon: 'tag' },
+    { screen: 'history', icon: 'clock' },
   ];
 </script>
 
-<nav class="rail" class:mini={collapsed} aria-label="Navegação">
-  <div class="sec">Mercado</div>
+<nav class="rail" class:mini={collapsed} aria-label={m.nav.aria}>
+  <div class="sec">{m.nav.market}</div>
   {#each MARKET as item (item.screen)}
     <button
       class="nav"
       class:on={nav.screen === item.screen}
       aria-current={nav.screen === item.screen ? 'page' : undefined}
-      title={collapsed ? item.label : undefined}
+      title={collapsed ? SCREEN_LABEL[item.screen] : undefined}
       onclick={() => nav.go(item.screen)}
     >
       <Icon name={item.icon} size={18} />
-      <span class="txt">{item.label}</span>
+      <span class="txt">{SCREEN_LABEL[item.screen]}</span>
       {#if item.screen === 'price'}
         <kbd class="kbd end">{priceKey}</kbd>
       {:else}
@@ -42,22 +42,22 @@
     </button>
   {/each}
 
-  <div class="sec">Sistema</div>
+  <div class="sec">{m.nav.system}</div>
   <button
     class="nav"
     class:on={nav.screen === 'settings'}
     aria-current={nav.screen === 'settings' ? 'page' : undefined}
-    title={collapsed ? 'Configurações' : undefined}
+    title={collapsed ? SCREEN_LABEL.settings : undefined}
     onclick={() => nav.openSettings()}
   >
     <Icon name="gear" size={18} />
-    <span class="txt">Configurações</span>
+    <span class="txt">{SCREEN_LABEL.settings}</span>
   </button>
 
   <div class="grow"></div>
-  <button class="nav tog" onclick={() => nav.toggleRail()} title={collapsed ? 'Expandir menu' : 'Recolher menu'}>
+  <button class="nav tog" onclick={() => nav.toggleRail()} title={collapsed ? m.nav.expand : m.nav.collapse}>
     <Icon name="chevron-left" size={18} />
-    <span class="txt">Recolher menu</span>
+    <span class="txt">{m.nav.collapse}</span>
   </button>
 </nav>
 

@@ -28,7 +28,8 @@ pub fn transport_error(err: &reqwest::Error) -> PortError {
     if err.is_timeout() {
         PortError::Timeout
     } else if err.is_decode() {
-        PortError::Other(format!("resposta inesperada: {err}"))
+        tracing::warn!(%err, "resposta inesperada");
+        PortError::Known(mirrorsight_domain::error::Reason::UnexpectedResponse)
     } else {
         PortError::Network(err.to_string())
     }

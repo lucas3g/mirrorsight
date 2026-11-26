@@ -16,6 +16,7 @@ use mirrorsight_parser::catalog::{CatalogStat, StatCatalog};
 use crate::hotkeys::HotkeyManager;
 use crate::overlay;
 use crate::state::AppState;
+use crate::tray;
 
 #[tauri::command]
 pub fn get_settings(state: State<'_, AppState>) -> Result<Settings, AppError> {
@@ -50,16 +51,22 @@ fn apply_autostart(app: &AppHandle, enabled: bool) {
     }
 }
 
+/// Traduz o menu e o tooltip da bandeja para o idioma da interface.
+#[tauri::command]
+pub fn set_tray_labels(app: AppHandle, labels: tray::TrayLabels) -> Result<(), AppError> {
+    tray::set_labels(&app, &labels).map_err(|e| AppError::internal(e.to_string()))
+}
+
 /// Alarga/restaura o overlay para o card do item listado (olho). `extra` em px lógicos.
 #[tauri::command]
 pub fn overlay_peek(app: AppHandle, open: bool, extra: f64) -> Result<overlay::PeekSide, AppError> {
-    overlay::peek(&app, open, extra).map_err(|e| AppError::Internal { message: e.to_string() })
+    overlay::peek(&app, open, extra).map_err(|e| AppError::internal(e.to_string()))
 }
 
 /// Fecha o overlay e devolve o foco ao jogo.
 #[tauri::command]
 pub fn hide_overlay(app: AppHandle, state: State<'_, AppState>) -> Result<(), AppError> {
-    overlay::hide(&app).map_err(|e| AppError::Internal { message: e.to_string() })?;
+    overlay::hide(&app).map_err(|e| AppError::internal(e.to_string()))?;
     // Jogo fechado ou nunca visto: não há a quem devolver o foco — não é erro.
     let _ = state.game_window.focus_game();
     Ok(())

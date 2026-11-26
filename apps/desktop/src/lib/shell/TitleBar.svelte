@@ -1,6 +1,7 @@
 <script lang="ts">
   import { backend } from '$lib/backend';
   import type { GameVersion } from '$lib/types';
+  import { shellMsgs } from '$lib/i18n/messages/shell';
   import { commands } from '$lib/stores/commands.svelte';
   import { leagues } from '$lib/stores/leagues.svelte';
   import { PANE_LABEL, SCREEN_LABEL, nav } from '$lib/stores/nav.svelte';
@@ -29,14 +30,14 @@
 <header class="titlebar" data-tauri-drag-region>
   <div class="brand" data-tauri-drag-region>
     <Logo size={28} />
-    <div data-tauri-drag-region><b>Mirrorsight</b><small>price check · Path of Exile</small></div>
+    <div data-tauri-drag-region><b>Mirrorsight</b><small>{shellMsgs.title.tagline}</small></div>
   </div>
 
-  <nav class="crumb" aria-label="Você está em" data-tauri-drag-region>
+  <nav class="crumb" aria-label={shellMsgs.title.crumbAria} data-tauri-drag-region>
     <span>Mirrorsight</span>
     <Icon name="chevron-right" size={12} />
     {#if nav.screen === 'settings'}
-      <span>Configurações</span>
+      <span>{SCREEN_LABEL.settings}</span>
       <Icon name="chevron-right" size={12} />
       <b>{PANE_LABEL[nav.settingsPane]}</b>
     {:else}
@@ -44,15 +45,15 @@
     {/if}
   </nav>
 
-  <button class="cmdk" onclick={() => commands.toggle()} title="Paleta de comandos (Ctrl+K)">
+  <button class="cmdk" onclick={() => commands.toggle()} title={shellMsgs.title.paletteTitle}>
     <Icon name="search" size={15} />
-    <span>Buscar ação, item, configuração…</span>
+    <span>{shellMsgs.title.searchPlaceholder}</span>
     <kbd class="kbd">Ctrl K</kbd>
   </button>
 
   <Segmented
     pill
-    ariaLabel="Jogo"
+    ariaLabel={shellMsgs.title.game}
     options={[{ value: 'poe1', label: 'PoE 1' }, { value: 'poe2', label: 'PoE 2' }]}
     value={game}
     onchange={(g: GameVersion) => leagues.changeGame(g)}
@@ -64,7 +65,7 @@
     aria-haspopup="listbox"
     aria-expanded={nav.leagueMenuOpen}
     onclick={() => (nav.leagueMenuOpen = !nav.leagueMenuOpen)}
-    title="Liga de trade"
+    title={shellMsgs.title.leagueTitle}
   >
     <span class="led"></span>
     <span class="name">{settings.current?.league ?? '—'}</span>
@@ -77,11 +78,11 @@
 </header>
 
 {#if nav.leagueMenuOpen}
-  <Popover anchor={leagueChip} align="end" width={240} label="Ligas" onclose={() => (nav.leagueMenuOpen = false)}>
-    <div class="menu" role="listbox" aria-label="Liga">
-      <div class="label head">Ligas · {game === 'poe2' ? 'PoE 2' : 'PoE 1'}</div>
+  <Popover anchor={leagueChip} align="end" width={240} label={shellMsgs.title.leagues} onclose={() => (nav.leagueMenuOpen = false)}>
+    <div class="menu" role="listbox" aria-label={shellMsgs.title.league}>
+      <div class="label head">{shellMsgs.title.leaguesHead(game === 'poe2' ? 'PoE 2' : 'PoE 1')}</div>
       {#if leagues.loading && leagues.fetched.length === 0}
-        <div class="muted"><span class="spinner"></span>Carregando ligas…</div>
+        <div class="muted"><span class="spinner"></span>{shellMsgs.title.loadingLeagues}</div>
       {:else}
         {#each leagues.list as league, i (league)}
           <button
@@ -92,10 +93,10 @@
           >
             {#if league === settings.current?.league}<Icon name="check" size={14} />{:else}<span class="ph"></span>{/if}
             {league}
-            {#if i === 0 && !leagues.error}<small>atual</small>{/if}
+            {#if i === 0 && !leagues.error}<small>{shellMsgs.title.current}</small>{/if}
           </button>
         {/each}
-        {#if leagues.error}<div class="muted">Não foi possível carregar as ligas.</div>{/if}
+        {#if leagues.error}<div class="muted">{shellMsgs.title.leaguesError}</div>{/if}
       {/if}
     </div>
   </Popover>

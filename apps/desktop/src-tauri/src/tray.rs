@@ -3,20 +3,51 @@
 
 use tauri::menu::{Menu, MenuItem, PredefinedMenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
-use tauri::{App, AppHandle, Emitter, Manager};
+use tauri::{App, AppHandle, Emitter, Manager, Wry};
 
 /// Evento para o frontend da janela principal abrir a aba de configurações.
 pub const EVENT_OPEN_SETTINGS: &str = "main:open-settings";
 const MAIN: &str = "main";
 
+const TRAY_ID: &str = "mirrorsight";
+
+/// Itens do menu da bandeja, guardados para o frontend trocar o idioma depois.
+pub struct TrayMenu {
+    open: MenuItem<Wry>,
+    settings: MenuItem<Wry>,
+    quit: MenuItem<Wry>,
+}
+
+/// Textos traduzidos do menu da bandeja (vindos do frontend).
+#[derive(Debug, serde::Deserialize)]
+pub struct TrayLabels {
+    pub open: String,
+    pub settings: String,
+    pub quit: String,
+    pub tooltip: String,
+}
+
+/// Aplica os textos no idioma escolhido pelo usuário.
+pub fn set_labels(app: &AppHandle, labels: &TrayLabels) -> tauri::Result<()> {
+    if let Some(menu) = app.try_state::<TrayMenu>() {
+        menu.open.set_text(&labels.open)?;
+        menu.settings.set_text(&labels.settings)?;
+        menu.quit.set_text(&labels.quit)?;
+    }
+    if let Some(tray) = app.tray_by_id(TRAY_ID) {
+        tray.set_tooltip(Some(&labels.tooltip))?;
+    }
+    Ok(())
+}
+
 pub fn build(app: &App) -> tauri::Result<()> {
-    let open = MenuItem::with_id(app, "open", "Abrir Mirrorsight", true, None::<&str>)?;
-    let settings = MenuItem::with_id(app, "settings", "Configurações", true, None::<&str>)?;
-    let quit = MenuItem::with_id(app, "quit", "Sair", true, None::<&str>)?;
+    let open = MenuItem::with_id(app, "open", "Open Mirrorsight", true, None::<&str>)?;
+    let settings = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
+    let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
     let menu = Menu::with_items(app, &[&open, &settings, &PredefinedMenuItem::separator(app)?, &quit])?;
 
-    let mut tray = TrayIconBuilder::with_id("mirrorsight")
-        .tooltip("Mirrorsight — Ctrl+D sobre um item no jogo")
+    let mut tray = TrayIconBuilder::with_id(TRAY_ID)
+        .tooltip("Mirrorsight — Ctrl+D")
         .menu(&menu)
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id.as_ref() {
@@ -34,6 +65,7 @@ pub fn build(app: &App) -> tauri::Result<()> {
         tray = tray.icon(icon.clone());
     }
     tray.build(app)?;
+    app.manage(TrayMenu { open, settings, quit });
     Ok(())
 }
 

@@ -3,6 +3,7 @@
   import { formatAmount, relativeAge } from '$lib/format';
   import CurrencyIcon from '$lib/ui/CurrencyIcon.svelte';
   import Icon from '$lib/ui/Icon.svelte';
+  import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
 
   let {
     listing,
@@ -31,7 +32,7 @@
 <div class="listing" class:best class:peeking class:compact bind:this={row} style:--i={index}>
   <span class="price">
     <b class="mono">{formatAmount(listing.price.amount)}</b><CurrencyIcon currency={listing.price.currency} size={16} />
-    {#if best && !compact}<span class="cheap">MAIS BARATO</span>{/if}
+    {#if best && !compact}<span class="cheap">{pm.cheapest}</span>{/if}
   </span>
   {#if compact}
     <span class="ilvl mono" title="Item level">{listing.item?.item_level ?? '—'}</span>
@@ -46,8 +47,8 @@
       <button
         class="ib sm"
         class:on={peeking}
-        aria-label="Ver item listado"
-        title="Ver item"
+        aria-label={pm.viewListedItem}
+        title={pm.viewItem}
         onmouseenter={() => row && onpeek(row)}
         onmouseleave={onunpeek}
         onfocus={() => row && onpeek(row)}
@@ -57,7 +58,7 @@
       </button>
     {/if}
     {#if listing.whisper && !compact}
-      <button class="ib sm" title="Copiar whisper" aria-label="Copiar whisper para {listing.account}" onclick={() => onwhisper(listing)}>
+      <button class="ib sm" title={pm.copyWhisper} aria-label={pm.copyWhisperFor(listing.account)} onclick={() => onwhisper(listing)}>
         <Icon name="chat" size={15} />
       </button>
     {/if}

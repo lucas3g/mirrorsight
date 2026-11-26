@@ -15,6 +15,7 @@
   import ModEditor from './ModEditor.svelte';
   import PriceCard from './PriceCard.svelte';
   import SuggestedPrice from './SuggestedPrice.svelte';
+  import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
 
   /**
    * Price check completo. Janela principal: duas colunas de cartões (item + mods | preço + mercado).
@@ -36,7 +37,6 @@
   /** Cotação do divine derivada do próprio poe.ninja, para quando não há listagens. */
   const ninjaDivine = $derived(indexed?.divine_value ? indexed.chaos_value / indexed.divine_value : null);
 
-  const CONFIDENCE = ['nenhuma', 'baixa', 'média', 'alta'];
   const big = $derived(summary ? displayAmount(summary.estimate_chaos, summary.divine_chaos, settings.current?.display_currency === 'divine') : null);
   const propsLine = $derived(
     item
@@ -44,7 +44,7 @@
           item.item_level ? `iLvl ${item.item_level}` : null,
           item.quality ? `Q ${item.quality}%` : null,
           item.sockets && maxLinks(item.sockets) >= 2 ? `${maxLinks(item.sockets)}L` : null,
-          item.corrupted ? 'Corrompido' : null,
+          item.corrupted ? pm.corrupted : null,
         ]
           .filter(Boolean)
           .join(' · ')
@@ -56,7 +56,7 @@
 
   function togglePin() {
     priceCheck.pinned = !priceCheck.pinned;
-    toasts.push('info', priceCheck.pinned ? 'Painel fixado — não fecha ao voltar ao jogo' : 'Painel desafixado');
+    toasts.push('info', priceCheck.pinned ? pm.pinnedToast : pm.unpinnedToast);
   }
 
   /** Arrasta o overlay pelo cabeçalho (menos pelos botões). */
@@ -81,7 +81,7 @@
     aria-label="Price check"
   >
     <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <header class="ovhead" onmousedown={dragOverlay} title="Arraste para mover">
+    <header class="ovhead" onmousedown={dragOverlay} title={pm.dragToMove}>
       <div class="art">
         {#if item}<ItemArt {item} icon={itemIcon} size="sm" />{:else}<div class="sk" style="width:100%;height:100%"></div>{/if}
       </div>
@@ -96,24 +96,24 @@
         {/if}
       </div>
       <div class="est">
-        <span class="label">Preço estimado</span>
+        <span class="label">{pm.estimatedPrice}</span>
         {#if waiting}
           <div class="sk" style="width:120px;height:28px;margin:4px 0 0 auto"></div>
         {:else if summary && big}
           <div class="ev"><b class="mono">{formatAmount(big.amount)}</b><CurrencyIcon currency={big.currency} size={20} /></div>
           <span class="es">
-            ≈ {formatAmount(summary.estimate_chaos)} c · confiança {CONFIDENCE[summary.confidence] ?? '—'} · {summary.sample_size} anúncios
+            {pm.estimateLine(formatAmount(summary.estimate_chaos), summary.confidence, summary.sample_size)}
           </span>
         {:else if indexed}
           <div class="ev ninja"><ChaosValue chaos={indexed.chaos_value} divineRate={ninjaDivine} size={20} itemName={item?.base_type} /></div>
-          <span class="es">poe.ninja · sem listagens</span>
+          <span class="es">{pm.ninjaNoListings}</span>
         {:else}
           <div class="ev"><b class="mono none">—</b></div>
         {/if}
       </div>
       <div class="acts">
-        <button class="ib" class:on={priceCheck.pinned} onclick={togglePin} title="Fixar painel" aria-pressed={priceCheck.pinned}><Icon name="pin" /></button>
-        <button class="ib" onclick={() => priceCheck.close()} title="Fechar (Esc)"><Icon name="x" /></button>
+        <button class="ib" class:on={priceCheck.pinned} onclick={togglePin} title={pm.pinPanel} aria-pressed={priceCheck.pinned}><Icon name="pin" /></button>
+        <button class="ib" onclick={() => priceCheck.close()} title={pm.closeEsc}><Icon name="x" /></button>
       </div>
     </header>
 
@@ -126,19 +126,19 @@
 
     <footer class="ovfoot">
       <Segmented
-        ariaLabel="Vendedores"
-        options={[{ value: 'online', label: 'Online' }, { value: 'any', label: 'Qualquer' }]}
+        ariaLabel={pm.sellers}
+        options={[{ value: 'online', label: pm.online }, { value: 'any', label: pm.any }]}
         value={onlineMode}
         onchange={(v: OnlineMode) => priceCheck.setFilter('online_only', v === 'online')}
       />
-      <span class="league" title="Liga (altere na janela principal)">{settings.current?.league ?? '—'}</span>
-      {#if priceCheck.dirty}<span class="dirty"><Icon name="info" size={13} />Filtros alterados</span>{/if}
+      <span class="league" title={pm.leagueHint}>{settings.current?.league ?? '—'}</span>
+      {#if priceCheck.dirty}<span class="dirty"><Icon name="info" size={13} />{pm.filtersChanged}</span>{/if}
       <span class="grow"></span>
-      <button class="btn btn-ghost btn-sm" disabled={!priceCheck.filters} onclick={() => priceCheck.relax(10)}>Relaxar −10%</button>
+      <button class="btn btn-ghost btn-sm" disabled={!priceCheck.filters} onclick={() => priceCheck.relax(10)}>{pm.relax10}</button>
       {#if output?.trade?.web_url}
         <button class="btn btn-ghost btn-sm" onclick={openTrade}>Trade <Icon name="ext" size={13} /></button>
       {/if}
-      {#if loading}<span class="busy"><span class="spinner"></span>Buscando…</span>{/if}
+      {#if loading}<span class="busy"><span class="spinner"></span>{pm.searching}</span>{/if}
     </footer>
   </article>
 {:else}
