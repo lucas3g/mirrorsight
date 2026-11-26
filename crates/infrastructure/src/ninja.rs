@@ -561,6 +561,7 @@ mod tests {
             trade_type: None,
             map_tier: None,
             affix_slots: None,
+            flags: Default::default(),
         }
     }
 
@@ -622,6 +623,7 @@ mod tests {
             roll: None,
             tier: None,
             affix: None,
+            ..Default::default()
         }];
         assert_eq!(pick_unique(&lines.lines, &aegis).map(|l| l.chaos_value), Some(80.0));
     }

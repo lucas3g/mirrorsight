@@ -1,5 +1,7 @@
 import type {
   AppError,
+  BuildDetails,
+  BuildFile,
   CatalogStat,
   ErrorReason,
   GameVersion,
@@ -16,7 +18,9 @@ import {
   DEMO_GLOVES,
   DEMO_NETWORK,
   DEMO_RATE_LIMIT,
+  DEMO_BUILDS,
   DEMO_STATS,
+  demoBuildDetails,
   currencyOutput,
   defaultFilters,
   rareOutput,
@@ -54,6 +58,9 @@ const DEFAULT_SETTINGS: Settings = {
   ui_scale: 1,
   reduce_motion: false,
   suggested_level: 'fair',
+  build_path: null,
+  build_item_set: null,
+  build_skill_set: null,
 };
 
 /** Espelho simplificado de `RESERVED` em `crates/domain/src/hotkey.rs` (só para o modo demo). */
@@ -132,10 +139,13 @@ export class DemoBackend implements Backend {
     if (/^Rarity: Currency/m.test(text)) return currencyOutput();
 
     const settings = await this.getSettings();
+    const found = DEMO_BUILDS.find((b) => b.file.path === settings.build_path);
+    const build = found ? { ...found, details: demoBuildDetails(found, settings.build_item_set, settings.build_skill_set) } : null;
     return rareOutput(
       filters ??
         defaultFilters(DEMO_GLOVES, settings.mod_range_percent, settings.default_filter_kinds, settings.show_offline),
       text.includes(DEMO_FEW),
+      build,
     );
   }
 
@@ -203,6 +213,16 @@ export class DemoBackend implements Backend {
     else list.push(clean);
     localStorage.setItem(PRESETS_KEY, JSON.stringify(book));
     return list;
+  }
+
+  async listPobBuilds(): Promise<BuildFile[]> {
+    return DEMO_BUILDS.map((b) => b.file);
+  }
+
+  async pobBuildDetails(path: string, itemSet: string | null, skillSet: string | null): Promise<BuildDetails> {
+    const found = DEMO_BUILDS.find((b) => b.file.path === path);
+    if (!found) return fail({ code: 'internal', data: { message: `build não encontrado: ${path}` } });
+    return demoBuildDetails(found, itemSet, skillSet);
   }
 
   async deletePreset(id: string): Promise<void> {

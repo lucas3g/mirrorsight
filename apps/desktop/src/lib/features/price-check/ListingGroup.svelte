@@ -4,6 +4,7 @@
   import ChaosValue from '$lib/features/shared/ChaosValue.svelte';
   import GroupTag from './GroupTag.svelte';
   import ListingRow from './ListingRow.svelte';
+  import { GROUP_PREVIEW } from './groups';
 
   /**
    * Um grupo da listagem agrupada (PoE1): cabeçalho com selo, contagem e menor preço do grupo
@@ -40,6 +41,15 @@
     onwhisper: (listing: Listing) => void;
   } = $props();
 
+  let expanded = $state(false);
+  // Nova busca: o grupo volta a mostrar só os primeiros.
+  $effect(() => {
+    void entries;
+    expanded = false;
+  });
+  const shown = $derived(expanded ? entries : entries.slice(0, GROUP_PREVIEW));
+  const hidden = $derived(entries.length - shown.length);
+
   const min = $derived(entries.find((e) => e.chaos !== null)?.chaos ?? null);
   const hint = $derived(kind === 'not_comparable' ? pm.groupNotComparableHint : kind === 'no_item' ? pm.groupNoItemHint : null);
 </script>
@@ -54,7 +64,7 @@
   {#if entries.length === 0}
     <div class="empty">{pm.groupEmpty}</div>
   {:else}
-    {#each entries as entry, i (entry.index)}
+    {#each shown as entry, i (entry.index)}
       {@const listing = listings[entry.index]}
       {#if listing}
         <ListingRow
@@ -63,12 +73,18 @@
           best={false}
           {compact}
           peeking={peekIndex === entry.index}
+          quality={entry.detail?.quality ?? null}
           onpeek={(row) => onpeek(entry, row)}
           {onunpeek}
           {onwhisper}
         />
       {/if}
     {/each}
+    {#if hidden > 0}
+      <button class="more" onclick={() => (expanded = true)}>{pm.showMore(hidden)}</button>
+    {:else if expanded && entries.length > GROUP_PREVIEW}
+      <button class="more" onclick={() => (expanded = false)}>{pm.showLess}</button>
+    {/if}
   {/if}
 </div>
 
@@ -88,6 +104,18 @@
   .gmin :global(b) { color: var(--ms-price); font-weight: 700; }
   .gdesc { padding: 4px 12px 2px; font-size: 11px; color: var(--ms-text-3); }
   .empty { display: flex; align-items: center; height: 34px; padding: 0 12px; font-size: 12px; font-style: italic; color: var(--ms-text-3); }
+  .more {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 30px;
+    padding: 0 12px;
+    font-size: 11.5px;
+    font-weight: 650;
+    color: var(--ms-accent);
+    transition: background var(--ms-t-fast);
+  }
+  .more:hover { background: var(--ms-surface-2); }
   /* Janela principal: mesmo recuo das linhas largas. */
-  .wide .gh, .wide .gdesc, .wide .empty { padding-left: 14px; padding-right: 14px; }
+  .wide .gh, .wide .gdesc, .wide .empty, .wide .more { padding-left: 14px; padding-right: 14px; }
 </style>

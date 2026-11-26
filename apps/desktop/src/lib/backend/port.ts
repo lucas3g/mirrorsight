@@ -1,5 +1,7 @@
 import type {
   AppError,
+  BuildDetails,
+  BuildFile,
   CatalogStat,
   GameVersion,
   HistoryEntry,
@@ -46,6 +48,10 @@ export interface Backend {
   /** Cria/atualiza pelo id; devolve a lista do jogo do preset. Rejeita com `invalid-settings`. */
   upsertPreset(preset: ModPreset): Promise<ModPreset[]>;
   deletePreset(id: string): Promise<void>;
+  /** Builds salvos do Path of Building (pasta padrão em Documentos). */
+  listPobBuilds(): Promise<BuildFile[]>;
+  /** O que a avaliação entende de um build com os sets escolhidos (`null` = ativo no PoB), e os sets. */
+  pobBuildDetails(path: string, itemSet: string | null, skillSet: string | null): Promise<BuildDetails>;
 
   /** Qual janela está rodando este frontend. */
   windowRole(): WindowRole;

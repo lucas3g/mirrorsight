@@ -6,6 +6,8 @@ import { openUrl } from '@tauri-apps/plugin-opener';
 
 import type {
   AppError,
+  BuildDetails,
+  BuildFile,
   CatalogStat,
   GameVersion,
   HistoryEntry,
@@ -90,6 +92,14 @@ export class TauriBackend implements Backend {
 
   deletePreset(id: string): Promise<void> {
     return invoke('delete_preset', { id });
+  }
+
+  listPobBuilds(): Promise<BuildFile[]> {
+    return invoke<BuildFile[]>('list_pob_builds');
+  }
+
+  pobBuildDetails(path: string, itemSet: string | null, skillSet: string | null): Promise<BuildDetails> {
+    return invoke<BuildDetails>('pob_build_details', { path, itemSet, skillSet });
   }
 
   windowRole(): WindowRole {

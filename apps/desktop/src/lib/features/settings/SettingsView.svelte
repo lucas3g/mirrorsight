@@ -69,6 +69,7 @@
           row(p.defaultLevel, KW.defaultLevel),
           [p.history.label, `${p.history.search} ${KW.history}`],
           [p.presets.label, `${p.presets.search} ${KW.presets}`],
+          row(p.build, KW.build),
         ],
       },
       {

@@ -3,18 +3,27 @@
  */
 import type {
   Affix,
+  BuildDetails,
+  BuildFile,
+  BuildSummary,
   CatalogStat,
   CompareDetail,
+  CraftingPotential,
   GroupEntry,
   GroupKind,
   Item,
+  ItemQuality,
   Listing,
   ListingComparison,
+  ModEvaluation,
   Modifier,
   ModifierKind,
+  NeedChange,
   PriceCheckOutput,
   SearchFilters,
+  StatDelta,
   SuggestedPrice,
+  UpgradeVerdict,
 } from '$lib/types';
 
 export const SAMPLE_RARE_TEXT = `Item Class: Gloves
@@ -135,82 +144,324 @@ function listedVariant(i: number): Item {
   };
 }
 
-// ---------- Agrupamento por status (espelho simplificado de crates/domain/src/compare.rs) ----------
+// ---------- Avaliação (espelho simplificado de crates/domain/src/evaluation) ----------
 
-/** Anúncio sem tiers (vai para "Não comparável"). */
+/** Anúncio sem mods comparáveis (vai para "Não comparável"). */
 const NOT_COMPARABLE = 4;
-/** Tier e percentil dos mods do seu item que entram na qualidade (explícitos/fractured). */
-const YOUR_STATS: Record<string, [number, number]> = {
-  stat_3299347043: [2, 0.89],
-  stat_3372524247: [1, 1],
-  stat_4220027924: [2, 1],
-  stat_3032590688: [4, 0.5],
-  stat_3261801346: [3, 0.56],
+/** Anúncio com rolls excelentes que mesmo assim é PIOR (perde as resistências). */
+const EXCELLENT_BUT_WORSE = 6;
+/** Anúncio com um mod sem dados (inconclusivo). */
+const WITH_INCONCLUSIVE = 3;
+/** Anúncio melhor que o seu item (mais vida e resistências). */
+const BETTER = 1;
+/** Anúncio igual ao seu item. */
+const EQUIVALENT = 2;
+
+const EXCELLENT_ITEM: Item = {
+  ...GLOVES,
+  name: 'Vortex Hand',
+  influences: [],
+  sockets: 'B-B-B B',
+  modifiers: [
+    mod('fractured', 'stat_3299347043', '+129 to maximum Life', 129, 115, 129, 1, 'prefix'),
+    mod('explicit', 'stat_681332047', '16% increased Attack Speed', 16, 14, 16, 1, 'suffix'),
+  ],
+  affix_slots: { prefixes: 1, suffixes: 1 },
 };
-/** Seu item: 4 suffixes ocupados (crafted incluso) → 0 livre. */
-const YOUR_FREE = 0;
-/** Valores fictícios de cada anúncio nos mods em comum: [tier médio, percentil médio, suffixes livres]. */
-const LISTING_SCORES: [number, number, number][] = [
-  [2.33, 0.7, 0],
-  [2, 0.71, 1],
-  [2, 0.86, 1],
-  [2, 0.9, 0],
-  [0, 0, 0],
-  [1.5, 0.6, 0],
-  [1.67, 0.96, 1],
-  [1.75, 0.8, 0],
-];
 
-const avg = (v: number[]) => v.reduce((a, b) => a + b, 0) / Math.max(1, v.length);
-const r2 = (v: number) => Math.round(v * 100);
+const BETTER_ITEM: Item = {
+  ...GLOVES,
+  name: 'Rapture Hold',
+  influences: [],
+  modifiers: [
+    mod('explicit', 'stat_3299347043', '+127 to maximum Life', 127, 115, 129, 1, 'prefix'),
+    mod('explicit', 'stat_3372524247', '+46% to Fire Resistance', 46, 46, 48, 1, 'suffix'),
+    mod('explicit', 'stat_4220027924', '+44% to Cold Resistance', 44, 42, 45, 1, 'suffix'),
+    mod('explicit', 'stat_3032590688', 'Adds 12 to 21 Physical Damage to Attacks', 16.5, 13.5, 19.5, 4, 'prefix'),
+    mod('explicit', 'stat_3261801346', '+38 to Dexterity', 38, 33, 42, 3, 'suffix'),
+    mod('crafted', 'stat_2923486259', '+16% to Chaos Resistance', 16, 12, 16, null, 'suffix'),
+  ],
+  affix_slots: { prefixes: 2, suffixes: 4 },
+};
 
-function demoDetail(listing: Listing, i: number): { kind: GroupKind; detail: CompareDetail | null } {
-  const item = listing.item;
-  if (!item) return { kind: 'no_item', detail: null };
-  if (i === NOT_COMPARABLE) return { kind: 'not_comparable', detail: null };
-  const common = item.modifiers.filter((m) => m.kind !== 'crafted' && YOUR_STATS[m.trade_id.split('.')[1] ?? '']);
-  const mine = common.map((m) => YOUR_STATS[m.trade_id.split('.')[1] ?? '']!);
-  const [tier, pct, free] = LISTING_SCORES[i] ?? [2, 0.5, 0];
-  const yours = { avg_tier: avg(mine.map((s) => s[0])), avg_percentile: avg(mine.map((s) => s[1])), free_valued: YOUR_FREE };
-  const steps: [CompareDetail['decided'], number][] = [
-    ['tier', r2(yours.avg_tier) - r2(tier)],
-    ['percentile', r2(pct) - r2(yours.avg_percentile)],
-    ['slots', free - YOUR_FREE],
-  ];
-  const step = steps.find(([, diff]) => diff !== 0);
+/** Por stat: peso genérico, escala (T1 máx.), nº de tiers na base e tags. */
+const STAT_INFO: Record<string, { weight: number; scale: number; tiers: number; tags: string[] }> = {
+  stat_3299347043: { weight: 1.5, scale: 129, tiers: 8, tags: ['resource', 'life'] },
+  stat_3372524247: { weight: 1.2, scale: 48, tiers: 8, tags: ['elemental', 'fire', 'resistance'] },
+  stat_4220027924: { weight: 1.2, scale: 48, tiers: 8, tags: ['elemental', 'cold', 'resistance'] },
+  stat_2923486259: { weight: 1.2, scale: 35, tiers: 5, tags: ['chaos', 'resistance'] },
+  stat_3032590688: { weight: 1, scale: 20, tiers: 9, tags: ['damage', 'physical_damage', 'attack'] },
+  stat_3261801346: { weight: 0.6, scale: 55, tiers: 9, tags: ['attribute'] },
+  stat_4015621042: { weight: 1.2, scale: 42, tiers: 8, tags: ['defences', 'energy_shield'] },
+  stat_681332047: { weight: 1, scale: 16, tiers: 5, tags: ['attack', 'speed'] },
+};
+const statId = (m: Modifier) => m.trade_id.split('.')[1] ?? '';
+
+/** Valor do mod pelo texto (média dos números, como o `StatRoll`). */
+function valueOf(m: Modifier): number {
+  const nums = (m.text.match(/\d+(?:\.\d+)?/g) ?? []).map(Number);
+  return nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : 1;
+}
+
+function evaluateMod(m: Modifier, inconclusive: boolean): ModEvaluation {
+  const info = STAT_INFO[statId(m)];
+  const value = valueOf(m);
+  const base: ModEvaluation = {
+    trade_id: m.trade_id,
+    text: m.text,
+    kind: m.kind,
+    origin: null,
+    value,
+    min: m.roll?.min ?? null,
+    max: m.roll?.max ?? null,
+    tier: m.tier,
+    tier_count: info?.tiers ?? null,
+    roll: null,
+    global_roll: null,
+    quality: null,
+    importance: (info?.weight ?? 0.5) * (m.kind === 'crafted' ? 0.5 : 1),
+    status: { kind: 'exact' },
+    variant: null,
+    range_mismatch: false,
+    tags: info?.tags ?? [],
+  };
+  if (inconclusive || base.min === null || base.max === null) {
+    return { ...base, min: null, max: null, tier_count: null, status: { kind: 'inconclusive', reason: 'no_range' } };
+  }
+  const roll = base.max > base.min ? Math.min(1, Math.max(0, (value - base.min) / (base.max - base.min))) : 1;
+  const count = base.tier_count ?? 0;
+  const tierScore = m.tier && count > 1 ? 1 - (m.tier - 1) / (count - 1) : 1;
+  const quality = m.kind === 'crafted' ? roll : 0.7 * tierScore + 0.3 * roll;
+  return { ...base, roll, quality };
+}
+
+function qualityOf(item: Item, inconclusiveExtra = false): ItemQuality {
+  const mods = item.modifiers.map((m) => evaluateMod(m, false));
+  if (inconclusiveExtra) {
+    mods.push(evaluateMod(mod('explicit', 'stat_9999', '+1 to Level of Socketed Gems', 1, 0, 0), true));
+  }
+  const scored = mods.filter((m) => m.quality !== null);
+  const weight = scored.reduce((a, m) => a + m.importance, 0);
+  const modsScore = weight > 0 ? scored.reduce((a, m) => a + (m.quality ?? 0) * m.importance, 0) / weight : null;
+  const slots = item.affix_slots ?? { prefixes: 3, suffixes: 3 };
+  const openPrefixes = Math.max(0, 3 - slots.prefixes);
+  const openSuffixes = Math.max(0, 3 - slots.suffixes);
+  const crafted = mods.filter((m) => m.kind === 'crafted').length;
+  const fracturedHigh = mods.filter((m) => m.kind === 'fractured' && (m.tier ?? 9) <= 2).length;
+  const blocked: CraftingPotential['blocked'] = item.corrupted ? ['corrupted'] : [];
+  const craftScore = blocked.length
+    ? 0
+    : Math.min(
+        1,
+        0.35 * Math.min(2, openSuffixes) +
+          0.12 * Math.min(3, openPrefixes) +
+          0.2 * Math.min(1, crafted) +
+          0.2 * Math.min(1, fracturedHigh) +
+          0.1,
+      );
+  const score = modsScore === null ? null : Math.round(1000 * (0.75 * modsScore + 0.25 * craftScore)) / 10;
+  const total = mods.reduce((a, m) => a + m.importance, 0);
+  const unknown = mods.filter((m) => m.status.kind === 'inconclusive').reduce((a, m) => a + m.importance, 0);
+  const share = total > 0 ? unknown / total : 0;
   return {
-    kind: !step ? 'equal' : step[1] > 0 ? 'better' : 'worse',
-    detail: {
-      common: common.length,
-      common_ids: common.map((m) => m.trade_id),
-      listing: { avg_tier: tier, avg_percentile: pct, free_valued: free },
-      yours,
-      decided: step?.[0] ?? null,
+    score,
+    grade: score === null ? null : score >= 85 ? 'excellent' : score >= 65 ? 'good' : score >= 40 ? 'average' : 'weak',
+    confidence: score === null ? 'low' : share <= 0.1 ? 'high' : share <= 0.35 ? 'medium' : 'low',
+    mods_score: modsScore,
+    mods,
+    crafting: {
+      open_prefixes: openPrefixes,
+      open_suffixes: openSuffixes,
+      valued: 'suffix',
+      crafted,
+      fractured_high_tier: fracturedHigh,
+      ilvl_allows_top_tier: (item.item_level ?? 0) >= 82,
+      blocked,
+      score: craftScore,
     },
+    unique: null,
+    sockets: null,
   };
 }
 
-function demoComparison(listings: Listing[]): ListingComparison {
+function vectorOf(item: Item): Map<string, { value: number; text: string }> {
+  const out = new Map<string, { value: number; text: string }>();
+  for (const m of item.modifiers) {
+    const key = statId(m);
+    const prev = out.get(key);
+    out.set(key, { value: (prev?.value ?? 0) + valueOf(m), text: m.text.replace(/[+-]?\d+(?:\.\d+)?/g, '#') });
+  }
+  return out;
+}
+
+function upgradeOf(mine: Item, theirs: Item, build: DemoBuild | null): UpgradeVerdict {
+  const a = vectorOf(mine);
+  const b = vectorOf(theirs);
+  const deltas: StatDelta[] = [];
+  let magnitude = 0;
+  for (const key of new Set([...a.keys(), ...b.keys()])) {
+    const info = STAT_INFO[key] ?? { weight: 0.5, scale: Math.max(a.get(key)?.value ?? 1, b.get(key)?.value ?? 1), tiers: 0, tags: [] };
+    const boosted = build !== null && info.tags.includes('damage') && info.tags.some((t) => build.summary.focus.includes(t));
+    const weight = boosted ? info.weight * 1.8 : info.weight;
+    const yours = a.get(key)?.value ?? 0;
+    const theirsValue = b.get(key)?.value ?? 0;
+    magnitude += (weight * yours) / info.scale;
+    const contribution = (weight * (theirsValue - yours)) / info.scale;
+    const text = b.get(key)?.text ?? a.get(key)?.text ?? key;
+    if (Math.abs(contribution) > 1e-9) {
+      deltas.push({ key, text, yours, theirs: theirsValue, weight, contribution: Math.round(contribution * 100) / 100 });
+    }
+  }
+  const needs: NeedChange[] = [];
+  if (build) {
+    const total = 75 + fireOvercapOf(build);
+    const after = total - (a.get('stat_3372524247')?.value ?? 0) + (b.get('stat_3372524247')?.value ?? 0);
+    const shortAfter = Math.max(0, 75 - after);
+    if (shortAfter > 0) {
+      needs.push({ stat: 'fire', short_before: 0, short_after: shortAfter, contribution: -Math.round(shortAfter * 6) / 100 });
+    }
+  }
+  const delta = deltas.reduce((s, d) => s + d.contribution, 0) + needs.reduce((s, n) => s + n.contribution, 0);
+  const relative = delta / Math.max(1, magnitude);
+  // Igual só com exatamente os mesmos mods e rolls (espelho de `same_rolls`).
+  const texts = (item: Item) => item.modifiers.map((m) => m.text.toLowerCase()).sort().join('\n');
+  const verdict = texts(mine) === texts(theirs) ? 'equivalent' : delta > 0 ? 'better' : 'worse';
+  deltas.sort((x, y) => y.contribution - x.contribution);
+  return {
+    verdict,
+    delta: Math.round(delta * 100) / 100,
+    relative: Math.round(relative * 100) / 100,
+    reference: Math.round(Math.max(1, magnitude) * 100) / 100,
+    gains: deltas.filter((d) => d.contribution > 0).slice(0, 3),
+    losses: deltas.filter((d) => d.contribution < 0).reverse().slice(0, 3),
+    synergy: 0,
+    needs,
+    relevant_loss: deltas.some((d) => d.contribution <= -0.5) || needs.length > 0,
+    confidence: !build ? 'medium' : build.details?.summary.needs_estimated ? 'medium' : 'high',
+  };
+}
+
+function demoDetail(listing: Listing, i: number, build: DemoBuild | null): { kind: GroupKind; detail: CompareDetail | null } {
+  const item = listing.item;
+  if (!item) return { kind: 'no_item', detail: null };
+  if (i === NOT_COMPARABLE) return { kind: 'not_comparable', detail: null };
+  const upgrade = upgradeOf(GLOVES, item, build);
+  const kind: GroupKind = upgrade.verdict === 'better' ? 'better' : upgrade.verdict === 'worse' ? 'worse' : 'equal';
+  return { kind, detail: { upgrade, quality: qualityOf(item, i === WITH_INCONCLUSIVE) } };
+}
+
+function demoComparison(listings: Listing[], build: DemoBuild | null): ListingComparison {
   const order: GroupKind[] = ['worse', 'equal', 'better', 'not_comparable', 'no_item'];
   const groups = order.map((kind) => ({ kind, entries: [] as GroupEntry[] }));
   listings.forEach((listing, index) => {
-    const { kind, detail } = demoDetail(listing, index);
+    const { kind, detail } = demoDetail(listing, index, build);
     const chaos = listing.price.amount * (DEMO_RATES[listing.price.currency] ?? 1);
     groups.find((g) => g.kind === kind)?.entries.push({ index, chaos, detail });
   });
   for (const g of groups) g.entries.sort((a, b) => (a.chaos ?? Infinity) - (b.chaos ?? Infinity));
-  const stats = Object.values(YOUR_STATS);
   return {
     mode: 'grouped',
     you: {
-      avg_tier: avg(stats.map((s) => s[0])),
-      avg_percentile: avg(stats.map((s) => s[1])),
-      free_valued: YOUR_FREE,
-      valued: 'suffix',
-      mods: [],
+      quality: qualityOf(GLOVES),
+      build: build?.details?.summary ?? {
+        name: null,
+        generic: true,
+        class: null,
+        main_skill: null,
+        focus: [],
+        item_set: null,
+        skill_set: null,
+        needs_estimated: false,
+      },
+      data_source: 'PoB v2.69.0 · demo',
     },
     groups,
   };
+}
+
+/** Build fictício do PoB (a demo não lê arquivos). */
+export interface DemoBuild {
+  file: BuildFile;
+  summary: BuildSummary;
+  itemSets: { id: string; title: string; fireOvercap: number }[];
+  skillSets: { id: string; title: string; mainSkill: string | null }[];
+  activeItemSet: string;
+  activeSkillSet: string;
+  /** Preenchido com a escolha de sets das configurações. */
+  details?: BuildDetails;
+}
+
+const summaryOf = (name: string, cls: string, focus: string[]): BuildSummary => ({
+  name,
+  generic: false,
+  class: cls,
+  main_skill: null,
+  focus,
+  item_set: null,
+  skill_set: null,
+  needs_estimated: false,
+});
+
+export const DEMO_BUILDS: DemoBuild[] = [
+  {
+    file: { name: 'RF 3.27', path: 'demo://RF 3.27.xml', folder: null },
+    summary: summaryOf('RF 3.27', 'Chieftain', ['caster', 'fire', 'life', 'gem', 'resistance']),
+    itemSets: [
+      { id: '1', title: 'Level 1-12', fireOvercap: -20 },
+      { id: '2', title: 'Maps', fireOvercap: 0 },
+      { id: '3', title: 'Melding', fireOvercap: 12 },
+    ],
+    skillSets: [
+      { id: '1', title: 'Leveling', mainSkill: 'Rolling Magma' },
+      { id: '2', title: 'Endgame', mainSkill: 'Righteous Fire' },
+    ],
+    activeItemSet: '3',
+    activeSkillSet: '2',
+  },
+  {
+    file: { name: 'KB 3.27', path: 'demo://Liga/KB 3.27.xml', folder: 'Liga' },
+    summary: summaryOf('KB 3.27', 'Necromancer', ['attack', 'physical', 'life', 'critical', 'gem']),
+    itemSets: [{ id: '1', title: 'Default', fireOvercap: 0 }],
+    skillSets: [{ id: '1', title: 'Default', mainSkill: 'Kinetic Blast of Clustering' }],
+    activeItemSet: '1',
+    activeSkillSet: '1',
+  },
+  {
+    file: { name: 'POISON SPECTRE 3.27', path: 'demo://POISON SPECTRE 3.27.xml', folder: null },
+    summary: summaryOf('POISON SPECTRE 3.27', 'Necromancer', ['minion', 'life', 'gem', 'resistance']),
+    itemSets: [
+      { id: '1', title: 'League start', fireOvercap: 5 },
+      { id: '2', title: 'Endgame', fireOvercap: 30 },
+    ],
+    skillSets: [{ id: '1', title: 'Default', mainSkill: 'Raise Spectre' }],
+    activeItemSet: '2',
+    activeSkillSet: '1',
+  },
+];
+
+/** Espelho de `BuildInput::details`: resumo com os sets escolhidos e os sets disponíveis. */
+export function demoBuildDetails(build: DemoBuild, itemSet: string | null, skillSet: string | null): BuildDetails {
+  const items = build.itemSets.find((s) => s.id === itemSet) ?? build.itemSets.find((s) => s.id === build.activeItemSet)!;
+  const skills = build.skillSets.find((s) => s.id === skillSet) ?? build.skillSets.find((s) => s.id === build.activeSkillSet)!;
+  return {
+    summary: {
+      ...build.summary,
+      main_skill: skills.mainSkill,
+      item_set: items.title,
+      skill_set: skills.title,
+      needs_estimated: items.id !== build.activeItemSet,
+    },
+    item_sets: build.itemSets.map(({ id, title }) => ({ id, title })),
+    skill_sets: build.skillSets.map(({ id, title }) => ({ id, title })),
+    active_item_set: build.activeItemSet,
+    active_skill_set: build.activeSkillSet,
+  };
+}
+
+/** Fogo acima do cap no item set escolhido (para o aviso de "perda relevante"). */
+function fireOvercapOf(build: DemoBuild): number {
+  const id = build.details?.summary.item_set;
+  return build.itemSets.find((s) => s.title === id)?.fireOvercap ?? 0;
 }
 
 export function defaultFilters(item: Item, rangePercent: number, kinds: ModifierKind[], showOffline: boolean): SearchFilters {
@@ -233,7 +484,7 @@ export function defaultFilters(item: Item, rangePercent: number, kinds: Modifier
   };
 }
 
-export function rareOutput(filters: SearchFilters, few = false): PriceCheckOutput {
+export function rareOutput(filters: SearchFilters, few = false, build: DemoBuild | null = null): PriceCheckOutput {
   const enabled = filters.stats.filter((s) => s.enabled).length;
   const looser = Math.max(0, 3 - enabled);
   const prices = few ? PRICES.slice(0, 3) : PRICES;
@@ -243,7 +494,14 @@ export function rareOutput(filters: SearchFilters, few = false): PriceCheckOutpu
     account: SELLERS[i] ?? 'Exile',
     online: i !== 2 && i !== 5,
     indexed_at: minutesAgo(AGES_MIN[i] ?? 60),
-    item: listedVariant(i),
+    item:
+      i === EXCELLENT_BUT_WORSE
+        ? EXCELLENT_ITEM
+        : i === BETTER
+          ? BETTER_ITEM
+          : i === EQUIVALENT
+            ? { ...GLOVES, name: 'Hate Mitts' }
+            : listedVariant(i),
     whisper: `@${SELLERS[i] ?? 'Exile'} Hi, I would like to buy your ${RARE_NAMES[i] ?? 'item'} Sorcerer Gloves listed for ${amount} ${currency} in Standard`,
   }));
   const values = listings.map((l) => l.price.amount * (DEMO_RATES[l.price.currency] ?? 1)).sort((a, b) => a - b);
@@ -270,7 +528,7 @@ export function rareOutput(filters: SearchFilters, few = false): PriceCheckOutpu
       divine_chaos: DIVINE_CHAOS,
       suggested: suggestedOf(values),
     },
-    comparison: demoComparison(listings),
+    comparison: demoComparison(listings, build),
   };
 }
 

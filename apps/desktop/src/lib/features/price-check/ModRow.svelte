@@ -8,7 +8,7 @@
   import { modsMsgs as mm } from '$lib/i18n/messages/mods';
 
   /**
-   * Linha de mod: alça de arraste, switch, texto com barra de roll, tier e mín/máx.
+   * Linha de mod: switch, texto com barra de roll, tier e mín/máx.
    * `compact` (overlay): sem barra de roll e sem coluna de tier; mín e máx menores.
    */
   let {
@@ -16,23 +16,12 @@
     index,
     order,
     compact = false,
-    dragging = false,
-    dragOffset = 0,
-    ongrip,
-    onmove,
   }: {
     stat: StatFilter;
     index: number;
     /** Posição para a animação de entrada. */
     order: number;
     compact?: boolean;
-    dragging?: boolean;
-    /** Deslocamento vertical (px) da linha arrastada. */
-    dragOffset?: number;
-    /** Início do arraste pela alça. */
-    ongrip: (e: PointerEvent, index: number) => void;
-    /** Alt+↑/↓ na alça: −1 sobe, +1 desce. */
-    onmove: (index: number, delta: -1 | 1) => void;
   } = $props();
 
   const percent = $derived(rollPercent(stat.roll));
@@ -94,36 +83,18 @@
     // Depois do mouseup do clique, que senão desfaria a seleção.
     setTimeout(() => input.select());
   }
-
-  function onGripKey(e: KeyboardEvent) {
-    if (!e.altKey || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
-    e.preventDefault();
-    onmove(index, e.key === 'ArrowUp' ? -1 : 1);
-  }
 </script>
 
 <div
   class="mod"
   class:off={!stat.enabled}
   class:compact
-  class:dragging
   class:tinted
   data-stat={index}
   data-kind={stat.kind}
   style:--i={order}
   style:--kind={KIND_COLOR[stat.kind]}
-  style:transform={dragging ? `translateY(${dragOffset}px) rotate(-1deg)` : undefined}
 >
-  <button
-    class="grip"
-    aria-label={mm.reorderAria}
-    title={mm.reorderTitle}
-    onpointerdown={(e) => ongrip(e, index)}
-    onkeydown={onGripKey}
-  >
-    <Icon name="grip" size={compact ? 12 : 14} />
-  </button>
-
   <Toggle label={stat.enabled ? mm.disableMod : mm.enableMod} checked={stat.enabled} onchange={(enabled) => priceCheck.setStat(index, { enabled })} />
 
   <div class="body">
@@ -181,7 +152,7 @@
   .mod {
     position: relative;
     display: grid;
-    grid-template-columns: 14px 32px minmax(0, 1fr) auto 58px 58px;
+    grid-template-columns: 32px minmax(0, 1fr) auto 58px 58px;
     align-items: start;
     gap: 10px;
     padding: 8px;
@@ -192,27 +163,8 @@
     animation: ms-row-in 450ms var(--ms-spring) both;
     animation-delay: calc(var(--i, 0) * 30ms);
   }
-  .mod.compact { grid-template-columns: 10px 32px minmax(0, 1fr) 46px 46px; gap: 6px; padding: 6px; }
+  .mod.compact { grid-template-columns: 32px minmax(0, 1fr) 46px 46px; gap: 6px; padding: 6px; }
   .mod:hover { background: var(--ms-surface-2); border-color: var(--ms-border); }
-  .mod.dragging {
-    z-index: 5;
-    background: var(--ms-surface-3);
-    border-color: var(--ms-accent);
-    box-shadow: 0 18px 34px -14px #000;
-    animation: none;
-    transition: none;
-  }
-  .grip {
-    height: 28px;
-    display: grid;
-    place-items: center;
-    color: var(--ms-text-3);
-    cursor: grab;
-    touch-action: none;
-    border-radius: 4px;
-  }
-  .grip:hover { color: var(--ms-text-2); }
-  .dragging .grip { cursor: grabbing; }
   .mod > :global(.toggle) { margin-top: 4.5px; }
   .compact > :global(.toggle) { margin-top: 2px; }
   .body { min-width: 0; padding-top: 4px; }

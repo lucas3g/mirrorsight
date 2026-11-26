@@ -1,6 +1,6 @@
 <script lang="ts">
   import { tick } from 'svelte';
-  import type { CatalogStat, Item, ModifierKind } from '$lib/types';
+  import type { CatalogStat, Item } from '$lib/types';
   import { KIND_COLOR, KIND_LABEL_PLURAL, KIND_ORDER, maxLinks } from '$lib/format';
   import { priceCheck } from '$lib/stores/priceCheck.svelte';
   import { settings } from '$lib/stores/settings.svelte';
@@ -13,7 +13,7 @@
   import ModRow from './ModRow.svelte';
   import PresetMenu from './PresetMenu.svelte';
 
-  /** Cartão de mods: switch, mín/máx, arrastar para reordenar, presets, margem e busca de mods. */
+  /** Cartão de mods: switch, mín/máx, presets, margem e busca de mods. Mods na ordem do item, por tipo. */
   let { item, compact = false }: { item: Item | null; compact?: boolean } = $props();
 
   type Tab = 'mods' | 'props';
@@ -28,72 +28,15 @@
   const hasTiers = $derived(stats.some((s) => s.tier !== null));
   const game = $derived(settings.current?.game ?? 'poe1');
 
-  /** Linhas agrupadas por tipo, na ordem de exibição do store. */
-  const groups = $derived.by(() => {
-    const order = priceCheck.order.length === stats.length ? priceCheck.order : stats.map((_, i) => i);
-    return KIND_ORDER.map((kind) => ({ kind, indices: order.filter((i) => stats[i]?.kind === kind) })).filter(
+  /** Linhas agrupadas por tipo, na ordem do item (a mesma usada para alinhar os anúncios). */
+  const groups = $derived(
+    KIND_ORDER.map((kind) => ({ kind, indices: stats.flatMap((s, i) => (s.kind === kind ? [i] : [])) })).filter(
       (g) => g.indices.length > 0,
-    );
-  });
+    ),
+  );
 
   type OnlineMode = 'online' | 'any';
   const onlineMode = $derived<OnlineMode>(filters?.online_only === false ? 'any' : 'online');
-
-  // ---------- Arrastar para reordenar (pointer events; o DnD do HTML5 gera imagem fantasma) ----------
-  let drag = $state<{ index: number; kind: ModifierKind; startY: number; offset: number; pos: number | null; line: number | null } | null>(null);
-
-  function startDrag(e: PointerEvent, index: number) {
-    const kind = stats[index]?.kind;
-    if (e.button !== 0 || !kind) return;
-    e.preventDefault();
-    const grip = e.currentTarget as HTMLElement;
-    grip.setPointerCapture(e.pointerId);
-    drag = { index, kind, startY: e.clientY, offset: 0, pos: null, line: null };
-    const move = (ev: PointerEvent) => onDragMove(ev);
-    const end = () => {
-      grip.removeEventListener('pointermove', move);
-      grip.removeEventListener('pointerup', end);
-      grip.removeEventListener('pointercancel', end);
-      finishDrag();
-    };
-    grip.addEventListener('pointermove', move);
-    grip.addEventListener('pointerup', end);
-    grip.addEventListener('pointercancel', end);
-  }
-
-  function onDragMove(e: PointerEvent) {
-    if (!drag || !listEl) return;
-    drag.offset = e.clientY - drag.startY;
-    // Destino = quantas linhas do mesmo grupo (sem a arrastada) têm o centro acima do ponteiro.
-    const others = [...listEl.querySelectorAll<HTMLElement>(`[data-kind="${drag.kind}"][data-stat]`)].filter(
-      (el) => Number(el.dataset.stat) !== drag?.index,
-    );
-    if (others.length === 0) return;
-    const rects = others.map((el) => el.getBoundingClientRect());
-    const pos = rects.filter((r) => r.top + r.height / 2 < e.clientY).length;
-    const listTop = listEl.getBoundingClientRect().top - listEl.scrollTop;
-    const boundary = pos < rects.length ? rects[pos]!.top - 3 : rects[rects.length - 1]!.bottom + 1;
-    drag.pos = pos;
-    drag.line = boundary - listTop;
-  }
-
-  function finishDrag() {
-    const d = drag;
-    drag = null;
-    if (!d || d.pos === null) return;
-    const group = groups.find((g) => g.kind === d.kind);
-    if (group && group.indices.indexOf(d.index) !== d.pos) priceCheck.moveStat(d.index, d.pos);
-  }
-
-  async function moveByKey(index: number, delta: -1 | 1) {
-    const group = groups.find((g) => g.indices.includes(index));
-    if (!group) return;
-    const pos = group.indices.indexOf(index) + delta;
-    if (pos < 0 || pos >= group.indices.length) return;
-    priceCheck.moveStat(index, pos);
-    await tick();
-    listEl?.querySelector<HTMLElement>(`[data-stat="${index}"] .grip`)?.focus();
-  }
 
   // ---------- Adicionar mod ----------
   async function pick(stat: CatalogStat) {
@@ -166,7 +109,7 @@
           <b class="mono">−{priceCheck.margin}%</b>
         </label>
       </div>
-      <div class="colhead label"><span></span><span></span><span>{mm.colMod}</span><span>{mm.colTier}</span><span>{mm.colMin}</span><span>{mm.colMax}</span></div>
+      <div class="colhead label"><span></span><span>{mm.colMod}</span><span>{mm.colTier}</span><span>{mm.colMin}</span><span>{mm.colMax}</span></div>
     {/if}
 
     <div class="list scroll" bind:this={listEl}>
@@ -194,17 +137,10 @@
                 {index}
                 order={pos}
                 {compact}
-                dragging={drag?.index === index}
-                dragOffset={drag?.index === index ? drag.offset : 0}
-                ongrip={startDrag}
-                onmove={moveByKey}
               />
             {/if}
           {/each}
         {/each}
-        {#if drag?.line !== null && drag?.line !== undefined}
-          <div class="dropline" style:transform="translateY({drag.line}px)"></div>
-        {/if}
 
         {#if adding}
           <AddModSearch {game} onpick={pick} onclose={() => (adding = false)} />
@@ -213,9 +149,6 @@
             <Icon name="plus" size={14} />{mm.addMod}
             {#if !compact}<small>{mm.addModSub}</small>{/if}
           </button>
-          {#if !compact && stats.length > 1}
-            <p class="kbhint">{mm.kbHint} <kbd class="kbd">Alt ↑</kbd> <kbd class="kbd">Alt ↓</kbd></p>
-          {/if}
         {/if}
       {/if}
     </div>
@@ -270,12 +203,12 @@
   .margin b { min-width: 38px; text-align: right; color: var(--ms-text); }
   .colhead {
     display: grid;
-    grid-template-columns: 14px 32px minmax(0, 1fr) 28px 58px 58px;
+    grid-template-columns: 32px minmax(0, 1fr) 28px 58px 58px;
     gap: 10px;
     padding: 8px 17px 0;
     flex: none;
   }
-  .colhead span:nth-child(n + 4) { text-align: center; }
+  .colhead span:nth-child(n + 3) { text-align: center; }
   .list { position: relative; flex: 1; min-height: 0; padding: 4px 8px 10px; }
   .compact .list { padding: 2px 6px 8px; }
   .grp { display: flex; align-items: center; gap: 8px; padding: 12px 8px 6px; }
@@ -285,18 +218,6 @@
   .ln { flex: 1; height: 1px; background: var(--ms-border); }
   .grp button { font-size: 11.5px; font-weight: 650; color: var(--ms-text-3); }
   .grp button:hover { color: var(--ms-accent); }
-  .dropline {
-    position: absolute;
-    left: 8px;
-    right: 8px;
-    top: 0;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--ms-accent);
-    box-shadow: 0 0 0 3px var(--ms-accent-soft);
-    pointer-events: none;
-    z-index: 4;
-  }
   .addbtn {
     width: 100%;
     height: 34px;
@@ -314,7 +235,6 @@
   .addbtn:hover { border-color: var(--ms-accent-line); color: var(--ms-accent); }
   .addbtn small { margin-left: auto; font-size: 11.5px; font-weight: 500; color: var(--ms-text-3); }
   .list :global(.add) { margin-top: 10px; }
-  .kbhint { margin-top: 8px; font-size: 11px; color: var(--ms-text-3); display: flex; align-items: center; gap: 4px; }
   .hint { padding: 14px 8px; font-size: 12px; color: var(--ms-text-3); }
   .sk-row { display: grid; grid-template-columns: 32px 1fr 58px; gap: 10px; align-items: center; padding: 12px 8px; }
   .propgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px; align-content: start; flex: 1; }

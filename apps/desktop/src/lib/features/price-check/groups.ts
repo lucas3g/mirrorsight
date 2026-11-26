@@ -10,7 +10,10 @@ export const GROUP_STYLE: Record<GroupKind, { cls: string; path: string; label: 
   no_item: { cls: 'null', path: 'M3 3l6 6M9 3l-6 6', label: () => pm.groupNoItem },
 };
 
-/** Cor do grupo (texto "· decidiu" e valor que decidiu, no card do olho). */
+/** Anúncios de cada grupo mostrados antes do "Ver mais" (os mais baratos: o grupo vem ordenado por preço). */
+export const GROUP_PREVIEW = 5;
+
+/** Cor do grupo (veredito de upgrade no card do olho). */
 export const GROUP_COLOR: Record<GroupKind, string> = {
   worse: 'var(--ms-warning)',
   equal: 'var(--ms-accent)',

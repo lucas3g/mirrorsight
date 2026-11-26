@@ -2482,6 +2482,7 @@ dependencies = [
  "anyhow",
  "mirrorsight-application",
  "mirrorsight-domain",
+ "mirrorsight-gamedata",
  "mirrorsight-infrastructure",
  "mirrorsight-parser",
  "serde",
@@ -2503,6 +2504,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "mirrorsight-domain",
+ "mirrorsight-gamedata",
  "serde",
  "thiserror 2.0.21",
  "tokio",
@@ -2520,16 +2522,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "mirrorsight-gamedata"
+version = "0.2.0"
+dependencies = [
+ "mirrorsight-domain",
+ "mirrorsight-parser",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "mirrorsight-infrastructure"
 version = "0.2.0"
 dependencies = [
  "arboard",
  "async-trait",
  "base64 0.23.1",
+ "dirs 6.0.0",
  "mirrorsight-application",
  "mirrorsight-domain",
+ "mirrorsight-gamedata",
  "mirrorsight-parser",
  "reqwest",
+ "roxmltree",
  "serde",
  "serde_json",
  "tempfile",
@@ -3505,6 +3520,12 @@ dependencies = [
  "untrusted",
  "windows-sys 0.52.0",
 ]
+
+[[package]]
+name = "roxmltree"
+version = "0.20.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6c20b6793b5c2fa6553b250154b78d6d0db37e72700ae35fad9387a46f487c97"
 
 [[package]]
 name = "rustc-hash"

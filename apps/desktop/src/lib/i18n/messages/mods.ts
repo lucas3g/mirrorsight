@@ -24,7 +24,6 @@ interface ModsMessages {
   uncheckGroup: string;
   addMod: string;
   addModSub: string;
-  kbHint: string;
   itemLevelMin: string;
   qualityMin: string;
   linksMin: string;
@@ -32,8 +31,6 @@ interface ModsMessages {
   itemValue: (value: string) => string;
 
   // ---------- Linha de mod ----------
-  reorderAria: string;
-  reorderTitle: string;
   enableMod: string;
   disableMod: string;
   added: string;
@@ -110,14 +107,10 @@ export const modsMsgs = defineMessages<ModsMessages>({
     uncheckGroup: 'Desmarcar grupo',
     addMod: 'Adicionar mod',
     addModSub: 'busca por texto · pseudo incluídos',
-    kbHint: 'Também por teclado: foco na alça +',
     itemLevelMin: 'Item level mín.',
     qualityMin: 'Qualidade mín.',
     linksMin: 'Links mín.',
     itemValue: (v) => `item: ${v}`,
-
-    reorderAria: 'Reordenar (arraste ou Alt+↑/↓)',
-    reorderTitle: 'Arraste para reordenar · Alt+↑/↓',
     enableMod: 'Ligar mod',
     disableMod: 'Desligar mod',
     added: 'ADICIONADO',
@@ -188,14 +181,10 @@ export const modsMsgs = defineMessages<ModsMessages>({
     uncheckGroup: 'Uncheck group',
     addMod: 'Add mod',
     addModSub: 'text search · pseudo included',
-    kbHint: 'Keyboard too: focus the handle +',
     itemLevelMin: 'Min item level',
     qualityMin: 'Min quality',
     linksMin: 'Min links',
     itemValue: (v) => `item: ${v}`,
-
-    reorderAria: 'Reorder (drag or Alt+↑/↓)',
-    reorderTitle: 'Drag to reorder · Alt+↑/↓',
     enableMod: 'Enable mod',
     disableMod: 'Disable mod',
     added: 'ADDED',
@@ -266,14 +255,10 @@ export const modsMsgs = defineMessages<ModsMessages>({
     uncheckGroup: 'Desmarcar grupo',
     addMod: 'Añadir mod',
     addModSub: 'búsqueda por texto · pseudo incluidos',
-    kbHint: 'También con teclado: foco en el asa +',
     itemLevelMin: 'Item level mín.',
     qualityMin: 'Calidad mín.',
     linksMin: 'Links mín.',
     itemValue: (v) => `objeto: ${v}`,
-
-    reorderAria: 'Reordenar (arrastra o Alt+↑/↓)',
-    reorderTitle: 'Arrastra para reordenar · Alt+↑/↓',
     enableMod: 'Activar mod',
     disableMod: 'Desactivar mod',
     added: 'AÑADIDO',
@@ -344,14 +329,10 @@ export const modsMsgs = defineMessages<ModsMessages>({
     uncheckGroup: 'Gruppe aus',
     addMod: 'Mod hinzufügen',
     addModSub: 'Textsuche · inkl. Pseudo',
-    kbHint: 'Auch per Tastatur: Griff fokussieren +',
     itemLevelMin: 'Min. Itemlevel',
     qualityMin: 'Min. Qualität',
     linksMin: 'Min. Links',
     itemValue: (v) => `Item: ${v}`,
-
-    reorderAria: 'Neu anordnen (ziehen oder Alt+↑/↓)',
-    reorderTitle: 'Ziehen zum Anordnen · Alt+↑/↓',
     enableMod: 'Mod aktivieren',
     disableMod: 'Mod deaktivieren',
     added: 'HINZUGEFÜGT',
@@ -422,14 +403,10 @@ export const modsMsgs = defineMessages<ModsMessages>({
     uncheckGroup: '取消本组',
     addMod: '添加词缀',
     addModSub: '文本搜索 · 含伪属性',
-    kbHint: '也可用键盘：聚焦拖动柄 +',
     itemLevelMin: '最低物品等级',
     qualityMin: '最低品质',
     linksMin: '最低连线',
     itemValue: (v) => `物品：${v}`,
-
-    reorderAria: '重新排序（拖动或 Alt+↑/↓）',
-    reorderTitle: '拖动以排序 · Alt+↑/↓',
     enableMod: '启用词缀',
     disableMod: '停用词缀',
     added: '已添加',
@@ -500,14 +477,10 @@ export const modsMsgs = defineMessages<ModsMessages>({
     uncheckGroup: 'グループを解除',
     addMod: 'Mod を追加',
     addModSub: 'テキスト検索 · 擬似 Mod 含む',
-    kbHint: 'キーボードでも可: ハンドルにフォーカス +',
     itemLevelMin: '最小アイテムレベル',
     qualityMin: '最小品質',
     linksMin: '最小リンク',
     itemValue: (v) => `アイテム: ${v}`,
-
-    reorderAria: '並べ替え（ドラッグまたは Alt+↑/↓）',
-    reorderTitle: 'ドラッグで並べ替え · Alt+↑/↓',
     enableMod: 'Mod を有効化',
     disableMod: 'Mod を無効化',
     added: '追加',
@@ -578,14 +551,10 @@ export const modsMsgs = defineMessages<ModsMessages>({
     uncheckGroup: '그룹 해제',
     addMod: '옵션 추가',
     addModSub: '텍스트 검색 · 의사 옵션 포함',
-    kbHint: '키보드로도 가능: 핸들에 포커스 +',
     itemLevelMin: '최소 아이템 레벨',
     qualityMin: '최소 퀄리티',
     linksMin: '최소 링크',
     itemValue: (v) => `아이템: ${v}`,
-
-    reorderAria: '순서 변경 (드래그 또는 Alt+↑/↓)',
-    reorderTitle: '드래그하여 순서 변경 · Alt+↑/↓',
     enableMod: '옵션 켜기',
     disableMod: '옵션 끄기',
     added: '추가됨',

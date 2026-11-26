@@ -43,6 +43,7 @@ cursor — o **preço estimado**, a **distribuição de preços**, os **filtros 
 | 📊 **Gráfico de distribuição** | Histograma dos preços com marcadores p25 / p50 / p75. |
 | 💰 **Currency em bulk** | Currency e itens empilháveis são precificados pela troca em massa (preço por unidade, estoque, vendedor). |
 | ⚡ **Quick price** | Preço instantâneo do **poe.ninja** com tendência de 7 dias — sem busca no trade. |
+| 🧠 **Avaliação de itens (PoE 1)** | Cada anúncio recebe duas avaliações independentes: **upgrade** para a sua build (Melhor / Pior / Equivalente, comparando o conjunto de stats, o cap de resistências e os requisitos de atributo do seu build do Path of Building) e **qualidade do item** (0–100 por tiers, rolls e potencial de crafting; únicos pelas faixas reais de roll). Mods sem dados suficientes aparecem como *inconclusivos*, nunca como roll perfeito. |
 | 🕘 **Histórico** | Todo price check fica salvo e pode ser reaberto com os mesmos filtros. |
 | ⌨️ **Paleta de comandos** | <kbd>Ctrl</kbd>+<kbd>K</kbd> para ir a qualquer lugar, trocar jogo ou liga, limpar histórico… |
 | 🎮 **PoE 1 e PoE 2** | Troque de jogo e de liga pela barra de título. |
@@ -124,7 +125,7 @@ registradas enquanto a janela do jogo está em foco, então nunca roubam teclas 
 ### ⚙️ Configurações
 
 - **Geral** — jogo, liga, idioma do cliente, moeda de exibição, restaurar clipboard, iniciar com o Windows.
-- **Price check** — range dos mods, mostrar vendedores offline, filtros marcados por padrão, nível padrão, histórico, presets.
+- **Price check** — range dos mods, mostrar vendedores offline, filtros marcados por padrão, nível padrão, build do Path of Building para o veredito de upgrade, histórico, presets.
 - **Aparência** — escala da interface (90–130 %), densidade, reduzir animações.
 
 ## 🛠 Desenvolver
@@ -155,7 +156,8 @@ cargo test -p mirrorsight-infrastructure --test live -- --ignored --nocapture
 crates/domain          entidades, regras puras e ports (traits). Sem I/O.
 crates/parser          texto do Ctrl+C / Ctrl+Alt+C → Item (mods casados com stats da trade API)
 crates/application     casos de uso (price check, copiar item do jogo, configurações, ligas)
-crates/infrastructure  adapters: trade API + rate limiter, poe.ninja, Win32, clipboard, settings
+crates/infrastructure  adapters: trade API + rate limiter, poe.ninja, Win32, clipboard, settings, builds do PoB
+crates/gamedata        base de conhecimento do PoE 1 embutida (únicos, tiers, bases, gemas) + regras da avaliação
 apps/desktop/src-tauri composition root, comandos, hotkeys, overlay, bandeja
 apps/desktop/src       UI Svelte 5; fala com o backend só pela porta `Backend`
                        (adapters: Tauri real e demo para o navegador)
@@ -165,6 +167,10 @@ apps/desktop/src       UI Svelte 5; fala com o backend só pela porta `Backend`
 
 - **Stats da trade API** (o parser depende deles para reconhecer mods):
   `node tools/stats/update-stats.mjs` → atualiza `crates/parser/data/stats-*.tsv`.
+- **Base de conhecimento de itens** (faixas e variantes de únicos, tiers de mods, bases, tags de gemas) a partir
+  da última release do Path of Building: `node tools/gamedata/update-gamedata.mjs` → atualiza
+  `crates/gamedata/data/*.json` (`--local "<pasta do PoB>"` lê uma instalação local). Pesos, sinergias e
+  limiares ficam em `crates/gamedata/data/rules-poe1.json`, editado à mão. Depois rode `cargo test`.
 - **Ícones de currency**: extraídos da instalação local do jogo para
   `apps/desktop/public/assets/currency/` (PNG + `manifest.json`).
 

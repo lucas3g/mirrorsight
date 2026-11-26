@@ -30,7 +30,6 @@ function newId(): string {
     : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-const range = (n: number) => Array.from({ length: n }, (_, i) => i);
 
 /** Espera (ms) após a última edição de filtro antes de buscar automaticamente. */
 export const AUTO_SEARCH_MS = 600;
@@ -44,9 +43,8 @@ function floorLike(value: number, origin: number): number {
  * Máquina de estados do price check. Guarda o texto do item para refazer a busca
  * com filtros editados e descarta respostas atrasadas (requestId).
  *
- * Além dos filtros, guarda estado só de exibição: a ordem das linhas (`order`, índices
- * de `filters.stats` — o Rust devolve os filtros na mesma ordem em que os recebe) e
- * quantas linhas vêm do item (`itemRows`; as seguintes foram adicionadas pela busca).
+ * Além dos filtros, guarda quantas linhas vêm do item (`itemRows`; as seguintes foram
+ * adicionadas pela busca). As linhas aparecem na ordem do item, agrupadas por tipo.
  */
 class PriceCheckStore {
   phase = $state<Phase>({ kind: 'idle' });
@@ -57,8 +55,6 @@ class PriceCheckStore {
   mode = $state<ViewMode>('full');
   pinned = $state(false);
 
-  /** Ordem de exibição das linhas de mod (só visual; não altera a busca). */
-  order = $state<number[]>([]);
   /**
    * Quantas linhas do início de `filters.stats` são do item; as demais vieram de "Adicionar mod".
    * Por posição, não por `trade_id`: um mod adicionado pode repetir um stat do item.
@@ -83,7 +79,6 @@ class PriceCheckStore {
     text: string;
     output: PriceCheckOutput | null;
     filters: SearchFilters | null;
-    order: number[];
     itemRows: number;
     presetId: string | null;
     dirty: boolean;
@@ -118,7 +113,6 @@ class PriceCheckStore {
     this.mode = mode;
     this.output = null;
     this.filters = null;
-    this.order = [];
     this.itemRows = 0;
     this.presetId = null;
     this.dirty = false;
@@ -144,7 +138,6 @@ class PriceCheckStore {
     this.mode = last.mode;
     this.output = last.output;
     this.filters = last.filters;
-    this.order = last.order;
     this.itemRows = last.itemRows;
     this.presetId = last.presetId;
     this.dirty = last.dirty;
@@ -172,7 +165,6 @@ class PriceCheckStore {
     this.mode = 'full';
     this.output = null;
     this.filters = null;
-    this.order = [];
     this.phase = { kind: 'error', error };
   }
 
@@ -185,7 +177,6 @@ class PriceCheckStore {
         text: this.text,
         output: this.output,
         filters: this.filters ? ($state.snapshot(this.filters) as SearchFilters) : null,
-        order: [...this.order],
         itemRows: this.itemRows,
         presetId: this.presetId,
         dirty: this.dirty,
@@ -195,7 +186,6 @@ class PriceCheckStore {
     this.phase = { kind: 'idle' };
     this.output = null;
     this.filters = null;
-    this.order = [];
     this.itemRows = 0;
     this.presetId = null;
     this.dirty = false;
@@ -253,23 +243,6 @@ class PriceCheckStore {
     this.markDirty();
   }
 
-  /**
-   * Move a linha `statIndex` para a posição `toPos` dentro do seu grupo (tipo de mod).
-   * Só muda a exibição: `filters.stats` e os índices usados por `setStat` ficam iguais.
-   */
-  moveStat(statIndex: number, toPos: number): void {
-    const stats = this.filters?.stats;
-    const kind = stats?.[statIndex]?.kind;
-    if (!stats || !kind) return;
-    const group = this.order.filter((i) => stats[i]?.kind === kind);
-    const from = group.indexOf(statIndex);
-    if (from < 0) return;
-    group.splice(from, 1);
-    group.splice(Math.max(0, Math.min(toPos, group.length)), 0, statIndex);
-    let k = 0;
-    this.order = this.order.map((i) => (stats[i]?.kind === kind ? group[k++]! : i));
-  }
-
   /** Adiciona um mod do catálogo: entra ligado, sem mín/máx, no fim do seu grupo. Devolve o índice. */
   addStat(stat: CatalogStat): number | null {
     if (!this.filters) return null;
@@ -284,7 +257,6 @@ class PriceCheckStore {
       max: null,
     });
     const index = this.filters.stats.length - 1;
-    this.order = [...this.order, index];
     this.markDirty();
     return index;
   }
@@ -299,7 +271,6 @@ class PriceCheckStore {
     const stat = this.filters?.stats[index];
     if (!this.filters || !stat || !this.isAdded(index)) return;
     this.filters.stats.splice(index, 1);
-    this.order = this.order.filter((i) => i !== index).map((i) => (i > index ? i - 1 : i));
     this.markDirty();
   }
 
@@ -351,13 +322,11 @@ class PriceCheckStore {
   }
 
   /**
-   * Mantém a ordem de exibição válida. No primeiro resultado do item, conta as linhas do item:
-   * as do início cujo stat é do item (reaberto do histórico, as adicionadas vêm depois).
+   * No primeiro resultado do item, conta as linhas do item: as do início cujo stat é do item
+   * (reaberto do histórico, as adicionadas vêm depois).
    */
   private syncDisplayState(out: PriceCheckOutput, first: boolean): void {
     const n = out.filters.stats.length;
-    const kept = this.order.filter((i) => i < n);
-    this.order = kept.length === n ? kept : [...kept, ...range(n).filter((i) => !kept.includes(i))];
     const itemIds = new Set([...out.item.modifiers, ...(out.item.properties ?? [])].map((m) => m.trade_id));
     if (first) {
       const extra = out.filters.stats.findIndex((s) => !itemIds.has(s.trade_id));

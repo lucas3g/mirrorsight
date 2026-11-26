@@ -105,6 +105,7 @@ mod tests {
             trade_type: None,
             map_tier: None,
             affix_slots: None,
+            flags: Default::default(),
         }
     }
 
@@ -120,6 +121,7 @@ mod tests {
             }),
             tier: None,
             affix: None,
+            ..Default::default()
         }
     }
 
@@ -152,6 +154,7 @@ mod tests {
             roll: Some(StatRoll { value: 1.45, min: None, max: None }),
             tier: None,
             affix: None,
+            ..Default::default()
         }];
         let settings = Settings { mod_range_percent: 10, ..Settings::default() };
         let filters = SearchFilters::defaults_for(&item, &settings);
