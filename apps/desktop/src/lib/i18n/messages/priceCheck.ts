@@ -87,6 +87,36 @@ interface PriceCheckMessages {
   listedAgo: (age: string) => string;
   listedNow: string;
 
+  // ---------- Agrupamento por status (PoE1) ----------
+  groupWorse: string;
+  groupEqual: string;
+  groupBetter: string;
+  groupNotComparable: string;
+  groupNoItem: string;
+  groupNotComparableHint: string;
+  groupNoItemHint: string;
+  groupEmpty: string;
+  /** Prefixo do menor preço do grupo ("mín."). */
+  groupMin: string;
+  yourItem: string;
+  avgTier: string;
+  /** Rótulo curto na faixa "Seu item". */
+  percentile: string;
+  avgPercentile: string;
+  freePrefix: string;
+  freeSuffix: string;
+  /** Título da marca P/S de cada mod. */
+  affixTitle: { prefix: string; suffix: string };
+  comparison: (n: number) => string;
+  cmpListing: string;
+  cmpYours: string;
+  decided: string;
+  inCommon: string;
+  singleListPoe2: string;
+  singleListRarity: string;
+  singleListClass: (cls: string) => string;
+  singleListNoStatus: string;
+
   // ---------- Preço sugerido ----------
   suggestedPrice: string;
   percentilesOf: (n: number) => string;
@@ -203,6 +233,32 @@ export const priceCheckMsgs = defineMessages<PriceCheckMessages>({
     listedAgo: (age) => `listado há ${age}`,
     listedNow: 'listado agora',
 
+    groupWorse: 'Pior',
+    groupEqual: 'Igual',
+    groupBetter: 'Melhor',
+    groupNotComparable: 'Não comparável',
+    groupNoItem: 'Sem dados do item',
+    groupNotComparableHint: 'Sem mods em comum com o seu item, ou mods sem tier/faixa.',
+    groupNoItemHint: 'O anúncio não trouxe o item.',
+    groupEmpty: 'sem anúncios',
+    groupMin: 'mín.',
+    yourItem: 'Seu item',
+    avgTier: 'Tier médio',
+    percentile: 'Percentil',
+    avgPercentile: 'Percentil médio',
+    freePrefix: 'Prefix livre',
+    freeSuffix: 'Suffix livre',
+    affixTitle: { prefix: 'Prefix', suffix: 'Suffix' },
+    comparison: (n) => `Comparação · ${n} em comum`,
+    cmpListing: 'Anúncio',
+    cmpYours: 'Seu',
+    decided: '· decidiu',
+    inCommon: 'Em comum com o seu item',
+    singleListPoe2: 'Lista única: o agrupamento por status só existe no Path of Exile 1.',
+    singleListRarity: 'Lista única: o agrupamento só vale para itens Raros ou Mágicos.',
+    singleListClass: (cls) => `Lista única: o agrupamento não está disponível para ${cls}.`,
+    singleListNoStatus: 'Lista única: não deu para ler os tiers do seu item. Copie de novo com Ctrl+C sobre o item.',
+
     suggestedPrice: 'Preço sugerido',
     percentilesOf: (n) => `· percentis dos ${n} anúncios`,
     levelAria: 'Nível do preço sugerido',
@@ -306,6 +362,32 @@ export const priceCheckMsgs = defineMessages<PriceCheckMessages>({
     matchesFilters: 'matches your filters',
     listedAgo: (age) => `listed ${age} ago`,
     listedNow: 'listed just now',
+
+    groupWorse: 'Worse',
+    groupEqual: 'Equal',
+    groupBetter: 'Better',
+    groupNotComparable: 'Not comparable',
+    groupNoItem: 'No item data',
+    groupNotComparableHint: 'No mods in common with your item, or mods without tier/range.',
+    groupNoItemHint: 'The listing has no item data.',
+    groupEmpty: 'no listings',
+    groupMin: 'min.',
+    yourItem: 'Your item',
+    avgTier: 'Avg. tier',
+    percentile: 'Percentile',
+    avgPercentile: 'Avg. percentile',
+    freePrefix: 'Free prefix',
+    freeSuffix: 'Free suffix',
+    affixTitle: { prefix: 'Prefix', suffix: 'Suffix' },
+    comparison: (n) => `Comparison · ${n} in common`,
+    cmpListing: 'Listing',
+    cmpYours: 'Yours',
+    decided: '· decided',
+    inCommon: 'In common with your item',
+    singleListPoe2: 'Single list: grouping by status is only available in Path of Exile 1.',
+    singleListRarity: 'Single list: grouping only applies to Rare or Magic items.',
+    singleListClass: (cls) => `Single list: grouping isn't available for ${cls}.`,
+    singleListNoStatus: 'Single list: couldn\'t read your item\'s tiers. Copy it again with Ctrl+C over the item.',
 
     suggestedPrice: 'Suggested price',
     percentilesOf: (n) => `· percentiles of ${n} ${n === 1 ? 'listing' : 'listings'}`,
@@ -411,6 +493,32 @@ export const priceCheckMsgs = defineMessages<PriceCheckMessages>({
     listedAgo: (age) => `publicado hace ${age}`,
     listedNow: 'publicado ahora',
 
+    groupWorse: 'Peor',
+    groupEqual: 'Igual',
+    groupBetter: 'Mejor',
+    groupNotComparable: 'No comparable',
+    groupNoItem: 'Sin datos del ítem',
+    groupNotComparableHint: 'Sin mods en común con tu ítem, o mods sin tier/rango.',
+    groupNoItemHint: 'El anuncio no trajo el ítem.',
+    groupEmpty: 'sin anuncios',
+    groupMin: 'mín.',
+    yourItem: 'Tu ítem',
+    avgTier: 'Tier medio',
+    percentile: 'Percentil',
+    avgPercentile: 'Percentil medio',
+    freePrefix: 'Prefijo libre',
+    freeSuffix: 'Sufijo libre',
+    affixTitle: { prefix: 'Prefijo', suffix: 'Sufijo' },
+    comparison: (n) => `Comparación · ${n} en común`,
+    cmpListing: 'Anuncio',
+    cmpYours: 'Tuyo',
+    decided: '· decidió',
+    inCommon: 'En común con tu ítem',
+    singleListPoe2: 'Lista única: la agrupación por estado solo existe en Path of Exile 1.',
+    singleListRarity: 'Lista única: la agrupación solo aplica a ítems raros o mágicos.',
+    singleListClass: (cls) => `Lista única: la agrupación no está disponible para ${cls}.`,
+    singleListNoStatus: 'Lista única: no se pudieron leer los tiers de tu ítem. Cópialo de nuevo con Ctrl+C sobre el ítem.',
+
     suggestedPrice: 'Precio sugerido',
     percentilesOf: (n) => `· percentiles de ${n} ${n === 1 ? 'anuncio' : 'anuncios'}`,
     levelAria: 'Nivel del precio sugerido',
@@ -514,6 +622,32 @@ export const priceCheckMsgs = defineMessages<PriceCheckMessages>({
     matchesFilters: 'passt zu deinen Filtern',
     listedAgo: (age) => `gelistet vor ${age}`,
     listedNow: 'gerade gelistet',
+
+    groupWorse: 'Schlechter',
+    groupEqual: 'Gleich',
+    groupBetter: 'Besser',
+    groupNotComparable: 'Nicht vergleichbar',
+    groupNoItem: 'Keine Item-Daten',
+    groupNotComparableHint: 'Keine gemeinsamen Mods mit deinem Item oder Mods ohne Tier/Bereich.',
+    groupNoItemHint: 'Das Angebot enthält keine Item-Daten.',
+    groupEmpty: 'keine Angebote',
+    groupMin: 'min.',
+    yourItem: 'Dein Item',
+    avgTier: 'Ø Tier',
+    percentile: 'Perzentil',
+    avgPercentile: 'Ø Perzentil',
+    freePrefix: 'Freies Präfix',
+    freeSuffix: 'Freies Suffix',
+    affixTitle: { prefix: 'Präfix', suffix: 'Suffix' },
+    comparison: (n) => `Vergleich · ${n} gemeinsam`,
+    cmpListing: 'Angebot',
+    cmpYours: 'Deins',
+    decided: '· entschied',
+    inCommon: 'Gemeinsam mit deinem Item',
+    singleListPoe2: 'Einzelliste: Die Gruppierung nach Status gibt es nur in Path of Exile 1.',
+    singleListRarity: 'Einzelliste: Die Gruppierung gilt nur für seltene oder magische Items.',
+    singleListClass: (cls) => `Einzelliste: Für ${cls} ist keine Gruppierung verfügbar.`,
+    singleListNoStatus: 'Einzelliste: Die Tiers deines Items konnten nicht gelesen werden. Kopiere es erneut mit Strg+C über dem Item.',
 
     suggestedPrice: 'Preisvorschlag',
     percentilesOf: (n) => `· Perzentile aus ${n} ${n === 1 ? 'Angebot' : 'Angeboten'}`,
@@ -619,6 +753,32 @@ export const priceCheckMsgs = defineMessages<PriceCheckMessages>({
     listedAgo: (age) => `${age} 前上架`,
     listedNow: '刚刚上架',
 
+    groupWorse: '更差',
+    groupEqual: '相同',
+    groupBetter: '更好',
+    groupNotComparable: '无法比较',
+    groupNoItem: '无物品数据',
+    groupNotComparableHint: '与你的物品没有共同词缀，或词缀缺少阶级/范围。',
+    groupNoItemHint: '该挂单没有物品数据。',
+    groupEmpty: '无挂单',
+    groupMin: '最低',
+    yourItem: '你的物品',
+    avgTier: '平均阶级',
+    percentile: '百分位',
+    avgPercentile: '平均百分位',
+    freePrefix: '空余前缀',
+    freeSuffix: '空余后缀',
+    affixTitle: { prefix: '前缀', suffix: '后缀' },
+    comparison: (n) => `比较 · ${n} 个共同`,
+    cmpListing: '挂单',
+    cmpYours: '你的',
+    decided: '· 决定',
+    inCommon: '与你的物品共同',
+    singleListPoe2: '单一列表：按状态分组仅适用于 Path of Exile 1。',
+    singleListRarity: '单一列表：分组仅适用于稀有或魔法物品。',
+    singleListClass: (cls) => `单一列表：${cls} 不支持分组。`,
+    singleListNoStatus: '单一列表：无法读取你物品的阶级。请将鼠标放在物品上再按一次 Ctrl+C。',
+
     suggestedPrice: '建议价格',
     percentilesOf: (n) => `· 基于 ${n} 条挂单的百分位`,
     levelAria: '建议价格档位',
@@ -723,6 +883,32 @@ export const priceCheckMsgs = defineMessages<PriceCheckMessages>({
     listedAgo: (age) => `${age} 前に出品`,
     listedNow: 'たった今出品',
 
+    groupWorse: '劣る',
+    groupEqual: '同等',
+    groupBetter: '優れる',
+    groupNotComparable: '比較不可',
+    groupNoItem: 'アイテムデータなし',
+    groupNotComparableHint: 'あなたのアイテムと共通のModがないか、Tier/範囲のないModです。',
+    groupNoItemHint: 'この出品にはアイテムデータがありません。',
+    groupEmpty: '出品なし',
+    groupMin: '最安',
+    yourItem: 'あなたのアイテム',
+    avgTier: '平均Tier',
+    percentile: 'パーセンタイル',
+    avgPercentile: '平均パーセンタイル',
+    freePrefix: '空きプレフィックス',
+    freeSuffix: '空きサフィックス',
+    affixTitle: { prefix: 'プレフィックス', suffix: 'サフィックス' },
+    comparison: (n) => `比較 · 共通 ${n}`,
+    cmpListing: '出品',
+    cmpYours: 'あなた',
+    decided: '· 決め手',
+    inCommon: 'あなたのアイテムと共通',
+    singleListPoe2: '単一リスト：ステータス別のグループ化は Path of Exile 1 のみです。',
+    singleListRarity: '単一リスト：グループ化はレアまたはマジックアイテムのみです。',
+    singleListClass: (cls) => `単一リスト：${cls} ではグループ化を利用できません。`,
+    singleListNoStatus: '単一リスト：アイテムのTierを読み取れませんでした。アイテムにカーソルを合わせてもう一度 Ctrl+C を押してください。',
+
     suggestedPrice: '推奨価格',
     percentilesOf: (n) => `· 出品 ${n} 件のパーセンタイル`,
     levelAria: '推奨価格のレベル',
@@ -826,6 +1012,32 @@ export const priceCheckMsgs = defineMessages<PriceCheckMessages>({
     matchesFilters: '필터와 일치',
     listedAgo: (age) => `${age} 전 등록`,
     listedNow: '방금 등록',
+
+    groupWorse: '더 나쁨',
+    groupEqual: '같음',
+    groupBetter: '더 좋음',
+    groupNotComparable: '비교 불가',
+    groupNoItem: '아이템 정보 없음',
+    groupNotComparableHint: '내 아이템과 공통 모드가 없거나 티어/범위가 없는 모드입니다.',
+    groupNoItemHint: '이 매물에는 아이템 정보가 없습니다.',
+    groupEmpty: '매물 없음',
+    groupMin: '최저',
+    yourItem: '내 아이템',
+    avgTier: '평균 티어',
+    percentile: '백분위',
+    avgPercentile: '평균 백분위',
+    freePrefix: '빈 접두어',
+    freeSuffix: '빈 접미어',
+    affixTitle: { prefix: '접두어', suffix: '접미어' },
+    comparison: (n) => `비교 · 공통 ${n}개`,
+    cmpListing: '매물',
+    cmpYours: '내 것',
+    decided: '· 결정',
+    inCommon: '내 아이템과 공통',
+    singleListPoe2: '단일 목록: 상태별 그룹은 Path of Exile 1에서만 제공됩니다.',
+    singleListRarity: '단일 목록: 그룹은 희귀 또는 마법 아이템에만 적용됩니다.',
+    singleListClass: (cls) => `단일 목록: ${cls}에는 그룹을 사용할 수 없습니다.`,
+    singleListNoStatus: '단일 목록: 아이템의 티어를 읽지 못했습니다. 아이템 위에서 Ctrl+C로 다시 복사하세요.',
 
     suggestedPrice: '추천 가격',
     percentilesOf: (n) => `· 매물 ${n}건의 백분위`,

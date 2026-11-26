@@ -18,6 +18,7 @@ interface SettingsMessages {
     leagueError: string;
     currency: Row;
     restoreClipboard: Row;
+    interceptCopy: Row;
     startup: Row;
   };
   hotkeys: {
@@ -85,6 +86,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       leagueError: 'Não foi possível carregar as ligas — usando a salva',
       currency: { label: 'Moeda de exibição', description: 'Valores acima de 1 divine sempre aparecem em divine' },
       restoreClipboard: { label: 'Restaurar clipboard', description: 'Devolve o conteúdo anterior após copiar o item' },
+      interceptCopy: { label: 'Ctrl+C abre o price check', description: 'Ctrl+C sobre um item no jogo lê os tiers e abre o overlay; o texto continua sendo copiado, com até ~0,2 s de atraso (também no chat)' },
       startup: { label: 'Iniciar com o Windows', description: 'Fica na bandeja do sistema' },
     },
     hotkeys: {
@@ -165,6 +167,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       leagueError: "Couldn't load the leagues — using the saved one",
       currency: { label: 'Display currency', description: 'Values above 1 divine are always shown in divine' },
       restoreClipboard: { label: 'Restore clipboard', description: 'Puts back the previous content after copying the item' },
+      interceptCopy: { label: 'Ctrl+C opens the price check', description: 'Ctrl+C over an item in game reads its tiers and opens the overlay; the text is still copied, up to ~0.2 s later (chat included)' },
       startup: { label: 'Start with Windows', description: 'Stays in the system tray' },
     },
     hotkeys: {
@@ -245,6 +248,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       leagueError: 'No se pudieron cargar las ligas — usando la guardada',
       currency: { label: 'Moneda de visualización', description: 'Los valores por encima de 1 divine siempre se muestran en divine' },
       restoreClipboard: { label: 'Restaurar portapapeles', description: 'Devuelve el contenido anterior tras copiar el objeto' },
+      interceptCopy: { label: 'Ctrl+C abre el price check', description: 'Ctrl+C sobre un objeto en el juego lee sus tiers y abre el overlay; el texto se sigue copiando, con hasta ~0,2 s de retraso (también en el chat)' },
       startup: { label: 'Iniciar con Windows', description: 'Se queda en la bandeja del sistema' },
     },
     hotkeys: {
@@ -325,6 +329,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       leagueError: 'Ligen konnten nicht geladen werden — gespeicherte wird verwendet',
       currency: { label: 'Anzeigewährung', description: 'Werte über 1 Divine werden immer in Divine angezeigt' },
       restoreClipboard: { label: 'Zwischenablage wiederherstellen', description: 'Stellt nach dem Kopieren des Items den vorherigen Inhalt wieder her' },
+      interceptCopy: { label: 'Strg+C öffnet den Price Check', description: 'Strg+C über einem Item im Spiel liest die Tiers und öffnet das Overlay; der Text wird weiterhin kopiert, bis zu ~0,2 s verzögert (auch im Chat)' },
       startup: { label: 'Mit Windows starten', description: 'Bleibt im Infobereich der Taskleiste' },
     },
     hotkeys: {
@@ -405,6 +410,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       leagueError: '无法加载赛季列表 — 使用已保存的赛季',
       currency: { label: '显示货币', description: '超过 1 divine 的价格始终以 divine 显示' },
       restoreClipboard: { label: '恢复剪贴板', description: '复制物品后恢复之前的剪贴板内容' },
+      interceptCopy: { label: 'Ctrl+C 打开查价', description: '在游戏中对物品按 Ctrl+C 会读取阶级并打开浮窗；文本仍会被复制，但最多延迟约 0.2 秒（聊天中也是）' },
       startup: { label: '开机自启', description: '驻留在系统托盘' },
     },
     hotkeys: {
@@ -484,6 +490,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       leagueError: 'リーグを読み込めませんでした — 保存済みのリーグを使用中',
       currency: { label: '表示通貨', description: '1 divine を超える値は常に divine で表示されます' },
       restoreClipboard: { label: 'クリップボードの復元', description: 'アイテムのコピー後に以前の内容を戻します' },
+      interceptCopy: { label: 'Ctrl+C で価格チェック', description: 'ゲーム内でアイテムに Ctrl+C するとTierを読み取りオーバーレイを開きます。テキストは通常どおりコピーされますが、最大約0.2秒遅れます（チャットも同様）' },
       startup: { label: 'Windows 起動時に開始', description: 'システムトレイに常駐します' },
     },
     hotkeys: {
@@ -564,6 +571,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       leagueError: '리그를 불러올 수 없음 — 저장된 리그 사용 중',
       currency: { label: '표시 화폐', description: '1 divine을 넘는 값은 항상 divine으로 표시됩니다' },
       restoreClipboard: { label: '클립보드 복원', description: '아이템 복사 후 이전 내용을 되돌립니다' },
+      interceptCopy: { label: 'Ctrl+C로 시세 확인', description: '게임에서 아이템 위에서 Ctrl+C를 누르면 티어를 읽고 오버레이를 엽니다. 텍스트는 그대로 복사되지만 최대 약 0.2초 늦어집니다(채팅 포함)' },
       startup: { label: 'Windows 시작 시 실행', description: '시스템 트레이에 머무릅니다' },
     },
     hotkeys: {
@@ -639,6 +647,7 @@ export const SETTINGS_KEYWORDS = {
   gameLanguage: 'language lingua client',
   currency: 'chaos divine conversão conversion currency',
   restoreClipboard: 'clipboard área de transferência',
+  interceptCopy: 'ctrl c copiar copy tier prefix suffix price check overlay',
   startup: 'startup inicialização bandeja tray boot',
   hotkey: 'hotkey atalho tecla shortcut key',
   palette: 'hotkey atalho ctrl k comandos busca shortcut command palette search',

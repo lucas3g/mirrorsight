@@ -139,6 +139,68 @@ async fn dispatch(app: &AppHandle, action: HotkeyAction) -> tauri::Result<()> {
     }
 }
 
+/// Intercepta o Ctrl+C físico com o jogo em foco (opção `intercept_copy`): faz a cópia
+/// avançada (tiers e prefix/suffix) e abre o overlay como o atalho de price check. O Ctrl+C
+/// simples é sempre devolvido ao jogo, então o clipboard e o chat seguem como antes. Erros vão
+/// só para o log: abrir o overlay a cada Ctrl+C no chat seria intrusivo.
+pub fn spawn_copy_interceptor(app: AppHandle) {
+    #[cfg(windows)]
+    {
+        use mirrorsight_infrastructure::win32;
+
+        let enabled = app.state::<AppState>().settings_repo.load().map(|s| s.intercept_copy).unwrap_or(true);
+        win32::set_copy_hook_enabled(enabled);
+        let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel::<()>();
+        if !win32::spawn_copy_hook(move || {
+            let _ = tx.send(());
+        }) {
+            return;
+        }
+        tauri::async_runtime::spawn(async move {
+            while rx.recv().await.is_some() {
+                intercepted_copy(&app).await;
+                win32::finish_copy();
+            }
+        });
+    }
+    #[cfg(not(windows))]
+    let _ = app;
+}
+
+/// Segue a configuração salva (chamado ao salvar as configurações).
+pub fn set_copy_interception(enabled: bool) {
+    #[cfg(windows)]
+    mirrorsight_infrastructure::win32::set_copy_hook_enabled(enabled);
+    #[cfg(not(windows))]
+    let _ = enabled;
+}
+
+#[cfg(windows)]
+async fn intercepted_copy(app: &AppHandle) {
+    let state = app.state::<AppState>();
+    if state.game_window.has_elevation_mismatch() {
+        // Defesa: o hook já deixa passar o Ctrl+C quando o jogo roda elevado (o UIPI bloquearia
+        // a cópia e o reenvio). Se chegar aqui mesmo assim, devolve o Ctrl+C (melhor esforço).
+        tracing::warn!("Ctrl+C interceptado sem price check: o jogo roda como administrador");
+        if let Err(err) = state.copy_item.resend_plain_copy() {
+            tracing::warn!(%err, "não foi possível reenviar o Ctrl+C ao jogo");
+        }
+        return;
+    }
+    // `execute_intercepted` reenvia o Ctrl+C simples em todos os caminhos, inclusive no erro, e
+    // só volta depois que o jogo o processou: o overlay abaixo não rouba esse Ctrl+C.
+    match state.copy_item.execute_intercepted().await {
+        Ok(Some(text)) => {
+            tracing::info!(chars = text.len(), "item copiado pelo Ctrl+C");
+            if let Err(err) = overlay::request(app, PriceCheckRequest { text, locked: false }) {
+                tracing::error!(%err, "falha ao abrir o overlay");
+            }
+        }
+        Ok(None) => tracing::debug!("Ctrl+C sem item sob o cursor: reenviado ao jogo"),
+        Err(err) => tracing::warn!(%err, "falha no Ctrl+C interceptado"),
+    }
+}
+
 /// Copia o item sob o cursor (Ctrl+Alt+C no jogo) e abre o overlay com ele.
 async fn price_check(app: &AppHandle, locked: bool) -> tauri::Result<()> {
     let state = app.state::<AppState>();

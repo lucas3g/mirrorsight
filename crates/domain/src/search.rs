@@ -104,6 +104,7 @@ mod tests {
             discriminator: None,
             trade_type: None,
             map_tier: None,
+            affix_slots: None,
         }
     }
 
@@ -118,6 +119,7 @@ mod tests {
                 max: None,
             }),
             tier: None,
+            affix: None,
         }
     }
 
@@ -149,6 +151,7 @@ mod tests {
             kind: ModifierKind::Property,
             roll: Some(StatRoll { value: 1.45, min: None, max: None }),
             tier: None,
+            affix: None,
         }];
         let settings = Settings { mod_range_percent: 10, ..Settings::default() };
         let filters = SearchFilters::defaults_for(&item, &settings);

@@ -59,6 +59,37 @@ pub struct StatRoll {
     pub max: Option<f64>,
 }
 
+/// Tipo de afixo de um mod explícito: cada raridade tem um limite de prefixos e sufixos.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Affix {
+    Prefix,
+    Suffix,
+}
+
+/// Slots de afixo **ocupados** no item (um mod híbrido ocupa um slot só).
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct AffixSlots {
+    pub prefixes: u32,
+    pub suffixes: u32,
+}
+
+impl AffixSlots {
+    pub const fn used(&self, affix: Affix) -> u32 {
+        match affix {
+            Affix::Prefix => self.prefixes,
+            Affix::Suffix => self.suffixes,
+        }
+    }
+
+    pub fn add(&mut self, affix: Affix) {
+        match affix {
+            Affix::Prefix => self.prefixes += 1,
+            Affix::Suffix => self.suffixes += 1,
+        }
+    }
+}
+
 /// Mod reconhecido no banco de stats.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Modifier {
@@ -71,6 +102,9 @@ pub struct Modifier {
     /// Tier do mod, disponível quando o item foi copiado no modo avançado (Ctrl+Alt+C).
     #[serde(default)]
     pub tier: Option<u32>,
+    /// Prefixo ou sufixo, quando a origem informa (Ctrl+Alt+C ou `extended.mods` da trade API).
+    #[serde(default)]
+    pub affix: Option<Affix>,
 }
 
 /// Item parseado a partir do texto do clipboard.
@@ -108,6 +142,9 @@ pub struct Item {
     /// Tier do mapa ("Map (Tier 16)" → 16).
     #[serde(default)]
     pub map_tier: Option<u32>,
+    /// Slots de prefixo/sufixo ocupados; só presente quando a origem conhece os afixos.
+    #[serde(default)]
+    pub affix_slots: Option<AffixSlots>,
 }
 
 impl Item {
@@ -149,6 +186,7 @@ mod tests {
             discriminator: None,
             trade_type: None,
             map_tier: None,
+            affix_slots: None,
         };
         assert_eq!(item.max_links(), 4);
     }

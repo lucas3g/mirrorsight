@@ -87,6 +87,7 @@ pub fn parse(section: &[&str]) -> Result<Item, ItemParseError> {
         discriminator: None,
         trade_type: None,
         map_tier: None,
+        affix_slots: None,
     })
 }
 

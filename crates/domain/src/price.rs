@@ -86,6 +86,16 @@ impl CurrencyRates {
         Self { chaos_per_unit }
     }
 
+    /// Cotação de reserva: só entra se a moeda ainda não tem cotação (ex.: divine do índice
+    /// quando o endpoint de moedas do poe.ninja falhou).
+    #[must_use]
+    pub fn with_fallback(mut self, tag: &str, chaos_per_unit: f64) -> Self {
+        if chaos_per_unit.is_finite() && chaos_per_unit > 0.0 {
+            self.chaos_per_unit.entry(tag.to_owned()).or_insert(chaos_per_unit);
+        }
+        self
+    }
+
     pub fn chaos_per(&self, currency: &Currency) -> Option<f64> {
         self.chaos_per_unit.get(&currency.0).copied()
     }
@@ -320,6 +330,15 @@ mod tests {
         assert_eq!(s.buy_chaos, 20.0);
         assert_eq!(s.fair_chaos, 40.0);
         assert_eq!(s.sell_chaos, 60.0);
+    }
+
+    #[test]
+    fn fallback_rate_only_fills_missing_currency() {
+        let known = rates().with_fallback("divine", 150.0);
+        assert_eq!(known.chaos_per(&Currency("divine".into())), Some(200.0));
+        let missing = CurrencyRates::default().with_fallback("divine", 150.0).with_fallback("exalted", f64::NAN);
+        assert_eq!(missing.chaos_per(&Currency("divine".into())), Some(150.0));
+        assert_eq!(missing.chaos_per(&Currency("exalted".into())), None);
     }
 
     #[test]

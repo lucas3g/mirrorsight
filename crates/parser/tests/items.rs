@@ -65,6 +65,22 @@ fn advanced_copy_matches_same_stats_with_ranges_and_tiers() {
 }
 
 #[test]
+fn advanced_copy_reads_affix_types_and_used_slots() {
+    use mirrorsight_domain::item::{Affix, AffixSlots};
+    let advanced = parse("poe1_rare_gloves_advanced.txt");
+    let affixes: Vec<Option<Affix>> = advanced.modifiers.iter().map(|m| m.affix).collect();
+    let (p, s) = (Some(Affix::Prefix), Some(Affix::Suffix));
+    assert_eq!(affixes, vec![p, s, s, p, s, s]);
+    // O crafted também ocupa slot.
+    assert_eq!(advanced.affix_slots, Some(AffixSlots { prefixes: 2, suffixes: 4 }));
+
+    // A cópia normal não traz afixos.
+    let normal = parse("poe1_rare_gloves.txt");
+    assert!(normal.modifiers.iter().all(|m| m.affix.is_none()));
+    assert_eq!(normal.affix_slots, None);
+}
+
+#[test]
 fn weapon_prefers_local_stats_and_reads_implicit() {
     let item = parse("poe1_rare_sword.txt");
 

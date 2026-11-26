@@ -5,6 +5,7 @@
 
 #![forbid(unsafe_code)]
 
+pub mod compare;
 pub mod error;
 pub mod game;
 pub mod history;

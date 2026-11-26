@@ -46,8 +46,10 @@ pub trait ClipboardPort: Send + Sync {
 pub trait InputPort: Send + Sync {
     /// Solta modificadores que o usuário ainda segura (evita Ctrl+Shift+C no jogo).
     fn release_modifiers(&self) -> PortResult<()>;
-    /// Envia Ctrl+C para a janela em foco.
+    /// Envia a cópia avançada do item (Ctrl+Alt+C) para a janela em foco.
     fn send_copy(&self) -> PortResult<()>;
+    /// Reenvia um Ctrl+C simples (texto do chat etc.), quando o Ctrl+C interceptado não era item.
+    fn send_plain_copy(&self) -> PortResult<()>;
 }
 
 /// Retângulo em pixels físicos de tela.

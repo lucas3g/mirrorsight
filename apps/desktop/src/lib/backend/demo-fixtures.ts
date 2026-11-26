@@ -2,9 +2,14 @@
  * Dados fictícios para o adapter de demonstração. Nada aqui é usado no app real.
  */
 import type {
+  Affix,
   CatalogStat,
+  CompareDetail,
+  GroupEntry,
+  GroupKind,
   Item,
   Listing,
+  ListingComparison,
   Modifier,
   ModifierKind,
   PriceCheckOutput,
@@ -43,17 +48,26 @@ export const DEMO_NETWORK = '#mirrorsight:network';
 /** Poucas listagens (3): exercita o estado "Poucos anúncios" do preço sugerido. */
 export const DEMO_FEW = '#mirrorsight:few';
 
-function mod(kind: ModifierKind, id: string, text: string, value: number, min: number, max: number, tier: number | null = null): Modifier {
-  return { trade_id: `${kind}.${id}`, text, kind, roll: { value, min, max }, tier };
+function mod(
+  kind: ModifierKind,
+  id: string,
+  text: string,
+  value: number,
+  min: number,
+  max: number,
+  tier: number | null = null,
+  affix: Affix | null = null,
+): Modifier {
+  return { trade_id: `${kind}.${id}`, text, kind, roll: { value, min, max }, tier, affix };
 }
 
 const GLOVE_MODS: Modifier[] = [
-  mod('fractured', 'stat_3299347043', '+78 to maximum Life', 78, 70, 79, 2),
-  mod('explicit', 'stat_3372524247', '+45% to Fire Resistance', 45, 42, 45, 1),
-  mod('explicit', 'stat_4220027924', '+41% to Cold Resistance', 41, 36, 41, 2),
-  mod('explicit', 'stat_3032590688', 'Adds 12 to 21 Physical Damage to Attacks', 16.5, 13.5, 19.5, 4),
-  mod('explicit', 'stat_3261801346', '+38 to Dexterity', 38, 33, 42, 3),
-  mod('crafted', 'stat_2923486259', '+16% to Chaos Resistance', 16, 12, 16),
+  mod('fractured', 'stat_3299347043', '+78 to maximum Life', 78, 70, 79, 2, 'prefix'),
+  mod('explicit', 'stat_3372524247', '+45% to Fire Resistance', 45, 42, 45, 1, 'suffix'),
+  mod('explicit', 'stat_4220027924', '+41% to Cold Resistance', 41, 36, 41, 2, 'suffix'),
+  mod('explicit', 'stat_3032590688', 'Adds 12 to 21 Physical Damage to Attacks', 16.5, 13.5, 19.5, 4, 'prefix'),
+  mod('explicit', 'stat_3261801346', '+38 to Dexterity', 38, 33, 42, 3, 'suffix'),
+  mod('crafted', 'stat_2923486259', '+16% to Chaos Resistance', 16, 12, 16, null, 'suffix'),
 ];
 
 const GLOVES: Item = {
@@ -69,6 +83,7 @@ const GLOVES: Item = {
   influences: ['hunter'],
   modifiers: GLOVE_MODS,
   unknown_lines: [],
+  affix_slots: { prefixes: 2, suffixes: 4 },
 };
 
 const RARE_NAMES = ['Corpse Fist', 'Rapture Hold', 'Hate Mitts', 'Storm Talons', 'Gloom Palm', 'Blight Clutch', 'Vortex Hand', 'Dusk Grasp'];
@@ -106,17 +121,95 @@ function listedVariant(i: number): Item {
     corrupted: i === 5,
     sockets: ['B-B-R G', 'B-B-B R', 'G-B-B B', 'B R-R B'][i % 4] ?? null,
     influences: i % 3 !== 2 ? ['hunter'] : [],
-    modifiers: [
+    modifiers: ([
       { ...GLOVE_MODS[0]!, kind: i % 2 === 0 ? 'fractured' : 'explicit', text: `+${78 - i} to maximum Life` },
       { ...GLOVE_MODS[1]!, text: `+${shift(45)}% to Fire Resistance` },
       { ...GLOVE_MODS[2]!, text: `+${41 - (i % 3) * 2}% to Cold Resistance` },
       i % 3 === 0
-        ? mod('explicit', 'stat_4015621042', `${30 + i * 2}% increased Energy Shield`, 30 + i * 2, 27, 42)
+        ? mod('explicit', 'stat_4015621042', `${30 + i * 2}% increased Energy Shield`, 30 + i * 2, 27, 42, 5, 'prefix')
         : { ...GLOVE_MODS[4]!, text: `+${36 + i} to Dexterity` },
       i % 2
         ? { ...GLOVE_MODS[5]!, text: `+${14 + (i % 3)}% to Chaos Resistance` }
-        : mod('explicit', 'stat_681332047', `${9 + (i % 4)}% increased Attack Speed`, 9 + (i % 4), 8, 12),
-    ],
+        : mod('explicit', 'stat_681332047', `${9 + (i % 4)}% increased Attack Speed`, 9 + (i % 4), 8, 12, 3, 'suffix'),
+    ] satisfies Modifier[]).map((m): Modifier => (i === NOT_COMPARABLE ? { ...m, tier: null } : m)),
+  };
+}
+
+// ---------- Agrupamento por status (espelho simplificado de crates/domain/src/compare.rs) ----------
+
+/** Anúncio sem tiers (vai para "Não comparável"). */
+const NOT_COMPARABLE = 4;
+/** Tier e percentil dos mods do seu item que entram na qualidade (explícitos/fractured). */
+const YOUR_STATS: Record<string, [number, number]> = {
+  stat_3299347043: [2, 0.89],
+  stat_3372524247: [1, 1],
+  stat_4220027924: [2, 1],
+  stat_3032590688: [4, 0.5],
+  stat_3261801346: [3, 0.56],
+};
+/** Seu item: 4 suffixes ocupados (crafted incluso) → 0 livre. */
+const YOUR_FREE = 0;
+/** Valores fictícios de cada anúncio nos mods em comum: [tier médio, percentil médio, suffixes livres]. */
+const LISTING_SCORES: [number, number, number][] = [
+  [2.33, 0.7, 0],
+  [2, 0.71, 1],
+  [2, 0.86, 1],
+  [2, 0.9, 0],
+  [0, 0, 0],
+  [1.5, 0.6, 0],
+  [1.67, 0.96, 1],
+  [1.75, 0.8, 0],
+];
+
+const avg = (v: number[]) => v.reduce((a, b) => a + b, 0) / Math.max(1, v.length);
+const r2 = (v: number) => Math.round(v * 100);
+
+function demoDetail(listing: Listing, i: number): { kind: GroupKind; detail: CompareDetail | null } {
+  const item = listing.item;
+  if (!item) return { kind: 'no_item', detail: null };
+  if (i === NOT_COMPARABLE) return { kind: 'not_comparable', detail: null };
+  const common = item.modifiers.filter((m) => m.kind !== 'crafted' && YOUR_STATS[m.trade_id.split('.')[1] ?? '']);
+  const mine = common.map((m) => YOUR_STATS[m.trade_id.split('.')[1] ?? '']!);
+  const [tier, pct, free] = LISTING_SCORES[i] ?? [2, 0.5, 0];
+  const yours = { avg_tier: avg(mine.map((s) => s[0])), avg_percentile: avg(mine.map((s) => s[1])), free_valued: YOUR_FREE };
+  const steps: [CompareDetail['decided'], number][] = [
+    ['tier', r2(yours.avg_tier) - r2(tier)],
+    ['percentile', r2(pct) - r2(yours.avg_percentile)],
+    ['slots', free - YOUR_FREE],
+  ];
+  const step = steps.find(([, diff]) => diff !== 0);
+  return {
+    kind: !step ? 'equal' : step[1] > 0 ? 'better' : 'worse',
+    detail: {
+      common: common.length,
+      common_ids: common.map((m) => m.trade_id),
+      listing: { avg_tier: tier, avg_percentile: pct, free_valued: free },
+      yours,
+      decided: step?.[0] ?? null,
+    },
+  };
+}
+
+function demoComparison(listings: Listing[]): ListingComparison {
+  const order: GroupKind[] = ['worse', 'equal', 'better', 'not_comparable', 'no_item'];
+  const groups = order.map((kind) => ({ kind, entries: [] as GroupEntry[] }));
+  listings.forEach((listing, index) => {
+    const { kind, detail } = demoDetail(listing, index);
+    const chaos = listing.price.amount * (DEMO_RATES[listing.price.currency] ?? 1);
+    groups.find((g) => g.kind === kind)?.entries.push({ index, chaos, detail });
+  });
+  for (const g of groups) g.entries.sort((a, b) => (a.chaos ?? Infinity) - (b.chaos ?? Infinity));
+  const stats = Object.values(YOUR_STATS);
+  return {
+    mode: 'grouped',
+    you: {
+      avg_tier: avg(stats.map((s) => s[0])),
+      avg_percentile: avg(stats.map((s) => s[1])),
+      free_valued: YOUR_FREE,
+      valued: 'suffix',
+      mods: [],
+    },
+    groups,
   };
 }
 
@@ -177,6 +270,7 @@ export function rareOutput(filters: SearchFilters, few = false): PriceCheckOutpu
       divine_chaos: DIVINE_CHAOS,
       suggested: suggestedOf(values),
     },
+    comparison: demoComparison(listings),
   };
 }
 
@@ -234,6 +328,7 @@ export function currencyOutput(): PriceCheckOutput {
       // Como no Rust: sugestão a partir de 5 listagens. O histórico de currency grava o poe.ninja.
       suggested: suggestedOf(offers.map(([amount]) => amount)),
     },
+    comparison: { mode: 'single', reason: { kind: 'rarity' } },
   };
 }
 

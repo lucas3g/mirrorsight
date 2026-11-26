@@ -42,6 +42,7 @@
           [languageMsgs.gameLabel, `${languageMsgs.gameDescription} ${KW.gameLanguage}`],
           row(g.currency, KW.currency),
           row(g.restoreClipboard, KW.restoreClipboard),
+          row(g.interceptCopy, KW.interceptCopy),
           row(g.startup, KW.startup),
         ],
       },

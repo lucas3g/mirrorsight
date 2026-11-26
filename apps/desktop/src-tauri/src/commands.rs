@@ -33,6 +33,7 @@ pub fn save_settings(
     state.save_settings.execute(&settings)?;
     // Teclas podem ter mudado: o watcher registra de novo no próximo ciclo.
     hotkeys.invalidate(&app);
+    crate::hotkeys::set_copy_interception(settings.intercept_copy);
     apply_autostart(&app, settings.launch_on_startup);
     Ok(())
 }

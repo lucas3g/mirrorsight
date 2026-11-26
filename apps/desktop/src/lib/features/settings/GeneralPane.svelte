@@ -82,6 +82,10 @@
     <Toggle label={m.restoreClipboard.label} checked={current.restore_clipboard}
       onchange={(restore_clipboard) => settings.update({ restore_clipboard })} />
   </SettingRow>
+  <SettingRow label={m.interceptCopy.label} description={m.interceptCopy.description} keywords={KW.interceptCopy}>
+    <Toggle label={m.interceptCopy.label} checked={current.intercept_copy}
+      onchange={(intercept_copy) => settings.update({ intercept_copy })} />
+  </SettingRow>
   <SettingRow label={m.startup.label} description={m.startup.description} keywords={KW.startup}>
     <Toggle label={m.startup.label} checked={current.launch_on_startup}
       onchange={(launch_on_startup) => settings.update({ launch_on_startup })} />
