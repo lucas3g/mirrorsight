@@ -111,3 +111,71 @@ async fn price_check_tricky_items() {
     }
     assert!(failures.is_empty(), "{failures:#?}");
 }
+
+/// Busca + fetch de até `n` itens crus (JSON da trade API) para conferir o formato.
+async fn raw_items(client: &reqwest::Client, league: &str, query: serde_json::Value, n: usize) -> Vec<serde_json::Value> {
+    let mut url = reqwest::Url::parse("https://www.pathofexile.com/api/trade/search").expect("url");
+    url.path_segments_mut().expect("segmentos").push(league);
+    let search: serde_json::Value =
+        client.post(url).json(&query).send().await.expect("search").json().await.expect("json");
+    let ids: Vec<String> = search["result"]
+        .as_array()
+        .map(|a| a.iter().take(n).filter_map(|v| v.as_str().map(str::to_owned)).collect())
+        .unwrap_or_default();
+    if ids.is_empty() {
+        println!("busca sem resultados: {search}");
+        return vec![];
+    }
+    let id = search["id"].as_str().expect("id");
+    let fetch = format!("https://www.pathofexile.com/api/trade/fetch/{}?query={id}", ids.join(","));
+    let body: serde_json::Value = client.get(fetch).send().await.expect("fetch").json().await.expect("json");
+    body["result"].as_array().cloned().unwrap_or_default().into_iter().filter(|v| !v.is_null()).map(|e| e["item"].clone()).collect()
+}
+
+/// Imprime o formato real dos mods de anúncios (PoE1): onde ficam fractured/crafted, o tier,
+/// e as magnitudes de mods híbridos (cada linha traz só as do próprio stat). Base do `enrich` do DTO.
+#[tokio::test]
+#[ignore = "acessa a rede"]
+async fn trade_extended_mods_shape() {
+    let client = http::client();
+    let trade = PoeTradeApi::new(client.clone(), Arc::new(ClipboardItemParser::default()));
+    let league = trade.leagues(GameVersion::Poe1).await.expect("ligas").first().cloned().expect("liga");
+    let rare = |category: &str, misc: serde_json::Value, stats: serde_json::Value| {
+        serde_json::json!({
+            "query": {
+                "status": {"option": "online"},
+                "stats": stats,
+                "filters": {
+                    "type_filters": {"filters": {"rarity": {"option": "rare"}, "category": {"option": category}}},
+                    "misc_filters": {"filters": misc}
+                }
+            },
+            "sort": {"price": "asc"}
+        })
+    };
+
+    // 1) Fractured + crafted: listas separadas (`fracturedMods`/`craftedMods`) ou dentro de `explicitMods`?
+    let q = rare("armour.gloves", serde_json::json!({"crafted": {"option": "true"}, "fractured_item": {"option": "true"}}), serde_json::json!([]));
+    for item in raw_items(&client, &league, q, 2).await {
+        let keys: Vec<&String> = item.as_object().map(|o| o.keys().collect()).unwrap_or_default();
+        println!("item keys: {keys:?}");
+        for field in ["explicitMods", "fracturedMods", "craftedMods"] {
+            println!("{field}: {}", item[field]);
+        }
+    }
+
+    // 2) Híbridos: linhas que compartilham o mesmo mod (nome + tier) e suas magnitudes.
+    let q = rare("armour.chest", serde_json::json!({}), serde_json::json!([]));
+    tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+    for item in raw_items(&client, &league, q, 10).await {
+        let lines = item["explicitMods"].as_array().cloned().unwrap_or_default();
+        for (i, a) in lines.iter().enumerate() {
+            for b in lines.iter().skip(i + 1) {
+                let (ma, mb) = (&a["mods"][0], &b["mods"][0]);
+                if ma["name"] == mb["name"] && ma["tier"] == mb["tier"] {
+                    println!("HÍBRIDO?\n  {a}\n  {b}");
+                }
+            }
+        }
+    }
+}

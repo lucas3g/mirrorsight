@@ -158,6 +158,7 @@ mod tests {
             discriminator: None,
             trade_type: None,
             map_tier: None,
+            affix_slots: None,
         }
     }
 

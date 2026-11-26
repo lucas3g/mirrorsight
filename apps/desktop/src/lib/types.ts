@@ -42,6 +42,16 @@ export interface Modifier {
   roll: StatRoll | null;
   /** Disponível quando o item foi copiado com Ctrl+Alt+C. */
   tier: number | null;
+  /** Prefixo/sufixo, quando a origem informa (cópia avançada ou mods da trade API). */
+  affix?: Affix | null;
+}
+
+export type Affix = 'prefix' | 'suffix';
+
+/** Slots de afixo ocupados no item. */
+export interface AffixSlots {
+  prefixes: number;
+  suffixes: number;
 }
 
 export interface Item {
@@ -60,6 +70,7 @@ export interface Item {
   /** Defesas e dano da base, como filtros (tipo 'property'). */
   properties?: Modifier[];
   unknown_lines: string[];
+  affix_slots?: AffixSlots | null;
 }
 
 export interface Price {
@@ -149,7 +160,61 @@ export interface PriceCheckOutput {
   summary: PriceSummary | null;
   /** Motivo da ausência de listagens quando a trade falhou e o poe.ninja respondeu. */
   trade_error: AppError | null;
+  /** Listagens agrupadas por status comparado ao seu item (PoE1), ou o motivo da lista única. */
+  comparison?: ListingComparison | null;
 }
+
+// ---------- Comparação por status (crates/domain/src/compare.rs) ----------
+
+export type GroupKind = 'worse' | 'equal' | 'better' | 'not_comparable' | 'no_item';
+export type Criterion = 'tier' | 'percentile' | 'slots';
+
+export interface CompareScore {
+  avg_tier: number;
+  /** 0–1. */
+  avg_percentile: number;
+  free_valued: number;
+}
+
+export interface CompareDetail {
+  common: number;
+  /** trade_ids do anúncio em comum com o seu item. */
+  common_ids: string[];
+  listing: CompareScore;
+  yours: CompareScore;
+  /** Critério que decidiu o grupo; null em "igual". */
+  decided: Criterion | null;
+}
+
+export interface GroupEntry {
+  /** Posição em `trade.listings`. */
+  index: number;
+  chaos: number | null;
+  detail: CompareDetail | null;
+}
+
+export interface ListingGroup {
+  kind: GroupKind;
+  entries: GroupEntry[];
+}
+
+export interface ItemStatus {
+  avg_tier: number;
+  avg_percentile: number;
+  free_valued: number;
+  valued: Affix;
+  mods: { trade_id: string; tier: number; percentile: number }[];
+}
+
+export type SingleReason =
+  | { kind: 'poe2' }
+  | { kind: 'rarity' }
+  | { kind: 'class'; class: string }
+  | { kind: 'no_status' };
+
+export type ListingComparison =
+  | { mode: 'single'; reason: SingleReason }
+  | { mode: 'grouped'; you: ItemStatus; groups: ListingGroup[] };
 
 export type HotkeyAction = 'price-check' | 'price-check-locked' | 'toggle-overlay' | 'open-settings';
 
@@ -171,6 +236,8 @@ export interface Settings {
   /** Idioma da interface (schema v3); `null` = automático (idioma do sistema). */
   ui_language: string | null;
   restore_clipboard: boolean;
+  /** Ctrl+C sobre um item no jogo também abre o price check (com tiers e prefix/suffix). */
+  intercept_copy: boolean;
   launch_on_startup: boolean;
   client_log_path: string | null;
   hotkeys: HotkeyBinding[];

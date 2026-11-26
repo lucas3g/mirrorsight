@@ -1,7 +1,7 @@
 //! Parsers de seção. Cada um tenta consumir uma seção inteira; o primeiro que
 //! retorna [`SectionOutcome::Parsed`] vence.
 
-use mirrorsight_domain::item::{Influence, Item, ModifierKind};
+use mirrorsight_domain::item::{Affix, AffixSlots, Influence, Item, ModifierKind};
 
 use crate::catalog::StatCatalog;
 use crate::matcher::{ModContext, StatMatcher};
@@ -156,11 +156,16 @@ impl SectionParser for ModifiersParser {
         let mut ctx = ModContext::default();
         let mut found = Vec::new();
         let mut unmatched = Vec::new();
+        // Slots contados por cabeçalho, não por linha: um mod híbrido ocupa um slot só.
+        let mut slots: Option<AffixSlots> = None;
         let mut i = 0;
 
         while i < section.len() {
             let line = section[i];
             if let Some(header) = advanced_header(line) {
+                if let Some(affix) = header.affix {
+                    slots.get_or_insert_with(AffixSlots::default).add(affix);
+                }
                 ctx = header;
                 i += 1;
                 continue;
@@ -186,11 +191,17 @@ impl SectionParser for ModifiersParser {
         }
         item.modifiers.extend(found);
         item.unknown_lines.extend(unmatched);
+        if let Some(new) = slots {
+            let total = item.affix_slots.get_or_insert_with(AffixSlots::default);
+            total.prefixes += new.prefixes;
+            total.suffixes += new.suffixes;
+        }
         SectionOutcome::Parsed
     }
 }
 
-/// `{ Prefix Modifier "Fecund" (Tier: 2) — Life }` → contexto (tipo + tier).
+/// `{ Prefix Modifier "Fecund" (Tier: 2) — Life }` → contexto (tipo + tier + afixo).
+/// "Master Crafted Suffix Modifier" também conta: o mod de bancada ocupa um slot.
 fn advanced_header(line: &str) -> Option<ModContext> {
     let inner = line.strip_prefix('{')?.strip_suffix('}')?.trim();
     let kind = if inner.contains("Implicit") {
@@ -206,7 +217,14 @@ fn advanced_header(line: &str) -> Option<ModContext> {
         .split_once("(Tier: ")
         .and_then(|(_, rest)| rest.split(')').next())
         .and_then(|t| t.trim().parse().ok());
-    Some(ModContext { kind, tier })
+    let affix = if inner.contains("Prefix Modifier") {
+        Some(Affix::Prefix)
+    } else if inner.contains("Suffix Modifier") {
+        Some(Affix::Suffix)
+    } else {
+        None
+    };
+    Some(ModContext { kind, tier, affix })
 }
 
 /// Texto explicativo entre parênteses no modo avançado, ex.: "(Leech ... )".
@@ -221,10 +239,14 @@ mod tests {
     #[test]
     fn parses_advanced_header() {
         let ctx = advanced_header(r#"{ Prefix Modifier "Fecund" (Tier: 2) — Life }"#).unwrap();
-        assert_eq!(ctx, ModContext { kind: None, tier: Some(2) });
+        assert_eq!(ctx, ModContext { kind: None, tier: Some(2), affix: Some(Affix::Prefix) });
         let ctx = advanced_header(r#"{ Master Crafted Suffix Modifier "of Craft" (Rank: 3) — Chaos, Resistance }"#).unwrap();
         assert_eq!(ctx.kind, Some(ModifierKind::Crafted));
-        assert_eq!(advanced_header("{ Implicit Modifier — Attribute }").unwrap().kind, Some(ModifierKind::Implicit));
+        assert_eq!(ctx.affix, Some(Affix::Suffix));
+        assert_eq!(ctx.tier, None);
+        let implicit = advanced_header("{ Implicit Modifier — Attribute }").unwrap();
+        assert_eq!(implicit.kind, Some(ModifierKind::Implicit));
+        assert_eq!(implicit.affix, None);
         assert!(advanced_header("+78 to maximum Life").is_none());
     }
 

@@ -37,6 +37,7 @@ const DEFAULT_SETTINGS: Settings = {
   language: 'en',
   ui_language: null,
   restore_clipboard: true,
+  intercept_copy: true,
   launch_on_startup: false,
   client_log_path: null,
   hotkeys: [

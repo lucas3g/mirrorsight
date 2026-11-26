@@ -10,7 +10,7 @@
 //!
 //! Cada uma também com o sufixo ` (Local)` — testado primeiro em armas/armaduras.
 
-use mirrorsight_domain::item::{Modifier, ModifierKind, StatRoll};
+use mirrorsight_domain::item::{Affix, Modifier, ModifierKind, StatRoll};
 
 use crate::catalog::StatCatalog;
 use crate::mod_line::{strip_markers, tokenize};
@@ -32,6 +32,7 @@ const NEGATING_SWAPS: &[(&str, &str)] = &[("reduced", "increased"), ("less", "mo
 pub struct ModContext {
     pub kind: Option<ModifierKind>,
     pub tier: Option<u32>,
+    pub affix: Option<Affix>,
 }
 
 pub struct StatMatcher<'a> {
@@ -84,6 +85,7 @@ impl<'a> StatMatcher<'a> {
                     kind,
                     roll,
                     tier: ctx.tier,
+                    affix: ctx.affix,
                 },
                 lines: lines.len(),
             });
@@ -201,7 +203,7 @@ mod tests {
 
     #[test]
     fn advanced_line_keeps_range_and_tier() {
-        let ctx = ModContext { kind: None, tier: Some(2) };
+        let ctx = ModContext { kind: None, tier: Some(2), affix: Some(Affix::Prefix) };
         let m = matcher()
             .match_at(&["+78(70-79) to maximum Life (fractured)"], ctx, "Gloves")
             .unwrap()
@@ -209,6 +211,7 @@ mod tests {
         assert_eq!(m.kind, ModifierKind::Fractured);
         assert!(m.trade_id.starts_with("fractured."));
         assert_eq!(m.tier, Some(2));
+        assert_eq!(m.affix, Some(Affix::Prefix));
         let roll = m.roll.unwrap();
         assert_eq!((roll.min, roll.max), (Some(70.0), Some(79.0)));
         assert_eq!(m.text, "+78 to maximum Life");

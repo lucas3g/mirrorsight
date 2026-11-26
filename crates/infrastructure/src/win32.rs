@@ -3,25 +3,28 @@
 //! Único módulo com `unsafe` no projeto. Cada chamada FFI tem um `// SAFETY:`.
 #![allow(unsafe_code)]
 
-use std::sync::Mutex;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Mutex, OnceLock};
 
 use windows::core::PCWSTR;
-use windows::Win32::Foundation::{CloseHandle, HANDLE, HWND, POINT, RECT};
+use windows::Win32::Foundation::{CloseHandle, HANDLE, HINSTANCE, HWND, LPARAM, LRESULT, POINT, RECT, WPARAM};
 use windows::Win32::Graphics::Gdi::ClientToScreen;
 use windows::Win32::Security::{GetTokenInformation, TokenElevation, TOKEN_ELEVATION, TOKEN_QUERY};
+use windows::Win32::System::LibraryLoader::GetModuleHandleW;
 use windows::Win32::System::Threading::{
     AttachThreadInput, GetCurrentProcess, GetCurrentThreadId, OpenProcess, OpenProcessToken,
     PROCESS_QUERY_LIMITED_INFORMATION,
 };
 use windows::Win32::UI::Input::KeyboardAndMouse::{
     GetAsyncKeyState, SendInput, INPUT, INPUT_0, INPUT_KEYBOARD, KEYBDINPUT, KEYBD_EVENT_FLAGS, KEYEVENTF_KEYUP,
-    VIRTUAL_KEY, VK_CONTROL, VK_LCONTROL, VK_LMENU, VK_LSHIFT, VK_MENU, VK_RCONTROL, VK_RMENU, VK_RSHIFT,
+    VIRTUAL_KEY, VK_CONTROL, VK_LCONTROL, VK_LMENU, VK_LSHIFT, VK_MENU, VK_RCONTROL, VK_RMENU, VK_RSHIFT, VK_SHIFT,
 };
 use windows::Win32::UI::WindowsAndMessaging::{
-    BringWindowToTop, FindWindowW, GetClassNameW, GetClientRect, GetForegroundWindow, GetWindowTextW,
-    GetWindowThreadProcessId,
-    IsIconic, IsWindow, SetForegroundWindow, SetWindowPos, ShowWindow, SWP_NOACTIVATE, SWP_NOOWNERZORDER,
-    SWP_NOZORDER, SW_RESTORE,
+    BringWindowToTop, CallNextHookEx, FindWindowW, GetClassNameW, GetClientRect, GetForegroundWindow,
+    GetMessageW, GetWindowTextW, GetWindowThreadProcessId, IsIconic, IsWindow, SetForegroundWindow,
+    SetWindowPos, SetWindowsHookExW, ShowWindow, HC_ACTION, KBDLLHOOKSTRUCT, LLKHF_INJECTED, MSG,
+    SWP_NOACTIVATE, SWP_NOOWNERZORDER, SWP_NOZORDER, SW_RESTORE, WH_KEYBOARD_LL, WM_KEYDOWN, WM_KEYUP,
+    WM_SYSKEYDOWN, WM_SYSKEYUP,
 };
 
 use mirrorsight_domain::ports::{GameWindowPort, InputPort, PortError, PortResult, WindowRect};
@@ -69,21 +72,7 @@ impl GameWindowPort for Win32GameWindow {
     }
 
     fn has_elevation_mismatch(&self) -> bool {
-        let Some(hwnd) = self.last() else { return false };
-        let mut pid = 0_u32;
-        // SAFETY: hwnd válido (checado em `last`), `pid` é um u32 local.
-        unsafe { GetWindowThreadProcessId(hwnd, Some(&raw mut pid)) };
-        if pid == 0 {
-            return false;
-        }
-        // SAFETY: OpenProcess com acesso mínimo; o handle é fechado em `process_elevated`.
-        let game = unsafe { OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid) };
-        let Ok(game) = game else {
-            // Acesso negado a um processo do mesmo usuário indica que ele roda elevado.
-            return !current_process_elevated();
-        };
-        let game_elevated = process_elevated(game, true);
-        game_elevated && !current_process_elevated()
+        self.last().is_some_and(elevation_mismatch)
     }
 
     fn game_rect(&self) -> Option<WindowRect> {
@@ -104,6 +93,24 @@ impl GameWindowPort for Win32GameWindow {
             Some(WindowRect { x: origin.x, y: origin.y, width, height })
         }
     }
+}
+
+/// `true` se o processo da janela roda elevado e nós não (UIPI bloqueia nosso input).
+fn elevation_mismatch(hwnd: HWND) -> bool {
+    let mut pid = 0_u32;
+    // SAFETY: handle de janela vindo do sistema; `pid` é um u32 local.
+    unsafe { GetWindowThreadProcessId(hwnd, Some(&raw mut pid)) };
+    if pid == 0 {
+        return false;
+    }
+    // SAFETY: OpenProcess com acesso mínimo; o handle é fechado em `process_elevated`.
+    let game = unsafe { OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid) };
+    let Ok(game) = game else {
+        // Acesso negado a um processo do mesmo usuário indica que ele roda elevado.
+        return !current_process_elevated();
+    };
+    let game_elevated = process_elevated(game, true);
+    game_elevated && !current_process_elevated()
 }
 
 /// Procura o cliente pela classe (quando nenhum price check lembrou o HWND ainda).
@@ -252,4 +259,155 @@ impl InputPort for Win32Input {
             key(VK_CONTROL, true),
         ])
     }
+
+    /// Ctrl+C simples: devolve ao jogo o Ctrl+C que o hook engoliu (cópia de texto do chat).
+    /// No fim, se o usuário ainda segura o Ctrl, ele volta a ficar pressionado para o Windows e
+    /// para o jogo: as teclas injetadas o soltaram, e o próximo C (ou V) sairia sem Ctrl.
+    fn send_plain_copy(&self) -> PortResult<()> {
+        let mut keys = vec![key(VK_CONTROL, false), key(VK_C, false), key(VK_C, true), key(VK_CONTROL, true)];
+        keys.extend(held_ctrl().into_iter().map(|vk| key(vk, false)));
+        send(&keys)
+    }
+}
+
+// ---------- Ctrl+C interceptado (hook de teclado de baixo nível) ----------
+//
+// O estado físico das teclas é acompanhado pelos eventos **não injetados** que passam pelo hook:
+// `GetAsyncKeyState` reflete também as teclas que nós injetamos (o Ctrl solto pela cópia
+// avançada), e com ele o segundo Ctrl+C com o Ctrl ainda seguro passaria como um "c" solto.
+
+static PHYS_LCTRL: AtomicBool = AtomicBool::new(false);
+static PHYS_RCTRL: AtomicBool = AtomicBool::new(false);
+static PHYS_ALT: AtomicBool = AtomicBool::new(false);
+static PHYS_SHIFT: AtomicBool = AtomicBool::new(false);
+/// C fisicamente pressionado: um novo keydown com ele já baixo é a repetição automática.
+static PHYS_C: AtomicBool = AtomicBool::new(false);
+
+/// Ctrl(s) que o usuário segura agora, segundo o hook.
+fn held_ctrl() -> Vec<VIRTUAL_KEY> {
+    let mut held = Vec::new();
+    if PHYS_LCTRL.load(Ordering::SeqCst) {
+        held.push(VK_LCONTROL);
+    }
+    if PHYS_RCTRL.load(Ordering::SeqCst) {
+        held.push(VK_RCONTROL);
+    }
+    held
+}
+
+/// Atualiza o estado físico com um evento não injetado.
+fn track_physical(vk: u32, down: bool) {
+    let flag = match VIRTUAL_KEY(u16::try_from(vk).unwrap_or(0)) {
+        VK_LCONTROL => &PHYS_LCTRL,
+        VK_RCONTROL => &PHYS_RCTRL,
+        VK_LMENU | VK_RMENU | VK_MENU => &PHYS_ALT,
+        VK_LSHIFT | VK_RSHIFT | VK_SHIFT => &PHYS_SHIFT,
+        VK_C => &PHYS_C,
+        _ => return,
+    };
+    flag.store(down, Ordering::SeqCst);
+}
+
+/// Janela do jogo cujo processo roda elevado: lá o Ctrl+C não é interceptado, porque o UIPI
+/// bloquearia tanto a cópia avançada quanto o reenvio. Cache por HWND (a consulta abre o processo).
+static ELEVATED_CACHE: Mutex<Option<(isize, bool)>> = Mutex::new(None);
+
+fn game_is_elevated(hwnd: HWND) -> bool {
+    let raw = hwnd.0 as isize;
+    let mut cache = ELEVATED_CACHE.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+    if let Some((cached, elevated)) = *cache {
+        if cached == raw {
+            return elevated;
+        }
+    }
+    let elevated = elevation_mismatch(hwnd);
+    *cache = Some((raw, elevated));
+    elevated
+}
+
+/// Callback do Ctrl+C interceptado. Só pode enviar para um canal: o Windows remove o hook
+/// em silêncio se ele demorar mais que o `LowLevelHooksTimeout`.
+static ON_COPY: OnceLock<Box<dyn Fn() + Send + Sync>> = OnceLock::new();
+/// Cópia em andamento: engole o autorepeat do C enquanto o item é copiado.
+static COPY_BUSY: AtomicBool = AtomicBool::new(false);
+/// Opção "Ctrl+C abre o price check". Desligada, o hook deixa o Ctrl+C passar intacto.
+static COPY_ENABLED: AtomicBool = AtomicBool::new(false);
+
+/// Liga/desliga a interceptação sem remover o hook (segue a configuração do usuário).
+pub fn set_copy_hook_enabled(enabled: bool) {
+    COPY_ENABLED.store(enabled, Ordering::SeqCst);
+}
+
+/// Instala (uma vez) um hook de teclado de baixo nível que troca o Ctrl+C físico, com o jogo
+/// em foco, por `on_copy` (que faz a cópia avançada). Chame [`finish_copy`] ao terminar.
+/// Retorna `false` se já havia hook instalado.
+pub fn spawn_copy_hook(on_copy: impl Fn() + Send + Sync + 'static) -> bool {
+    if ON_COPY.set(Box::new(on_copy)).is_err() {
+        return false;
+    }
+    std::thread::spawn(|| {
+        // SAFETY: módulo do próprio processo; o callback é uma `extern "system" fn` estática.
+        // O hook vive enquanto esta thread roda o loop de mensagens (a vida toda do app).
+        unsafe {
+            let module = GetModuleHandleW(PCWSTR::null()).ok().map(HINSTANCE::from);
+            if let Err(err) = SetWindowsHookExW(WH_KEYBOARD_LL, Some(keyboard_hook), module, 0) {
+                tracing::error!(%err, "não foi possível instalar o hook do Ctrl+C");
+                return;
+            }
+            let mut msg = MSG::default();
+            while GetMessageW(&raw mut msg, None, 0, 0).as_bool() {}
+        }
+    });
+    true
+}
+
+/// Libera o próximo Ctrl+C interceptado.
+pub fn finish_copy() {
+    COPY_BUSY.store(false, Ordering::SeqCst);
+}
+
+/// Keydown do C (não injetado) com Ctrl físico, sem Alt/Shift, no jogo em primeiro plano e
+/// com a opção ligada. Jogo elevado fica de fora (a tecla passa intacta).
+fn is_game_copy(info: &KBDLLHOOKSTRUCT) -> bool {
+    COPY_ENABLED.load(Ordering::SeqCst)
+        && info.vkCode == u32::from(VK_C.0)
+        && (PHYS_LCTRL.load(Ordering::SeqCst) || PHYS_RCTRL.load(Ordering::SeqCst))
+        && !PHYS_ALT.load(Ordering::SeqCst)
+        && !PHYS_SHIFT.load(Ordering::SeqCst)
+        && {
+            // SAFETY: sem pré-condições; pode retornar HWND nulo.
+            let hwnd = unsafe { GetForegroundWindow() };
+            !hwnd.is_invalid() && is_game_window(hwnd) && !game_is_elevated(hwnd)
+        }
+}
+
+unsafe extern "system" fn keyboard_hook(code: i32, wparam: WPARAM, lparam: LPARAM) -> LRESULT {
+    #[allow(clippy::cast_possible_wrap)]
+    let action = code == HC_ACTION as i32;
+    if action {
+        // SAFETY: com WH_KEYBOARD_LL e HC_ACTION, `lparam` aponta para um KBDLLHOOKSTRUCT válido.
+        let info = unsafe { &*(lparam.0 as *const KBDLLHOOKSTRUCT) };
+        let injected = (info.flags.0 & LLKHF_INJECTED.0) != 0;
+        let msg = u32::try_from(wparam.0).unwrap_or(0);
+        let down = msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN;
+        let up = msg == WM_KEYUP || msg == WM_SYSKEYUP;
+        if !injected && (down || up) {
+            // Repetição automática: keydown do C com ele já pressionado.
+            let repeat = down && info.vkCode == u32::from(VK_C.0) && PHYS_C.load(Ordering::SeqCst);
+            let game_copy = down && msg == WM_KEYDOWN && is_game_copy(info);
+            track_physical(info.vkCode, down);
+            if game_copy {
+                // Só o primeiro toque dispara; segurar Ctrl+C não repete a consulta de preço.
+                if !repeat && !COPY_BUSY.swap(true, Ordering::SeqCst) {
+                    if let Some(on_copy) = ON_COPY.get() {
+                        on_copy();
+                    }
+                }
+                // Engole a tecla: o jogo recebe o Ctrl+Alt+C e o Ctrl+C reenviado no lugar.
+                return LRESULT(1);
+            }
+        }
+    }
+    // SAFETY: repassa o evento à cadeia de hooks com os parâmetros recebidos.
+    unsafe { CallNextHookEx(None, code, wparam, lparam) }
 }

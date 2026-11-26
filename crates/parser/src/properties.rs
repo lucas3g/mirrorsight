@@ -73,6 +73,7 @@ fn property(id: &str, text: &str, value: f64) -> Modifier {
         kind: ModifierKind::Property,
         roll: Some(StatRoll { value, min: None, max: None }),
         tier: None,
+        affix: None,
     }
 }
 

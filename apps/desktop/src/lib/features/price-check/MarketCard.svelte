@@ -1,10 +1,10 @@
 <script lang="ts">
   import { untrack } from 'svelte';
-  import type { Listing } from '$lib/types';
+  import type { GroupEntry, Listing, ListingGroup as Group } from '$lib/types';
   import { describeError } from '$lib/backend';
   import { formatAmount } from '$lib/format';
   import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
-  import { suggestedFor } from '$lib/pricing';
+  import { ninjaDivineRate, suggestedFor } from '$lib/pricing';
   import { priceCheck } from '$lib/stores/priceCheck.svelte';
   import { settings } from '$lib/stores/settings.svelte';
   import { toasts } from '$lib/stores/toasts.svelte';
@@ -14,7 +14,9 @@
   import StateMessage from '$lib/features/shared/StateMessage.svelte';
   import Tabs from '$lib/ui/Tabs.svelte';
   import ListingRow from './ListingRow.svelte';
+  import ListingGroup from './ListingGroup.svelte';
   import ListedItemCard from './ListedItemCard.svelte';
+  import { singleListText } from './groups';
 
   /**
    * Cartão de mercado: abas Listagens / Distribuição.
@@ -43,8 +45,29 @@
     new Set((priceCheck.output?.filters.stats ?? []).filter((s) => s.enabled).map((s) => s.trade_id)),
   );
 
+  // ---------- Agrupamento por status (PoE1) ----------
+  const cmp = $derived(phase.kind === 'loading' ? null : (priceCheck.output?.comparison ?? null));
+  const grouped = $derived(cmp?.mode === 'grouped' ? cmp : null);
+  const singleNotice = $derived(cmp?.mode === 'single' ? singleListText(cmp.reason) : null);
+  /** Pior/Igual/Melhor sempre; Não comparável e Sem dados só com anúncios. `start` = posição contínua. */
+  const visibleGroups = $derived.by(() => {
+    const out: { group: Group; start: number }[] = [];
+    let start = 0;
+    for (const group of grouped?.groups ?? []) {
+      const always = group.kind === 'worse' || group.kind === 'equal' || group.kind === 'better';
+      if (!always && group.entries.length === 0) continue;
+      out.push({ group, start });
+      start += group.entries.length;
+    }
+    return out;
+  });
+  const you = $derived(grouped?.you ?? null);
+  /** Cotação do divine para o "mín." dos grupos: resumo, com a reserva do poe.ninja (como o PriceCheckPanel). */
+  const divineRate = $derived(summary?.divine_chaos ?? ninjaDivineRate(priceCheck.output?.indexed));
+
   const CARD_WIDTH = 330;
-  let peek = $state<{ index: number; left: number; top: number } | null>(null);
+  /** `index`: posição em `listings` (a mesma nos dois modos). `entry`: anúncio no modo agrupado. */
+  let peek = $state<{ index: number; left: number; top: number; entry: GroupEntry | null } | null>(null);
   /** Olho sob o mouse agora — descarta respostas atrasadas da expansão da janela. */
   let hovering: number | null = null;
 
@@ -57,7 +80,7 @@
 
   const eyeHovered = (row: HTMLElement | null) => !!row?.querySelector('button:hover');
 
-  async function showPeek(index: number, row: HTMLElement) {
+  async function showPeek(index: number, row: HTMLElement, entry: GroupEntry | null = null) {
     hovering = index;
     peekRow = row;
     clearTimeout(hideTimer);
@@ -85,9 +108,10 @@
       left = roomLeft >= 8 ? roomLeft : (panelRect?.left ?? 0) + 14;
     }
     // Altura estimada; o clamp mantém o card dentro da janela.
-    const estimated = 120 + (shown[index]?.item?.modifiers.length ?? 0) * 24;
+    // + bloco "Comparação" (cabeçalho e 3 linhas) quando o anúncio é comparável.
+    const estimated = 120 + (listings[index]?.item?.modifiers.length ?? 0) * 24 + (entry?.detail ? 90 : 0);
     const top = Math.max(8, Math.min(rowRect.top + rowRect.height / 2 - estimated / 2, window.innerHeight - estimated - 8));
-    peek = { index, left, top };
+    peek = { index, left, top, entry };
   }
 
   /**
@@ -137,11 +161,16 @@
     }
   }
 
-  const peekListing = $derived(peek ? shown[peek.index] : undefined);
+  const peekListing = $derived(peek ? listings[peek.index] : undefined);
+  /** Grupo do anúncio do olho (selo no card). */
+  const peekGroup = $derived(
+    peek && grouped ? grouped.groups.find((g) => g.entries.some((e) => e.index === peek?.index))?.kind : undefined,
+  );
 
   // Nova busca: as linhas somem sem `mouseleave` e o índice passaria a apontar para outro anúncio.
   $effect(() => {
     void shown;
+    void cmp;
     void phase.kind;
     if (untrack(() => peek) !== null) untrack(closePeek);
   });
@@ -193,6 +222,14 @@
   {/if}
 
   {#if tab === 'listings' || compact}
+    {#if you && listings.length > 0}
+      <div class="you">
+        <span class="label">{pm.yourItem}</span>
+        <span class="prop">{pm.avgTier} <b>{you.avg_tier.toFixed(2)}</b></span>
+        <span class="prop">{pm.percentile} <b>{Math.round(you.avg_percentile * 100)}%</b></span>
+        <span class="prop">{you.valued === 'prefix' ? pm.freePrefix : pm.freeSuffix} <b>{you.free_valued}</b></span>
+      </div>
+    {/if}
     {#if compact}
       <div class="lhead label clh"><span>{pm.colPrice}</span><span class="c">iLvl</span><span>{pm.colSeller}</span><span class="r">{pm.colListed}</span><span></span></div>
     {:else}
@@ -224,20 +261,48 @@
         {#if priceCheck.dirty}
           <div class="stale">{pm.staleFilters}</div>
         {/if}
-        <div class:stale-list={priceCheck.dirty}>
-          {#each shown as listing, i (i)}
-            <ListingRow
-              {listing}
-              index={i}
-              best={listing === listings[0]}
-              {compact}
-              peeking={peek?.index === i}
-              onpeek={(row) => void showPeek(i, row)}
-              onunpeek={hidePeek}
-              onwhisper={copyWhisper}
-            />
-          {/each}
-        </div>
+        {#if grouped}
+          <div class:stale-list={priceCheck.dirty}>
+            {#each visibleGroups as { group, start } (group.kind)}
+              <ListingGroup
+                kind={group.kind}
+                entries={group.entries}
+                {listings}
+                {divineRate}
+                {start}
+                {compact}
+                peekIndex={peek?.index ?? null}
+                onpeek={(entry, row) => void showPeek(entry.index, row, entry)}
+                onunpeek={hidePeek}
+                onwhisper={copyWhisper}
+              />
+            {/each}
+          </div>
+        {:else}
+          {#if singleNotice}
+            <div class="notice" role="note">
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="2" />
+                <path d="M8 7.2v4M8 4.8v.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+              <span>{singleNotice}</span>
+            </div>
+          {/if}
+          <div class:stale-list={priceCheck.dirty}>
+            {#each shown as listing, i (i)}
+              <ListingRow
+                {listing}
+                index={i}
+                best={listing === listings[0]}
+                {compact}
+                peeking={peek?.index === i}
+                onpeek={(row) => void showPeek(i, row)}
+                onunpeek={hidePeek}
+                onwhisper={copyWhisper}
+              />
+            {/each}
+          </div>
+        {/if}
       {/if}
     </div>
   {:else}
@@ -277,7 +342,16 @@
 </section>
 
 {#if peek && peekListing?.item}
-  <ListedItemCard listing={peekListing} item={peekListing.item} {matchedIds} left={peek.left} top={peek.top} />
+  <ListedItemCard
+    listing={peekListing}
+    item={peekListing.item}
+    {matchedIds}
+    group={peekGroup}
+    detail={peek.entry?.detail ?? undefined}
+    valued={you?.valued}
+    left={peek.left}
+    top={peek.top}
+  />
 {/if}
 
 <style>
@@ -314,6 +388,23 @@
     border: 1px solid var(--ms-warning-line);
   }
   .stale-list :global(.price b) { color: var(--ms-text-2); }
+  .you { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--ms-border); flex: none; }
+  .you .label { margin-right: 2px; }
+  /* Informativo e neutro: o amarelo fica para "Filtros alterados". */
+  .notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 6px 12px 8px;
+    padding: 8px 10px;
+    border-radius: var(--ms-r-md);
+    font-size: 11.5px;
+    line-height: 1.4;
+    color: var(--ms-text-2);
+    background: var(--ms-surface-2);
+    border: 1px solid var(--ms-border);
+  }
+  .notice svg { flex: none; margin-top: 1px; color: var(--ms-info); }
   .why { align-self: center; max-width: 220px; font: 600 11px var(--ms-mono); color: var(--ms-text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   .dist { flex: 1; min-height: 0; padding: 32px 16px 14px; display: flex; flex-direction: column; gap: 14px; }

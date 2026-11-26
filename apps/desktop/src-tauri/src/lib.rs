@@ -38,6 +38,7 @@ pub fn run() {
             app.manage(overlay::OverlayGeometry::default());
             tray::build(app)?;
             hotkeys::spawn_focus_watcher(app.handle().clone());
+            hotkeys::spawn_copy_interceptor(app.handle().clone());
 
             if std::env::args().any(|a| a == MINIMIZED_ARG) {
                 if let Some(main) = app.get_webview_window("main") {

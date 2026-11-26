@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Item, Listing } from '$lib/types';
+  import type { Affix, CompareDetail, Criterion, GroupKind, Item, Listing } from '$lib/types';
   import { INFLUENCE_LABEL, KIND_LABEL, RARITY_COLOR, formatAmount, relativeAge } from '$lib/format';
   import Sockets from '$lib/ui/Sockets.svelte';
   import CurrencyIcon from '$lib/ui/CurrencyIcon.svelte';
@@ -7,17 +7,52 @@
   import { portal } from '$lib/ui/portal';
   import { common } from '$lib/i18n/messages/common';
   import { priceCheckMsgs as pm } from '$lib/i18n/messages/priceCheck';
+  import GroupTag from './GroupTag.svelte';
+  import { GROUP_COLOR } from './groups';
 
-  /** Detalhe do item de uma listagem, exibido ao passar o mouse no olho. */
+  /**
+   * Detalhe do item de uma listagem, exibido ao passar o mouse no olho.
+   * Na listagem agrupada (PoE1) recebe o grupo, o detalhe da comparação e o afixo valorizado:
+   * marca os mods em comum com o seu item em vez dos que batem com os filtros.
+   */
   let {
     listing,
     item,
     matchedIds,
+    group,
+    detail,
+    valued,
     left,
     top,
-  }: { listing: Listing; item: Item; matchedIds: Set<string>; left: number; top: number } = $props();
+  }: {
+    listing: Listing;
+    item: Item;
+    matchedIds: Set<string>;
+    group?: GroupKind;
+    detail?: CompareDetail;
+    valued?: Affix;
+    left: number;
+    top: number;
+  } = $props();
 
-  const hasMatches = $derived(item.modifiers.some((m) => matchedIds.has(m.trade_id)));
+  const grouped = $derived(group !== undefined);
+  const hitIds = $derived(grouped ? new Set(detail?.common_ids ?? []) : matchedIds);
+  const hasMatches = $derived(item.modifiers.some((m) => hitIds.has(m.trade_id)));
+  const cmpRows = $derived.by(() => {
+    if (!detail) return [];
+    const pct = (v: number) => `${Math.round(v * 100)}%`;
+    const rows: { key: Criterion; label: string; listing: string; yours: string }[] = [
+      { key: 'tier', label: pm.avgTier, listing: detail.listing.avg_tier.toFixed(2), yours: detail.yours.avg_tier.toFixed(2) },
+      { key: 'percentile', label: pm.avgPercentile, listing: pct(detail.listing.avg_percentile), yours: pct(detail.yours.avg_percentile) },
+      {
+        key: 'slots',
+        label: valued === 'prefix' ? pm.freePrefix : pm.freeSuffix,
+        listing: String(detail.listing.free_valued),
+        yours: String(detail.yours.free_valued),
+      },
+    ];
+    return rows;
+  });
   const listedLine = $derived.by(() => {
     const age = relativeAge(listing.indexed_at);
     return age === common.now ? pm.listedNow : pm.listedAgo(age);
@@ -26,7 +61,10 @@
 
 <div class="card" use:portal style:left="{left}px" style:top="{top}px" style:--rar={RARITY_COLOR[item.rarity]} role="tooltip">
   <header>
-    <div class="name">{item.name ?? item.base_type}</div>
+    <div class="nline">
+      <div class="name">{item.name ?? item.base_type}</div>
+      {#if group}<GroupTag kind={group} />{/if}
+    </div>
     <div class="base">
       {item.name ? `${item.base_type} · ` : ''}{item.item_class}{item.item_level ? ` · iLvl ${item.item_level}` : ''}
     </div>
@@ -42,13 +80,34 @@
   {#if item.modifiers.length > 0}
     <section>
       {#each item.modifiers as mod, i (i)}
-        <div class="mod" class:match={matchedIds.has(mod.trade_id)}>
+        <div class="mod" class:match={hitIds.has(mod.trade_id)}>
           <span class="tag t-{mod.kind}">{KIND_LABEL[mod.kind].slice(0, 4)}</span>
-          <span class="txt">{#if matchedIds.has(mod.trade_id)}<span class="hit"></span>{/if}<ModText text={mod.text} /></span>
+          {#if mod.affix}
+            <span class="affix mono" title={pm.affixTitle[mod.affix]}>{mod.affix === 'prefix' ? 'P' : 'S'}</span>
+          {:else}
+            <span class="affix none"></span>
+          {/if}
+          <span class="txt">{#if hitIds.has(mod.trade_id)}<span class="hit"></span>{/if}<ModText text={mod.text} /></span>
           {#if mod.tier !== null}<span class="tier" class:t1={mod.tier === 1} class:t2={mod.tier === 2}>T{mod.tier}</span>{:else}<span></span>{/if}
         </div>
       {/each}
-      {#if hasMatches}<p class="legend"><span class="hit"></span>{pm.matchesFilters}</p>{/if}
+      {#if hasMatches}<p class="legend"><span class="hit"></span>{grouped ? pm.inCommon : pm.matchesFilters}</p>{/if}
+    </section>
+  {/if}
+
+  {#if detail && group}
+    <section class="cmp" style:--grp={GROUP_COLOR[group]}>
+      <div class="crow label">
+        <span>{pm.comparison(detail.common)}</span><span class="r">{pm.cmpListing}</span><span class="r">{pm.cmpYours}</span>
+      </div>
+      {#each cmpRows as row (row.key)}
+        {@const decided = detail.decided === row.key}
+        <div class="crow" class:decided>
+          <span class="clabel">{row.label}{#if decided}<span class="dec">{pm.decided}</span>{/if}</span>
+          <span class="cval mono">{row.listing}</span>
+          <span class="cyours mono">{row.yours}</span>
+        </div>
+      {/each}
     </section>
   {/if}
 
@@ -78,13 +137,14 @@
   .card::before { content: ''; position: absolute; inset: 0 0 auto; height: 3px; background: var(--rar); }
   @keyframes peek-in { from { transform: scale(0.92) translateX(10px); } }
   header { padding: 14px 14px 10px; border-bottom: 1px solid var(--ms-border); }
-  .name { font-size: 15px; font-weight: 700; color: var(--rar); }
+  .nline { display: flex; align-items: center; gap: 8px; }
+  .name { flex: 1; min-width: 0; font-size: 15px; font-weight: 700; color: var(--rar); }
   .base { font-size: 12px; color: var(--ms-text-2); margin: 1px 0 8px; }
   .chips { display: flex; flex-wrap: wrap; gap: 4px; }
   section { padding: 9px 14px; border-bottom: 1px solid var(--ms-border); }
   .mod {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto auto 1fr auto;
     align-items: center;
     gap: 8px;
     padding: 3px 0;
@@ -104,6 +164,28 @@
     background: var(--ms-accent);
   }
   .legend { font-size: 10.5px; color: var(--ms-text-3); margin-top: 6px; }
+  .affix {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid var(--ms-border-strong);
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--ms-text-2);
+  }
+  .affix.none { border-color: transparent; }
+  .cmp { padding: 9px 14px 10px; }
+  .crow { display: grid; grid-template-columns: 1fr 64px 64px; align-items: center; min-height: 22px; font-size: 12px; color: var(--ms-text-2); }
+  .crow.label { min-height: 0; margin-bottom: 4px; }
+  .r { text-align: right; }
+  .cval { text-align: right; font-weight: 700; color: var(--ms-text); }
+  .cyours { text-align: right; font-weight: 600; color: var(--ms-text-3); }
+  .crow.decided .clabel { color: var(--ms-text); font-weight: 650; }
+  .crow.decided .cval { color: var(--grp); }
+  .dec { margin-left: 6px; font-size: 10.5px; font-weight: 700; color: var(--grp); }
   footer { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--ms-surface-1); }
   .mod .txt { --num-color: var(--ms-text-2); }
   .mod.match .txt { --num-color: var(--ms-accent-2); }

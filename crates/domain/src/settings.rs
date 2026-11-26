@@ -50,6 +50,9 @@ pub struct Settings {
     /// v3: idioma da interface; `None` = automático (idioma do sistema).
     pub ui_language: Option<String>,
     pub restore_clipboard: bool,
+    /// Ctrl+C sobre um item no jogo também abre o price check (com tiers e prefix/suffix).
+    /// Arquivos antigos recebem `true` pelo `#[serde(default)]`.
+    pub intercept_copy: bool,
     pub launch_on_startup: bool,
     pub client_log_path: Option<String>,
     pub hotkeys: Vec<HotkeyBinding>,
@@ -96,6 +99,7 @@ impl Default for Settings {
             language: "en".into(),
             ui_language: None,
             restore_clipboard: true,
+            intercept_copy: true,
             launch_on_startup: false,
             client_log_path: None,
             hotkeys: vec![
@@ -137,5 +141,13 @@ mod tests {
         assert_eq!(settings.schema_version, 3);
         assert_eq!(settings.ui_language, None);
         assert_eq!(settings.language, "pt");
+    }
+
+    #[test]
+    fn old_file_keeps_copy_interception_on() {
+        let raw = r#"{ "schema_version": 3, "restore_clipboard": false }"#;
+        let settings = serde_json::from_str::<Settings>(raw).unwrap().migrate();
+        assert!(settings.intercept_copy);
+        assert!(!settings.restore_clipboard);
     }
 }

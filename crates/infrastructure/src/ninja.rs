@@ -560,6 +560,7 @@ mod tests {
             discriminator: None,
             trade_type: None,
             map_tier: None,
+            affix_slots: None,
         }
     }
 
@@ -620,6 +621,7 @@ mod tests {
             kind: ModifierKind::Explicit,
             roll: None,
             tier: None,
+            affix: None,
         }];
         assert_eq!(pick_unique(&lines.lines, &aegis).map(|l| l.chaos_value), Some(80.0));
     }

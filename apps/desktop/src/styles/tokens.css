@@ -40,6 +40,8 @@
   --ms-warning-line: #5d4718;
   --ms-danger-soft: #2a1119;
   --ms-danger-line: #5a2230;
+  --ms-info-soft: #16263a;
+  --ms-info-line: #284a6e;
 
   /* Raridades do jogo, ajustadas para contraste sobre grafite. */
   --ms-normal: #c8c8c8;
