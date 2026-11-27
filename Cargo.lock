@@ -2514,7 +2514,7 @@ dependencies = [
 
 [[package]]
 name = "mirrorsight"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "anyhow",
  "mirrorsight-application",
@@ -2538,7 +2538,7 @@ dependencies = [
 
 [[package]]
 name = "mirrorsight-application"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "async-trait",
  "mirrorsight-domain",
@@ -2551,7 +2551,7 @@ dependencies = [
 
 [[package]]
 name = "mirrorsight-domain"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "async-trait",
  "serde",
@@ -2561,7 +2561,7 @@ dependencies = [
 
 [[package]]
 name = "mirrorsight-gamedata"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "mirrorsight-domain",
  "mirrorsight-parser",
@@ -2571,7 +2571,7 @@ dependencies = [
 
 [[package]]
 name = "mirrorsight-infrastructure"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "arboard",
  "async-trait",
@@ -2593,7 +2593,7 @@ dependencies = [
 
 [[package]]
 name = "mirrorsight-parser"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "mirrorsight-domain",
  "serde",
