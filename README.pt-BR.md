@@ -16,7 +16,7 @@ Passe o mouse sobre um item, aperte <kbd>Ctrl</kbd> + <kbd>D</kbd> e saiba quant
 
 [English](README.md) · **Português** · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Deutsch](README.de.md) · [Español](README.es.md)
 
-<img src="docs/screenshots/price-check.png" alt="Painel de price check do Mirrorsight" width="100%" />
+<img src="docs/screenshots/pt-BR/price-check.png" alt="Painel de price check do Mirrorsight" width="100%" />
 
 </div>
 
@@ -36,6 +36,7 @@ cursor — o **preço estimado**, a **distribuição de preços**, os **filtros 
 | | |
 |---|---|
 | 🎯 **Price check com uma tecla** | <kbd>Ctrl</kbd>+<kbd>D</kbd> sobre qualquer item abre o painel ao lado do cursor. |
+| 📋 **Ctrl+C também funciona** | Com *Ctrl+C abre o price check* ligado (padrão), o atalho de copiar do próprio jogo lê o item com os tiers e abre o overlay — o texto continua sendo copiado. |
 | 🧮 **Estimativa inteligente** | Mínimo, mediana e máximo, mais um indicador de confiança baseado na quantidade de anúncios. |
 | 💡 **Preço sugerido** | Percentis *Compra* (p25), *Justo* (p50) e *Venda* (p75), com a nota `~b/o` pronta para copiar. |
 | 🎛️ **Filtros por mod editáveis** | Liga/desliga mods, vê o tier (T1…T*n*) e o range do roll, ajusta mín/máx, usa a margem e adiciona mods por busca de texto (pseudo incluídos). |
@@ -43,10 +44,11 @@ cursor — o **preço estimado**, a **distribuição de preços**, os **filtros 
 | 📊 **Gráfico de distribuição** | Histograma dos preços com marcadores p25 / p50 / p75. |
 | 💰 **Currency em bulk** | Currency e itens empilháveis são precificados pela troca em massa (preço por unidade, estoque, vendedor). |
 | ⚡ **Quick price** | Preço instantâneo do **poe.ninja** com tendência de 7 dias — sem busca no trade. |
-| 🧠 **Avaliação de itens (PoE 1)** | Cada anúncio recebe duas avaliações independentes: **upgrade** para a sua build (Melhor / Pior / Equivalente, comparando o conjunto de stats, o cap de resistências e os requisitos de atributo do seu build do Path of Building) e **qualidade do item** (0–100 por tiers, rolls e potencial de crafting; únicos pelas faixas reais de roll). Mods sem dados suficientes aparecem como *inconclusivos*, nunca como roll perfeito. |
+| 🧠 **Avaliação de itens (PoE 1)** | Cada anúncio recebe duas avaliações independentes: **upgrade** para a sua build (Melhor / Pior / Equivalente, comparando o conjunto de stats, o cap de resistências e os requisitos de atributo do seu build do Path of Building) e **qualidade do item** (0–100 por tiers, rolls e potencial de crafting; únicos pelas faixas reais de roll). Mods sem dados suficientes aparecem como *inconclusivos*, nunca como roll perfeito. Os anúncios ficam agrupados em Melhor / Equivalente / Pior, e o ícone de olho mostra exatamente quais stats mudam. |
 | 🕘 **Histórico** | Todo price check fica salvo e pode ser reaberto com os mesmos filtros. |
 | ⌨️ **Paleta de comandos** | <kbd>Ctrl</kbd>+<kbd>K</kbd> para ir a qualquer lugar, trocar jogo ou liga, limpar histórico… |
 | 🎮 **PoE 1 e PoE 2** | Troque de jogo e de liga pela barra de título. |
+| 🌐 **7 idiomas** | English, Português, Español, Deutsch, 简体中文, 日本語 e 한국어 — por padrão segue o idioma do sistema. |
 | 🛡️ **Respeita o rate limit** | Segue os headers `X-Rate-Limit-*` da API oficial — sem ban, sem spam. |
 
 ## 🔍 Como funciona
@@ -80,20 +82,28 @@ flowchart LR
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/price-check.png" alt="Price check" /><br/><sub><b>Price check</b> — estimativa, preço sugerido, filtros e listagens</sub></td>
-    <td width="50%"><img src="docs/screenshots/distribution.png" alt="Distribuição" /><br/><sub><b>Distribuição</b> — histograma com marcadores de percentil</sub></td>
+    <td width="50%"><img src="docs/screenshots/pt-BR/price-check.png" alt="Price check" /><br/><sub><b>Price check</b> — estimativa, preço sugerido, filtros e listagens agrupadas pelo veredito de upgrade</sub></td>
+    <td width="50%"><img src="docs/screenshots/pt-BR/evaluation.png" alt="Avaliação do item" /><br/><sub><b>Avaliação do item</b> — o que muda para a sua build e a qualidade do item (ícone de olho)</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/bulk-currency.png" alt="Currency em bulk" /><br/><sub><b>Currency em bulk</b> — ofertas da troca com estoque</sub></td>
-    <td><img src="docs/screenshots/quick-price.png" alt="Quick price" /><br/><sub><b>Quick price</b> — valor do poe.ninja e tendência de 7 dias</sub></td>
+    <td><img src="docs/screenshots/pt-BR/distribution.png" alt="Distribuição" /><br/><sub><b>Distribuição</b> — histograma com marcadores de percentil</sub></td>
+    <td><img src="docs/screenshots/pt-BR/bulk-currency.png" alt="Currency em bulk" /><br/><sub><b>Currency em bulk</b> — ofertas da troca com estoque</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/command-palette.png" alt="Paleta de comandos" /><br/><sub><b>Paleta de comandos</b> — <kbd>Ctrl</kbd>+<kbd>K</kbd></sub></td>
-    <td><img src="docs/screenshots/settings-hotkeys.png" alt="Hotkeys" /><br/><sub><b>Configurações</b> — hotkeys remapeáveis</sub></td>
+    <td><img src="docs/screenshots/pt-BR/quick-price.png" alt="Quick price" /><br/><sub><b>Quick price</b> — valor do poe.ninja e tendência de 7 dias</sub></td>
+    <td><img src="docs/screenshots/pt-BR/history.png" alt="Histórico" /><br/><sub><b>Histórico</b> — os últimos 50 price checks, reabra com os mesmos filtros</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/pt-BR/command-palette.png" alt="Paleta de comandos" /><br/><sub><b>Paleta de comandos</b> — <kbd>Ctrl</kbd>+<kbd>K</kbd></sub></td>
+    <td><img src="docs/screenshots/pt-BR/settings-hotkeys.png" alt="Hotkeys" /><br/><sub><b>Hotkeys</b> — atalhos remapeáveis</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/pt-BR/settings-general.png" alt="Configurações" /><br/><sub><b>Configurações</b> — idioma da interface, jogo, liga, atualização automática</sub></td>
+    <td><img src="docs/screenshots/pt-BR/settings-price-check.png" alt="Build do Path of Building" /><br/><sub><b>Build do Path of Building</b> — item set e skill set para o veredito de upgrade</sub></td>
   </tr>
 </table>
 
-> Os prints foram tirados no modo demonstração embutido.
+> A interface está disponível em English, Português, Español, Deutsch, 简体中文, 日本語 e 한국어 (**Configurações → Geral → Idioma da interface**; por padrão segue o idioma do sistema). Os prints foram tirados no modo demonstração embutido.
 
 ## 📦 Como usar
 
@@ -111,6 +121,7 @@ Sem o jogo aberto? Cole o texto de um item na janela principal com <kbd>Ctrl</kb
 |---|---|
 | <kbd>Ctrl</kbd> + <kbd>D</kbd> | Price check do item sob o cursor |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>D</kbd> | Price check já fixado na tela |
+| <kbd>Ctrl</kbd> + <kbd>C</kbd> | Price check com tiers; o texto continua sendo copiado (dá para desligar em **Configurações → Geral**) |
 | <kbd>Shift</kbd> + <kbd>Space</kbd> | Mostrar / ocultar o overlay |
 | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>O</kbd> | Abrir configurações |
 | <kbd>Ctrl</kbd> + <kbd>K</kbd> | Paleta de comandos (dentro do Mirrorsight) |
@@ -124,8 +135,8 @@ registradas enquanto a janela do jogo está em foco, então nunca roubam teclas 
 
 ### ⚙️ Configurações
 
-- **Geral** — jogo, liga, idioma do cliente, moeda de exibição, restaurar clipboard, iniciar com o Windows.
-- **Price check** — range dos mods, mostrar vendedores offline, filtros marcados por padrão, nível padrão, build do Path of Building para o veredito de upgrade, histórico, presets.
+- **Geral** — idioma da interface, jogo, liga, idioma do cliente, moeda de exibição, restaurar clipboard, Ctrl+C abre o price check, iniciar com o Windows, atualizar automaticamente.
+- **Price check** — range dos mods, mostrar vendedores offline, filtros marcados por padrão, nível padrão do preço sugerido, build do Path of Building (com item set e skill set) para o veredito de upgrade, histórico, presets.
 - **Aparência** — escala da interface (90–130 %), densidade, reduzir animações.
 
 ### 🔁 Atualizações automáticas
@@ -153,6 +164,8 @@ cd apps/desktop && npm run check
 # contra as APIs reais (consome rate limit — rode com moderação):
 cargo test -p mirrorsight-infrastructure --test live -- --ignored --nocapture
 ```
+
+Prints dos READMEs: `node tools/screenshots/capture.mjs` compila o demo e captura todos os idiomas em `docs/screenshots/<idioma>/` (Node ≥ 22 e Edge ou Chrome; `--locales en,pt-BR` limita os idiomas).
 
 ### 🧱 Arquitetura (clean architecture)
 

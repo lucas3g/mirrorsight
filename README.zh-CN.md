@@ -16,7 +16,7 @@
 
 [English](README.md) · [Português](README.pt-BR.md) · **中文** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Deutsch](README.de.md) · [Español](README.es.md)
 
-<img src="docs/screenshots/price-check.png" alt="Mirrorsight 查价面板" width="100%" />
+<img src="docs/screenshots/zh-CN/price-check.png" alt="Mirrorsight 查价面板" width="100%" />
 
 </div>
 
@@ -35,9 +35,11 @@ Mirrorsight 是一个覆盖在《流放之路》(Path of Exile) 之上的轻量�
 | | |
 |---|---|
 | 🎯 **一键查价** | 在任意物品上按 <kbd>Ctrl</kbd>+<kbd>D</kbd>，面板在鼠标旁打开。 |
+| 📋 **Ctrl+C 也能查价** | 开启 *Ctrl+C 打开查价*（默认开启）后，游戏自带的复制快捷键会读取物品及其阶级并打开浮窗——文本照常复制。 |
 | 🧮 **智能估价** | 最低价、中位数和最高价，并根据挂单数量给出可信度指示。 |
 | 💡 **建议价格** | *买入* (p25)、*公道* (p50)、*卖出* (p75) 百分位，一键复制 `~b/o` 标价备注。 |
 | 🎛️ **可编辑的词缀筛选** | 开关词缀、查看词缀等级 (T1…T*n*) 与数值区间、调整最小/最大值、使用浮动比例滑块、按文本搜索添加词缀（含伪属性）。 |
+| 🧠 **物品评估（PoE 1）** | 每条挂单都有两项独立评估：针对你构筑的**升级**判断（更好 / 更差 / 相当，比较整体属性组合、抗性上限以及你 Path of Building 构筑的属性需求）和**物品品质**（0–100，依据阶级、数值与制作潜力；传奇物品按真实数值范围）。数据不足的词缀标记为*无法判断*，绝不视为满值。挂单按 更好 / 相当 / 更差 分组，眼睛图标会显示具体哪些属性发生变化。 |
 | 💾 **预设** | 按游戏保存常用的筛选组合并重复使用。 |
 | 📊 **价格分布图** | 挂单价格直方图，标注 p25 / p50 / p75。 |
 | 💰 **批量通货** | 通货和可堆叠物品通过批量兑换查价（单价、库存、卖家）。 |
@@ -45,6 +47,7 @@ Mirrorsight 是一个覆盖在《流放之路》(Path of Exile) 之上的轻量�
 | 🕘 **历史记录** | 每次查价都会保存，可使用相同筛选重新打开。 |
 | ⌨️ **命令面板** | <kbd>Ctrl</kbd>+<kbd>K</kbd> 快速跳转、切换游戏或赛季、清空历史…… |
 | 🎮 **支持 PoE 1 与 PoE 2** | 在标题栏切换游戏与赛季。 |
+| 🌐 **7 种语言** | English、Português、Español、Deutsch、简体中文、日本語 和 한국어——默认跟随系统语言。 |
 | 🛡️ **遵守速率限制** | 遵循官方 API 的 `X-Rate-Limit-*` 响应头——不封号、不刷请求。 |
 
 ## 🔍 工作原理
@@ -76,20 +79,28 @@ flowchart LR
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/price-check.png" alt="查价" /><br/><sub><b>查价</b> —— 估价、建议价格、词缀筛选与挂单</sub></td>
-    <td width="50%"><img src="docs/screenshots/distribution.png" alt="价格分布" /><br/><sub><b>价格分布</b> —— 带百分位标记的直方图</sub></td>
+    <td width="50%"><img src="docs/screenshots/zh-CN/price-check.png" alt="查价" /><br/><sub><b>查价</b> —— 估价、建议价格、词缀筛选，挂单按升级结论分组</sub></td>
+    <td width="50%"><img src="docs/screenshots/zh-CN/evaluation.png" alt="物品评估" /><br/><sub><b>物品评估</b> —— 对你的构筑有何变化，以及物品品质（眼睛图标）</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/bulk-currency.png" alt="批量通货" /><br/><sub><b>批量通货</b> —— 含库存的兑换报价</sub></td>
-    <td><img src="docs/screenshots/quick-price.png" alt="快速查价" /><br/><sub><b>快速查价</b> —— poe.ninja 价格与 7 日走势</sub></td>
+    <td><img src="docs/screenshots/zh-CN/distribution.png" alt="价格分布" /><br/><sub><b>价格分布</b> —— 带百分位标记的直方图</sub></td>
+    <td><img src="docs/screenshots/zh-CN/bulk-currency.png" alt="批量通货" /><br/><sub><b>批量通货</b> —— 含库存的兑换报价</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/command-palette.png" alt="命令面板" /><br/><sub><b>命令面板</b> —— <kbd>Ctrl</kbd>+<kbd>K</kbd></sub></td>
-    <td><img src="docs/screenshots/settings-hotkeys.png" alt="快捷键" /><br/><sub><b>设置</b> —— 可自定义的快捷键</sub></td>
+    <td><img src="docs/screenshots/zh-CN/quick-price.png" alt="快速查价" /><br/><sub><b>快速查价</b> —— poe.ninja 价格与 7 日走势</sub></td>
+    <td><img src="docs/screenshots/zh-CN/history.png" alt="历史记录" /><br/><sub><b>历史记录</b> —— 最近 50 次查价，可用相同筛选重新打开</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/zh-CN/command-palette.png" alt="命令面板" /><br/><sub><b>命令面板</b> —— <kbd>Ctrl</kbd>+<kbd>K</kbd></sub></td>
+    <td><img src="docs/screenshots/zh-CN/settings-hotkeys.png" alt="快捷键" /><br/><sub><b>快捷键</b> —— 可自定义的快捷键</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/zh-CN/settings-general.png" alt="设置" /><br/><sub><b>设置</b> —— 界面语言、游戏、赛季、自动更新</sub></td>
+    <td><img src="docs/screenshots/zh-CN/settings-price-check.png" alt="Path of Building 构筑" /><br/><sub><b>Path of Building 构筑</b> —— 用于升级结论的装备套与技能套</sub></td>
   </tr>
 </table>
 
-> 目前界面语言为巴西葡萄牙语。截图来自内置的演示模式。
+> 界面支持 English、Português、Español、Deutsch、简体中文、日本語 和 한국어（**设置 → 常规 → 界面语言**；默认跟随系统语言）。截图来自内置的演示模式。
 
 ## 📦 快速开始
 
@@ -107,6 +118,7 @@ flowchart LR
 |---|---|
 | <kbd>Ctrl</kbd> + <kbd>D</kbd> | 对鼠标下的物品查价 |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>D</kbd> | 查价并固定在屏幕上 |
+| <kbd>Ctrl</kbd> + <kbd>C</kbd> | 带阶级查价，文本照常复制（可在 **设置 → 常规** 中关闭） |
 | <kbd>Shift</kbd> + <kbd>Space</kbd> | 显示 / 隐藏悬浮窗 |
 | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>O</kbd> | 打开设置 |
 | <kbd>Ctrl</kbd> + <kbd>K</kbd> | 命令面板（在 Mirrorsight 内） |
@@ -119,8 +131,8 @@ flowchart LR
 
 ### ⚙️ 设置
 
-- **常规** —— 游戏、赛季、客户端语言、显示货币、恢复剪贴板、开机自启。
-- **查价** —— 词缀数值范围、显示离线卖家、默认勾选的筛选、默认物品等级、历史记录、预设。
+- **常规** —— 界面语言、游戏、赛季、客户端语言、显示货币、恢复剪贴板、Ctrl+C 打开查价、开机自启、自动更新。
+- **查价** —— 词缀数值范围、显示离线卖家、默认勾选的筛选、建议价格默认档位、用于升级结论的 Path of Building 构筑（含装备套与技能套）、历史记录、预设。
 - **外观** —— 界面缩放 (90–130 %)、密度、减少动画。
 
 ### 🔁 自动更新
@@ -149,13 +161,16 @@ cd apps/desktop && npm run check
 cargo test -p mirrorsight-infrastructure --test live -- --ignored --nocapture
 ```
 
+README 截图：`node tools/screenshots/capture.mjs` 会构建演示版并把所有语言的截图保存到 `docs/screenshots/<语言>/`（需要 Node ≥ 22 以及 Edge 或 Chrome；`--locales en,zh-CN` 可限定语言）。
+
 ### 🧱 架构（整洁架构）
 
 ```
 crates/domain          实体、纯业务规则与端口 (traits)。无 I/O。
 crates/parser          Ctrl+C / Ctrl+Alt+C 文本 → Item（词缀与交易 API 属性匹配）
 crates/application     用例（查价、从游戏复制物品、设置、赛季）
-crates/infrastructure  适配器：交易 API + 速率限制器、poe.ninja、Win32、剪贴板、设置
+crates/infrastructure  适配器：交易 API + 速率限制器、poe.ninja、Win32、剪贴板、设置、PoB 构筑
+crates/gamedata        内置的 PoE 1 知识库（传奇、阶级、基底、宝石）+ 评估规则
 apps/desktop/src-tauri 组合根、命令、快捷键、悬浮窗、托盘
 apps/desktop/src       Svelte 5 界面；仅通过 `Backend` 端口与后端通信
                        （适配器：真实 Tauri 与浏览器演示）
@@ -165,6 +180,9 @@ apps/desktop/src       Svelte 5 界面；仅通过 `Backend` 端口与后端通�
 
 - **交易 API 属性**（解析器依赖它识别词缀）：
   `node tools/stats/update-stats.mjs` → 更新 `crates/parser/data/stats-*.tsv`。
+- **物品知识库**（传奇数值范围、变体、词缀阶级、基底、宝石标签）来自最新的 Path of Building 版本：
+  `node tools/gamedata/update-gamedata.mjs` → 更新 `crates/gamedata/data/*.json`（`--local "<PoB 目录>"` 改为读取本地安装）。
+  权重、协同与阈值位于 `crates/gamedata/data/rules-poe1.json`，需手动编辑。之后运行 `cargo test`。
 - **通货图标**：从本地游戏安装目录提取到
   `apps/desktop/public/assets/currency/`（PNG + `manifest.json`）。
 

@@ -16,7 +16,7 @@
 
 [English](README.md) · [Português](README.pt-BR.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · **한국어** · [Deutsch](README.de.md) · [Español](README.es.md)
 
-<img src="docs/screenshots/price-check.png" alt="Mirrorsight 시세 확인 패널" width="100%" />
+<img src="docs/screenshots/ko/price-check.png" alt="Mirrorsight 시세 확인 패널" width="100%" />
 
 </div>
 
@@ -36,9 +36,11 @@ Mirrorsight는 패스 오브 엑자일(Path of Exile) 위에 표시되는 가벼
 | | |
 |---|---|
 | 🎯 **원키 시세 확인** | 아이템 위에서 <kbd>Ctrl</kbd>+<kbd>D</kbd>를 누르면 커서 옆에 패널이 열립니다. |
+| 📋 **Ctrl+C로도 가능** | *Ctrl+C로 시세 확인*(기본값 켜짐)을 켜 두면 게임 자체의 복사 단축키가 티어와 함께 아이템을 읽고 오버레이를 엽니다 — 텍스트는 그대로 복사됩니다. |
 | 🧮 **스마트 가격 추정** | 최저가, 중앙값, 최고가와 함께 매물 수에 따른 신뢰도 표시. |
 | 💡 **추천 가격** | *구매* (p25), *적정* (p50), *판매* (p75) 백분위와 클릭 한 번으로 복사하는 `~b/o` 메모. |
 | 🎛️ **편집 가능한 옵션 필터** | 옵션 켜기/끄기, 티어(T1…T*n*)와 수치 범위 확인, 최소/최대값 조정, 마진 슬라이더, 텍스트 검색으로 옵션 추가(의사 옵션 포함). |
+| 🧠 **아이템 평가 (PoE 1)** | 각 매물에 두 가지 독립적인 평가가 붙습니다: 내 빌드 기준 **업그레이드**(더 좋음 / 더 나쁨 / 동등 — 스탯 전체 조합, 저항 상한, Path of Building 빌드의 능력치 요구치를 비교)와 **아이템 품질**(티어, 수치, 제작 여지로 0–100; 고유 아이템은 실제 수치 범위 기준). 데이터가 부족한 옵션은 *판단 불가*로 표시하며 최대 수치로 가정하지 않습니다. 매물은 더 좋음 / 동등 / 더 나쁨으로 묶이고, 눈 아이콘으로 어떤 스탯이 바뀌는지 정확히 볼 수 있습니다. |
 | 💾 **프리셋** | 자주 쓰는 필터 구성을 게임별로 저장하고 재사용. |
 | 📊 **분포 차트** | 매물 가격 히스토그램과 p25 / p50 / p75 표시. |
 | 💰 **화폐 대량 거래** | 화폐와 중첩 가능한 아이템은 대량 교환으로 시세 확인(개당 가격, 재고, 판매자). |
@@ -46,6 +48,7 @@ Mirrorsight는 패스 오브 엑자일(Path of Exile) 위에 표시되는 가벼
 | 🕘 **기록** | 모든 시세 확인이 저장되며 같은 필터로 다시 열 수 있습니다. |
 | ⌨️ **명령 팔레트** | <kbd>Ctrl</kbd>+<kbd>K</kbd>로 어디든 이동, 게임·리그 전환, 기록 삭제 등. |
 | 🎮 **PoE 1 & PoE 2 지원** | 제목 표시줄에서 게임과 리그를 전환. |
+| 🌐 **7개 언어** | English, Português, Español, Deutsch, 简体中文, 日本語, 한국어 — 기본적으로 시스템 언어를 따릅니다. |
 | 🛡️ **요청 제한 준수** | 공식 API의 `X-Rate-Limit-*` 헤더를 따릅니다 — 차단도, 스팸도 없습니다. |
 
 ## 🔍 작동 방식
@@ -78,20 +81,28 @@ flowchart LR
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/price-check.png" alt="시세 확인" /><br/><sub><b>시세 확인</b> — 예상 가격, 추천 가격, 옵션 필터, 매물</sub></td>
-    <td width="50%"><img src="docs/screenshots/distribution.png" alt="분포" /><br/><sub><b>분포</b> — 백분위 표시가 있는 히스토그램</sub></td>
+    <td width="50%"><img src="docs/screenshots/ko/price-check.png" alt="시세 확인" /><br/><sub><b>시세 확인</b> — 예상 가격, 추천 가격, 옵션 필터, 업그레이드 판정별로 묶인 매물</sub></td>
+    <td width="50%"><img src="docs/screenshots/ko/evaluation.png" alt="아이템 평가" /><br/><sub><b>아이템 평가</b> — 내 빌드에서 무엇이 바뀌는지와 아이템 품질(눈 아이콘)</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/bulk-currency.png" alt="화폐 대량 거래" /><br/><sub><b>화폐 대량 거래</b> — 재고가 포함된 교환 제안</sub></td>
-    <td><img src="docs/screenshots/quick-price.png" alt="빠른 시세" /><br/><sub><b>빠른 시세</b> — poe.ninja 가격과 7일 추세</sub></td>
+    <td><img src="docs/screenshots/ko/distribution.png" alt="분포" /><br/><sub><b>분포</b> — 백분위 표시가 있는 히스토그램</sub></td>
+    <td><img src="docs/screenshots/ko/bulk-currency.png" alt="화폐 대량 거래" /><br/><sub><b>화폐 대량 거래</b> — 재고가 포함된 교환 제안</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/command-palette.png" alt="명령 팔레트" /><br/><sub><b>명령 팔레트</b> — <kbd>Ctrl</kbd>+<kbd>K</kbd></sub></td>
-    <td><img src="docs/screenshots/settings-hotkeys.png" alt="단축키" /><br/><sub><b>설정</b> — 변경 가능한 단축키</sub></td>
+    <td><img src="docs/screenshots/ko/quick-price.png" alt="빠른 시세" /><br/><sub><b>빠른 시세</b> — poe.ninja 가격과 7일 추세</sub></td>
+    <td><img src="docs/screenshots/ko/history.png" alt="기록" /><br/><sub><b>기록</b> — 최근 50건, 같은 필터로 다시 열기</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/ko/command-palette.png" alt="명령 팔레트" /><br/><sub><b>명령 팔레트</b> — <kbd>Ctrl</kbd>+<kbd>K</kbd></sub></td>
+    <td><img src="docs/screenshots/ko/settings-hotkeys.png" alt="단축키" /><br/><sub><b>단축키</b> — 변경 가능한 단축키</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/ko/settings-general.png" alt="설정" /><br/><sub><b>설정</b> — 인터페이스 언어, 게임, 리그, 자동 업데이트</sub></td>
+    <td><img src="docs/screenshots/ko/settings-price-check.png" alt="Path of Building 빌드" /><br/><sub><b>Path of Building 빌드</b> — 업그레이드 판정에 쓰는 아이템 세트와 스킬 세트</sub></td>
   </tr>
 </table>
 
-> 현재 UI는 브라질 포르투갈어입니다. 스크린샷은 내장 데모 모드에서 촬영했습니다.
+> 인터페이스는 English, Português, Español, Deutsch, 简体中文, 日本語, 한국어를 지원합니다(**설정 → 일반 → 인터페이스 언어**, 기본값은 시스템 언어). 스크린샷은 내장 데모 모드에서 촬영했습니다.
 
 ## 📦 시작하기
 
@@ -109,6 +120,7 @@ flowchart LR
 |---|---|
 | <kbd>Ctrl</kbd> + <kbd>D</kbd> | 커서 아래 아이템 시세 확인 |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>D</kbd> | 화면에 고정된 상태로 시세 확인 |
+| <kbd>Ctrl</kbd> + <kbd>C</kbd> | 티어 포함 시세 확인, 텍스트는 그대로 복사됨(**설정 → 일반**에서 끌 수 있음) |
 | <kbd>Shift</kbd> + <kbd>Space</kbd> | 오버레이 표시 / 숨기기 |
 | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>O</kbd> | 설정 열기 |
 | <kbd>Ctrl</kbd> + <kbd>K</kbd> | 명령 팔레트(Mirrorsight 내부) |
@@ -122,8 +134,8 @@ flowchart LR
 
 ### ⚙️ 설정 항목
 
-- **일반** — 게임, 리그, 클라이언트 언어, 표시 화폐, 클립보드 복원, Windows 시작 시 실행.
-- **시세 확인** — 옵션 수치 범위, 오프라인 판매자 표시, 기본 선택 필터, 기본 레벨, 기록, 프리셋.
+- **일반** — 인터페이스 언어, 게임, 리그, 클라이언트 언어, 표시 화폐, 클립보드 복원, Ctrl+C로 시세 확인, Windows 시작 시 실행, 자동 업데이트.
+- **시세 확인** — 옵션 수치 범위, 오프라인 판매자 표시, 기본 선택 필터, 추천 가격 기본 단계, 업그레이드 판정용 Path of Building 빌드(아이템 세트·스킬 세트 포함), 기록, 프리셋.
 - **모양** — UI 배율(90–130 %), 밀도, 애니메이션 줄이기.
 
 ### 🔁 자동 업데이트
@@ -152,13 +164,16 @@ cd apps/desktop && npm run check
 cargo test -p mirrorsight-infrastructure --test live -- --ignored --nocapture
 ```
 
+README 스크린샷: `node tools/screenshots/capture.mjs`가 데모를 빌드하고 모든 언어를 `docs/screenshots/<언어>/`에 촬영합니다(Node ≥ 22와 Edge 또는 Chrome 필요, `--locales en,ko`로 언어 제한).
+
 ### 🧱 아키텍처(클린 아키텍처)
 
 ```
 crates/domain          엔티티, 순수 규칙, 포트(trait). I/O 없음.
 crates/parser          Ctrl+C / Ctrl+Alt+C 텍스트 → Item (옵션을 거래 API 스탯과 매칭)
 crates/application     유스케이스(시세 확인, 게임에서 아이템 복사, 설정, 리그)
-crates/infrastructure  어댑터: 거래 API + 요청 제한기, poe.ninja, Win32, 클립보드, 설정
+crates/infrastructure  어댑터: 거래 API + 요청 제한기, poe.ninja, Win32, 클립보드, 설정, PoB 빌드
+crates/gamedata        내장 PoE 1 지식 베이스(고유 아이템, 티어, 베이스, 젬) + 평가 규칙
 apps/desktop/src-tauri 컴포지션 루트, 커맨드, 단축키, 오버레이, 트레이
 apps/desktop/src       Svelte 5 UI; `Backend` 포트를 통해서만 백엔드와 통신
                        (어댑터: 실제 Tauri와 브라우저용 데모)
@@ -168,6 +183,10 @@ apps/desktop/src       Svelte 5 UI; `Backend` 포트를 통해서만 백엔드�
 
 - **거래 API 스탯**(파서가 옵션을 인식하는 데 필요):
   `node tools/stats/update-stats.mjs` → `crates/parser/data/stats-*.tsv` 갱신.
+- **아이템 지식 베이스**(고유 아이템 수치 범위, 변형, 옵션 티어, 베이스, 젬 태그)는 최신 Path of Building 릴리스에서:
+  `node tools/gamedata/update-gamedata.mjs` → `crates/gamedata/data/*.json` 갱신
+  (`--local "<PoB 설치 폴더>"`는 로컬 설치를 읽음). 가중치, 시너지, 임계값은 `crates/gamedata/data/rules-poe1.json`에
+  있으며 직접 편집합니다. 이후 `cargo test`를 실행하세요.
 - **화폐 아이콘**: 로컬 게임 설치 폴더에서
   `apps/desktop/public/assets/currency/`로 추출(PNG + `manifest.json`).
 

@@ -16,7 +16,7 @@
 
 [English](README.md) · [Português](README.pt-BR.md) · [中文](README.zh-CN.md) · **日本語** · [한국어](README.ko.md) · [Deutsch](README.de.md) · [Español](README.es.md)
 
-<img src="docs/screenshots/price-check.png" alt="Mirrorsight の価格チェックパネル" width="100%" />
+<img src="docs/screenshots/ja/price-check.png" alt="Mirrorsight の価格チェックパネル" width="100%" />
 
 </div>
 
@@ -36,9 +36,11 @@ Mirrorsight は Path of Exile の上に重ねて表示する軽量なデスク�
 | | |
 |---|---|
 | 🎯 **ワンキー価格チェック** | アイテム上で <kbd>Ctrl</kbd>+<kbd>D</kbd> を押すと、カーソルの横にパネルが開きます。 |
+| 📋 **Ctrl+C でも OK** | *Ctrl+C で価格チェック*（既定でオン）を有効にすると、ゲーム本来のコピーショートカットで Tier 付きのアイテムを読み取り、オーバーレイを開きます — テキストは通常どおりコピーされます。 |
 | 🧮 **賢い価格推定** | 最安値・中央値・最高値に加え、出品数に基づく信頼度インジケーター。 |
 | 💡 **推奨価格** | *買い* (p25)・*適正* (p50)・*売り* (p75) のパーセンタイルと、ワンクリックでコピーできる `~b/o` ノート。 |
 | 🎛️ **編集可能な Mod フィルター** | Mod のオン/オフ、Tier (T1…T*n*) とロール範囲の表示、最小/最大値の調整、マージンスライダー、テキスト検索による Mod 追加（擬似 Mod 含む）。 |
+| 🧠 **アイテム評価（PoE 1）** | 各出品に 2 つの独立した評価が付きます。ビルドに対する**アップグレード**（より良い / より悪い / 同等。ステータス全体、耐性上限、Path of Building ビルドの能力値要件を比較）と、**アイテム品質**（Tier・ロール・クラフトの余地から 0–100。ユニークは実際のロール範囲で評価）。データが不足する Mod は*判定不能*と表示し、完璧なロールとはみなしません。出品は より良い / 同等 / より悪い でグループ化され、目のアイコンで変化するステータスを正確に確認できます。 |
 | 💾 **プリセット** | よく使うフィルター構成をゲームごとに保存して再利用。 |
 | 📊 **分布チャート** | 出品価格のヒストグラムに p25 / p50 / p75 マーカーを表示。 |
 | 💰 **カレンシー一括取引** | カレンシーやスタック可能なアイテムは一括交換で価格を表示（単価・在庫・出品者）。 |
@@ -46,6 +48,7 @@ Mirrorsight は Path of Exile の上に重ねて表示する軽量なデスク�
 | 🕘 **履歴** | すべてのチェックを保存し、同じフィルターで再表示できます。 |
 | ⌨️ **コマンドパレット** | <kbd>Ctrl</kbd>+<kbd>K</kbd> で画面移動、ゲームやリーグの切り替え、履歴の消去など。 |
 | 🎮 **PoE 1 & PoE 2 対応** | タイトルバーからゲームとリーグを切り替え。 |
+| 🌐 **7 言語** | English・Português・Español・Deutsch・简体中文・日本語・한국어 — 既定ではシステム言語に従います。 |
 | 🛡️ **レート制限を順守** | 公式 API の `X-Rate-Limit-*` ヘッダーに従います — BAN もスパムもなし。 |
 
 ## 🔍 仕組み
@@ -78,20 +81,28 @@ flowchart LR
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/price-check.png" alt="価格チェック" /><br/><sub><b>価格チェック</b> — 推定価格・推奨価格・Mod フィルター・出品一覧</sub></td>
-    <td width="50%"><img src="docs/screenshots/distribution.png" alt="分布" /><br/><sub><b>分布</b> — パーセンタイル付きヒストグラム</sub></td>
+    <td width="50%"><img src="docs/screenshots/ja/price-check.png" alt="価格チェック" /><br/><sub><b>価格チェック</b> — 推定価格・推奨価格・Mod フィルター、出品はアップグレード判定ごとにグループ化</sub></td>
+    <td width="50%"><img src="docs/screenshots/ja/evaluation.png" alt="アイテム評価" /><br/><sub><b>アイテム評価</b> — ビルドにとって何が変わるかとアイテム品質（目のアイコン）</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/bulk-currency.png" alt="カレンシー一括取引" /><br/><sub><b>カレンシー一括取引</b> — 在庫付きの交換オファー</sub></td>
-    <td><img src="docs/screenshots/quick-price.png" alt="クイック価格" /><br/><sub><b>クイック価格</b> — poe.ninja の価格と 7 日間トレンド</sub></td>
+    <td><img src="docs/screenshots/ja/distribution.png" alt="分布" /><br/><sub><b>分布</b> — パーセンタイル付きヒストグラム</sub></td>
+    <td><img src="docs/screenshots/ja/bulk-currency.png" alt="カレンシー一括取引" /><br/><sub><b>カレンシー一括取引</b> — 在庫付きの交換オファー</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/command-palette.png" alt="コマンドパレット" /><br/><sub><b>コマンドパレット</b> — <kbd>Ctrl</kbd>+<kbd>K</kbd></sub></td>
-    <td><img src="docs/screenshots/settings-hotkeys.png" alt="ホットキー" /><br/><sub><b>設定</b> — 変更可能なホットキー</sub></td>
+    <td><img src="docs/screenshots/ja/quick-price.png" alt="クイック価格" /><br/><sub><b>クイック価格</b> — poe.ninja の価格と 7 日間トレンド</sub></td>
+    <td><img src="docs/screenshots/ja/history.png" alt="履歴" /><br/><sub><b>履歴</b> — 直近 50 件、同じフィルターで再度開ける</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/ja/command-palette.png" alt="コマンドパレット" /><br/><sub><b>コマンドパレット</b> — <kbd>Ctrl</kbd>+<kbd>K</kbd></sub></td>
+    <td><img src="docs/screenshots/ja/settings-hotkeys.png" alt="ホットキー" /><br/><sub><b>ホットキー</b> — 変更可能なホットキー</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/ja/settings-general.png" alt="設定" /><br/><sub><b>設定</b> — UI 言語、ゲーム、リーグ、自動アップデート</sub></td>
+    <td><img src="docs/screenshots/ja/settings-price-check.png" alt="Path of Building ビルド" /><br/><sub><b>Path of Building ビルド</b> — アップグレード判定に使うアイテムセットとスキルセット</sub></td>
   </tr>
 </table>
 
-> 現在 UI はブラジルポルトガル語です。スクリーンショットは内蔵のデモモードで撮影しています。
+> UI は English・Português・Español・Deutsch・简体中文・日本語・한국어 に対応しています（**設定 → 一般 → UI 言語**。既定ではシステム言語に従います）。スクリーンショットは内蔵のデモモードで撮影しています。
 
 ## 📦 はじめかた
 
@@ -109,6 +120,7 @@ flowchart LR
 |---|---|
 | <kbd>Ctrl</kbd> + <kbd>D</kbd> | カーソル下のアイテムを価格チェック |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>D</kbd> | 画面に固定した状態で価格チェック |
+| <kbd>Ctrl</kbd> + <kbd>C</kbd> | Tier 付きで価格チェック。テキストは通常どおりコピー（**設定 → 一般** でオフにできます） |
 | <kbd>Shift</kbd> + <kbd>Space</kbd> | オーバーレイの表示 / 非表示 |
 | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>O</kbd> | 設定を開く |
 | <kbd>Ctrl</kbd> + <kbd>K</kbd> | コマンドパレット（Mirrorsight 内） |
@@ -122,8 +134,8 @@ flowchart LR
 
 ### ⚙️ 設定項目
 
-- **一般** — ゲーム、リーグ、クライアント言語、表示通貨、クリップボードの復元、Windows 起動時に開始。
-- **価格チェック** — Mod の範囲、オフライン出品者の表示、デフォルトで有効なフィルター、デフォルトのレベル、履歴、プリセット。
+- **一般** — UI 言語、ゲーム、リーグ、クライアント言語、表示通貨、クリップボードの復元、Ctrl+C で価格チェック、Windows 起動時に開始、自動アップデート。
+- **価格チェック** — Mod の範囲、オフライン出品者の表示、デフォルトで有効なフィルター、推奨価格の既定レベル、アップグレード判定用の Path of Building ビルド（アイテムセット・スキルセット付き）、履歴、プリセット。
 - **外観** — UI スケール (90–130 %)、表示密度、アニメーションを減らす。
 
 ### 🔁 自動アップデート
@@ -152,13 +164,16 @@ cd apps/desktop && npm run check
 cargo test -p mirrorsight-infrastructure --test live -- --ignored --nocapture
 ```
 
+README のスクリーンショット：`node tools/screenshots/capture.mjs` でデモをビルドし、全言語を `docs/screenshots/<言語>/` に撮影します（Node ≥ 22 と Edge または Chrome が必要。`--locales en,ja` で言語を限定）。
+
 ### 🧱 アーキテクチャ（クリーンアーキテクチャ）
 
 ```
 crates/domain          エンティティ、純粋なルール、ポート (trait)。I/O なし。
 crates/parser          Ctrl+C / Ctrl+Alt+C のテキスト → Item（Mod をトレード API のステータスと照合）
 crates/application     ユースケース（価格チェック、ゲームからのアイテムコピー、設定、リーグ）
-crates/infrastructure  アダプター：トレード API + レートリミッター、poe.ninja、Win32、クリップボード、設定
+crates/infrastructure  アダプター：トレード API + レートリミッター、poe.ninja、Win32、クリップボード、設定、PoB ビルド
+crates/gamedata        内蔵の PoE 1 ナレッジベース（ユニーク、Tier、ベース、ジェム）+ 評価ルール
 apps/desktop/src-tauri コンポジションルート、コマンド、ホットキー、オーバーレイ、トレイ
 apps/desktop/src       Svelte 5 UI。`Backend` ポート経由でのみバックエンドと通信
                        （アダプター：実際の Tauri とブラウザ用デモ）
@@ -168,6 +183,10 @@ apps/desktop/src       Svelte 5 UI。`Backend` ポート経由でのみバック
 
 - **トレード API のステータス**（パーサーが Mod を認識するために必要）：
   `node tools/stats/update-stats.mjs` → `crates/parser/data/stats-*.tsv` を更新。
+- **アイテムのナレッジベース**（ユニークのロール範囲、バリアント、Mod の Tier、ベース、ジェムのタグ）は最新の
+  Path of Building リリースから：`node tools/gamedata/update-gamedata.mjs` → `crates/gamedata/data/*.json` を更新
+  （`--local "<PoB のフォルダー>"` でローカルのインストールを読み込み）。重み・シナジー・しきい値は
+  `crates/gamedata/data/rules-poe1.json` にあり、手動で編集します。その後 `cargo test` を実行してください。
 - **カレンシーアイコン**：ローカルのゲームインストールから
   `apps/desktop/public/assets/currency/` に抽出（PNG + `manifest.json`）。
 
