@@ -17,7 +17,7 @@ import type {
   SearchFilters,
   Settings,
 } from '$lib/types';
-import type { Backend, PeekSide, PriceCheckRequest, TrayLabels, WindowRole } from './port';
+import type { Backend, PeekSide, PriceCheckRequest, TrayLabels, UpdateCheck, UpdateInfo, WindowRole } from './port';
 
 /** Nomes dos eventos emitidos por `src-tauri/src/overlay.rs`. */
 const EVENT_REQUEST = 'overlay:price-check';
@@ -25,6 +25,8 @@ const EVENT_ERROR = 'overlay:error';
 const EVENT_REOPEN = 'overlay:reopen';
 /** Emitido por `src-tauri/src/tray.rs`. */
 const EVENT_OPEN_SETTINGS = 'main:open-settings';
+/** Emitido por `src-tauri/src/updater.rs`. */
+const EVENT_UPDATE_READY = 'updater:ready';
 
 /** Adapter real: comandos definidos em `src-tauri/src/commands.rs`. */
 export class TauriBackend implements Backend {
@@ -132,6 +134,22 @@ export class TauriBackend implements Backend {
 
   onOpenSettings(handler: () => void): Promise<() => void> {
     return listen(EVENT_OPEN_SETTINGS, () => handler());
+  }
+
+  updateStatus(): Promise<UpdateInfo | null> {
+    return invoke<UpdateInfo | null>('update_status');
+  }
+
+  checkForUpdate(): Promise<UpdateCheck> {
+    return invoke<UpdateCheck>('check_for_update');
+  }
+
+  installUpdate(): Promise<void> {
+    return invoke('install_update');
+  }
+
+  onUpdateReady(handler: (info: UpdateInfo) => void): Promise<() => void> {
+    return listen<UpdateInfo>(EVENT_UPDATE_READY, (e) => handler(e.payload));
   }
 
   readonly hasWindowControls = true;

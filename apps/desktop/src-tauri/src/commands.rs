@@ -17,6 +17,7 @@ use crate::hotkeys::HotkeyManager;
 use crate::overlay;
 use crate::state::AppState;
 use crate::tray;
+use crate::updater;
 
 #[tauri::command]
 pub fn get_settings(state: State<'_, AppState>) -> Result<Settings, AppError> {
@@ -56,6 +57,28 @@ fn apply_autostart(app: &AppHandle, enabled: bool) {
 #[tauri::command]
 pub fn set_tray_labels(app: AppHandle, labels: tray::TrayLabels) -> Result<(), AppError> {
     tray::set_labels(&app, &labels).map_err(|e| AppError::internal(e.to_string()))
+}
+
+/// Atualização já baixada e pronta para instalar (`null` = nenhuma).
+#[tauri::command]
+pub async fn update_status(app: AppHandle) -> Result<Option<updater::UpdateInfo>, AppError> {
+    Ok(updater::pending_info(&app).await)
+}
+
+/// Checagem manual (Configurações → Sobre): baixa a versão nova, se houver, sem instalar.
+#[tauri::command]
+pub async fn check_for_update(app: AppHandle) -> Result<updater::UpdateCheck, AppError> {
+    updater::check_and_download(&app).await.map_err(|e| {
+        // A UI só mostra "sem conexão?"; assinatura/versão inválida precisa ficar no log.
+        tracing::warn!(err = %e, "falha na checagem manual de atualização");
+        AppError::Network { message: e.to_string(), reason: None }
+    })
+}
+
+/// Instala a atualização baixada e reinicia o app.
+#[tauri::command]
+pub async fn install_update(app: AppHandle) -> Result<(), AppError> {
+    updater::install_pending(&app).await.map_err(|e| AppError::internal(e.to_string()))
 }
 
 /// Alarga/restaura o overlay para o card do item listado (olho). `extra` em px lógicos.

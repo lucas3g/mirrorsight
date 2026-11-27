@@ -10,6 +10,7 @@
   import { presets } from '$lib/stores/presets.svelte';
   import { priceCheck } from '$lib/stores/priceCheck.svelte';
   import { settings } from '$lib/stores/settings.svelte';
+  import { updater } from '$lib/stores/updater.svelte';
   import Toasts from '$lib/ui/Toasts.svelte';
 
   /** Janela principal: só a montagem (casca, paleta, toasts) e os atalhos globais. */
@@ -19,7 +20,11 @@
     void settings.load();
     void history.load();
     const subscription = backend.onOpenSettings(() => nav.openSettings());
-    return () => void subscription.then((unsubscribe) => unsubscribe());
+    const stopUpdater = updater.start();
+    return () => {
+      void subscription.then((unsubscribe) => unsubscribe());
+      stopUpdater();
+    };
   });
 
   useAppearance();

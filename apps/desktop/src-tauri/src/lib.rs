@@ -6,6 +6,7 @@ mod hotkeys;
 mod overlay;
 mod state;
 mod tray;
+mod updater;
 
 use tauri::{Manager, WindowEvent};
 use tauri_plugin_autostart::MacosLauncher;
@@ -25,6 +26,7 @@ pub fn run() {
         // Primeiro plugin: uma segunda execução só traz a janela existente para frente.
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| tray::show_main(app, false)))
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_autostart::init(MacosLauncher::LaunchAgent, Some(vec![MINIMIZED_ARG])))
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
@@ -36,7 +38,9 @@ pub fn run() {
             app.manage(state::AppState::build(config_dir));
             app.manage(hotkeys::HotkeyManager::default());
             app.manage(overlay::OverlayGeometry::default());
+            app.manage(updater::UpdaterState::default());
             tray::build(app)?;
+            updater::spawn(app.handle().clone());
             hotkeys::spawn_focus_watcher(app.handle().clone());
             hotkeys::spawn_copy_interceptor(app.handle().clone());
 
@@ -73,6 +77,9 @@ pub fn run() {
             commands::delete_preset,
             commands::list_pob_builds,
             commands::pob_build_details,
+            commands::update_status,
+            commands::check_for_update,
+            commands::install_update,
         ])
         .run(tauri::generate_context!());
 

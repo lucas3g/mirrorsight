@@ -12,7 +12,7 @@ import type {
   SearchFilters,
   Settings,
 } from '$lib/types';
-import type { Backend, PeekSide, PriceCheckRequest, TrayLabels, WindowRole } from './port';
+import type { Backend, PeekSide, PriceCheckRequest, TrayLabels, UpdateCheck, UpdateInfo, WindowRole } from './port';
 import {
   DEMO_FEW,
   DEMO_GLOVES,
@@ -43,6 +43,7 @@ const DEFAULT_SETTINGS: Settings = {
   restore_clipboard: true,
   intercept_copy: true,
   launch_on_startup: false,
+  auto_update: true,
   client_log_path: null,
   hotkeys: [
     { action: 'price-check', hotkey: 'Ctrl + D' },
@@ -258,6 +259,22 @@ export class DemoBackend implements Backend {
   }
 
   async onOpenSettings(_handler: () => void): Promise<() => void> {
+    return () => {};
+  }
+
+  /** No navegador não há o que atualizar: sempre "em dia". */
+  async updateStatus(): Promise<UpdateInfo | null> {
+    return null;
+  }
+
+  async checkForUpdate(): Promise<UpdateCheck> {
+    await delay(600);
+    return { status: 'up-to-date' };
+  }
+
+  async installUpdate(): Promise<void> {}
+
+  async onUpdateReady(_handler: (info: UpdateInfo) => void): Promise<() => void> {
     return () => {};
   }
 

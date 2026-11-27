@@ -90,6 +90,10 @@
     <Toggle label={m.startup.label} checked={current.launch_on_startup}
       onchange={(launch_on_startup) => settings.update({ launch_on_startup })} />
   </SettingRow>
+  <SettingRow label={m.autoUpdate.label} description={m.autoUpdate.description} keywords={KW.autoUpdate}>
+    <Toggle label={m.autoUpdate.label} checked={current.auto_update}
+      onchange={(auto_update) => settings.update({ auto_update })} />
+  </SettingRow>
 </div>
 
 <style>

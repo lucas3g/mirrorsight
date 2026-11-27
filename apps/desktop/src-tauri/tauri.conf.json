@@ -43,8 +43,21 @@
       "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://web.poecdn.com"
     }
   },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDU2OTFDMEY3RDFBRjg2NDAKUldSQWhxL1I5OENSVnAzTDlOcWVGVzEvNXR5RUtKRW82c0lWUldFM05kTVBrZW9VRjNvS20rUUQK",
+      "endpoints": [
+        "https://github.com/lucas3g/mirrorsight/releases/latest/download/latest.json"
+      ],
+      "requireSignedVersion": true,
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  },
   "bundle": {
     "active": true,
+    "createUpdaterArtifacts": true,
     "targets": [
       "nsis"
     ],

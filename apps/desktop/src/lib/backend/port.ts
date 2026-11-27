@@ -73,6 +73,15 @@ export interface Backend {
   /** Pedido (bandeja/hotkey) para abrir a aba de configurações. */
   onOpenSettings(handler: () => void): Promise<() => void>;
 
+  /** Atualização já baixada e pronta para instalar (`null` = nenhuma). */
+  updateStatus(): Promise<UpdateInfo | null>;
+  /** Checagem manual no GitHub; se houver versão nova, baixa (sem instalar). Rejeita com `AppError`. */
+  checkForUpdate(): Promise<UpdateCheck>;
+  /** Instala a atualização baixada e reinicia o app. */
+  installUpdate(): Promise<void>;
+  /** Atualização baixada em segundo plano durante a sessão. */
+  onUpdateReady(handler: (info: UpdateInfo) => void): Promise<() => void>;
+
   /** Controles da janela (barra de título própria). `false` = navegador, sem controles. */
   readonly hasWindowControls: boolean;
   minimizeWindow(): Promise<void>;
@@ -88,7 +97,18 @@ export interface TrayLabels {
   settings: string;
   quit: string;
   tooltip: string;
+  /** "Reiniciar para atualizar" (o Rust acrescenta a versão). */
+  update: string;
 }
+
+/** Espelho de `UpdateInfo` (src-tauri/src/updater.rs). */
+export interface UpdateInfo {
+  version: string;
+  notes: string | null;
+}
+
+/** Espelho de `UpdateCheck` (src-tauri/src/updater.rs). */
+export type UpdateCheck = { status: 'up-to-date' } | ({ status: 'ready' } & UpdateInfo);
 
 export type WindowRole = 'main' | 'overlay';
 

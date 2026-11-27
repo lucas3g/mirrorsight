@@ -29,7 +29,7 @@ export function useAppearance(): void {
       if (!s) return;
       const hotkey = s.hotkeys.find((b) => b.action === 'price-check')?.hotkey ?? 'Ctrl + D';
       backend
-        .setTrayLabels({ open: common.tray.open, settings: common.tray.settings, quit: common.tray.quit, tooltip: common.tray.tooltip(hotkey) })
+        .setTrayLabels({ open: common.tray.open, settings: common.tray.settings, quit: common.tray.quit, tooltip: common.tray.tooltip(hotkey), update: common.tray.update })
         .catch(() => {});
     });
   }

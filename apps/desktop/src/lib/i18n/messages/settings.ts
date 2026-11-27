@@ -20,6 +20,7 @@ interface SettingsMessages {
     restoreClipboard: Row;
     interceptCopy: Row;
     startup: Row;
+    autoUpdate: Row;
   };
   hotkeys: {
     actions: Record<HotkeyAction, Row>;
@@ -76,7 +77,26 @@ interface SettingsMessages {
     normal: string;
     reduceMotion: Row;
   };
-  about: { version: (v: string) => string; demo: string; credits: string };
+  about: {
+    version: (v: string) => string;
+    demo: string;
+    credits: string;
+    update: {
+      check: string;
+      checking: string;
+      checkingButton: string;
+      upToDate: string;
+      checkAgain: string;
+      ready: (version: string) => string;
+      install: string;
+      installing: string;
+      error: string;
+      retry: string;
+      autoOn: string;
+      autoOff: string;
+      notes: string;
+    };
+  };
 }
 
 const STACK = 'Rust + Tauri 2 + Svelte 5';
@@ -102,6 +122,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       restoreClipboard: { label: 'Restaurar clipboard', description: 'Devolve o conteúdo anterior após copiar o item' },
       interceptCopy: { label: 'Ctrl+C abre o price check', description: 'Ctrl+C sobre um item no jogo lê os tiers e abre o overlay; o texto continua sendo copiado, com até ~0,2 s de atraso (também no chat)' },
       startup: { label: 'Iniciar com o Windows', description: 'Fica na bandeja do sistema' },
+      autoUpdate: { label: 'Atualizar automaticamente', description: 'Instala versões novas ao abrir o app; durante o jogo só baixa e avisa' },
     },
     hotkeys: {
       actions: {
@@ -175,6 +196,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
     about: {
       version: (v) => `Versão ${v} · ${STACK}`,
       demo: 'Modo demonstração (fora do Tauri)',
+      update: {
+        check: 'Verificar atualizações',
+        checking: 'Procurando versão nova no GitHub…',
+        checkingButton: 'Verificando…',
+        upToDate: 'Você está na versão mais recente',
+        checkAgain: 'Verificar de novo',
+        ready: (v) => `Versão ${v} baixada e pronta`,
+        install: 'Reiniciar e atualizar',
+        installing: 'Instalando…',
+        error: 'Não foi possível verificar (sem conexão?)',
+        retry: 'Tentar de novo',
+        autoOn: 'Atualização automática ligada',
+        autoOff: 'Atualização automática desligada',
+        notes: 'Ver novidades no GitHub',
+      },
       credits:
         'Projeto independente, não afiliado à Grinding Gear Games. Ícones de itens © Grinding Gear Games, extraídos da instalação local do jogo.',
     },
@@ -198,6 +234,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       restoreClipboard: { label: 'Restore clipboard', description: 'Puts back the previous content after copying the item' },
       interceptCopy: { label: 'Ctrl+C opens the price check', description: 'Ctrl+C over an item in game reads its tiers and opens the overlay; the text is still copied, up to ~0.2 s later (chat included)' },
       startup: { label: 'Start with Windows', description: 'Stays in the system tray' },
+      autoUpdate: { label: 'Update automatically', description: 'Installs new versions when the app opens; while you play it only downloads and lets you know' },
     },
     hotkeys: {
       actions: {
@@ -271,6 +308,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
     about: {
       version: (v) => `Version ${v} · ${STACK}`,
       demo: 'Demo mode (outside Tauri)',
+      update: {
+        check: 'Check for updates',
+        checking: 'Looking for a new version on GitHub…',
+        checkingButton: 'Checking…',
+        upToDate: 'You\'re on the latest version',
+        checkAgain: 'Check again',
+        ready: (v) => `Version ${v} downloaded and ready`,
+        install: 'Restart and update',
+        installing: 'Installing…',
+        error: 'Couldn\'t check (offline?)',
+        retry: 'Try again',
+        autoOn: 'Automatic updates on',
+        autoOff: 'Automatic updates off',
+        notes: 'See what\'s new on GitHub',
+      },
       credits:
         'Independent project, not affiliated with Grinding Gear Games. Item icons © Grinding Gear Games, extracted from the local game installation.',
     },
@@ -294,6 +346,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       restoreClipboard: { label: 'Restaurar portapapeles', description: 'Devuelve el contenido anterior tras copiar el objeto' },
       interceptCopy: { label: 'Ctrl+C abre el price check', description: 'Ctrl+C sobre un objeto en el juego lee sus tiers y abre el overlay; el texto se sigue copiando, con hasta ~0,2 s de retraso (también en el chat)' },
       startup: { label: 'Iniciar con Windows', description: 'Se queda en la bandeja del sistema' },
+      autoUpdate: { label: 'Actualizar automáticamente', description: 'Instala versiones nuevas al abrir la app; durante el juego solo descarga y avisa' },
     },
     hotkeys: {
       actions: {
@@ -367,6 +420,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
     about: {
       version: (v) => `Versión ${v} · ${STACK}`,
       demo: 'Modo demostración (fuera de Tauri)',
+      update: {
+        check: 'Buscar actualizaciones',
+        checking: 'Buscando una versión nueva en GitHub…',
+        checkingButton: 'Buscando…',
+        upToDate: 'Tienes la versión más reciente',
+        checkAgain: 'Buscar de nuevo',
+        ready: (v) => `Versión ${v} descargada y lista`,
+        install: 'Reiniciar y actualizar',
+        installing: 'Instalando…',
+        error: 'No se pudo comprobar (¿sin conexión?)',
+        retry: 'Reintentar',
+        autoOn: 'Actualización automática activada',
+        autoOff: 'Actualización automática desactivada',
+        notes: 'Ver novedades en GitHub',
+      },
       credits:
         'Proyecto independiente, no afiliado a Grinding Gear Games. Iconos de objetos © Grinding Gear Games, extraídos de la instalación local del juego.',
     },
@@ -390,6 +458,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       restoreClipboard: { label: 'Zwischenablage wiederherstellen', description: 'Stellt nach dem Kopieren des Items den vorherigen Inhalt wieder her' },
       interceptCopy: { label: 'Strg+C öffnet den Price Check', description: 'Strg+C über einem Item im Spiel liest die Tiers und öffnet das Overlay; der Text wird weiterhin kopiert, bis zu ~0,2 s verzögert (auch im Chat)' },
       startup: { label: 'Mit Windows starten', description: 'Bleibt im Infobereich der Taskleiste' },
+      autoUpdate: { label: 'Automatisch aktualisieren', description: 'Installiert neue Versionen beim Start der App; während du spielst, wird nur heruntergeladen und Bescheid gegeben' },
     },
     hotkeys: {
       actions: {
@@ -463,6 +532,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
     about: {
       version: (v) => `Version ${v} · ${STACK}`,
       demo: 'Demomodus (außerhalb von Tauri)',
+      update: {
+        check: 'Nach Updates suchen',
+        checking: 'Suche nach einer neuen Version auf GitHub…',
+        checkingButton: 'Suche…',
+        upToDate: 'Du hast die neueste Version',
+        checkAgain: 'Erneut suchen',
+        ready: (v) => `Version ${v} heruntergeladen und bereit`,
+        install: 'Neu starten und aktualisieren',
+        installing: 'Wird installiert…',
+        error: 'Prüfung fehlgeschlagen (offline?)',
+        retry: 'Erneut versuchen',
+        autoOn: 'Automatische Updates an',
+        autoOff: 'Automatische Updates aus',
+        notes: 'Neuerungen auf GitHub ansehen',
+      },
       credits:
         'Unabhängiges Projekt, nicht mit Grinding Gear Games verbunden. Item-Icons © Grinding Gear Games, aus der lokalen Spielinstallation extrahiert.',
     },
@@ -486,6 +570,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       restoreClipboard: { label: '恢复剪贴板', description: '复制物品后恢复之前的剪贴板内容' },
       interceptCopy: { label: 'Ctrl+C 打开查价', description: '在游戏中对物品按 Ctrl+C 会读取阶级并打开浮窗；文本仍会被复制，但最多延迟约 0.2 秒（聊天中也是）' },
       startup: { label: '开机自启', description: '驻留在系统托盘' },
+      autoUpdate: { label: '自动更新', description: '打开应用时安装新版本；游戏中只下载并提醒' },
     },
     hotkeys: {
       actions: {
@@ -559,6 +644,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
     about: {
       version: (v) => `版本 ${v} · ${STACK}`,
       demo: '演示模式（未在 Tauri 中运行）',
+      update: {
+        check: '检查更新',
+        checking: '正在 GitHub 上查找新版本…',
+        checkingButton: '检查中…',
+        upToDate: '已是最新版本',
+        checkAgain: '再次检查',
+        ready: (v) => `版本 ${v} 已下载就绪`,
+        install: '重启并更新',
+        installing: '正在安装…',
+        error: '无法检查（未联网？）',
+        retry: '重试',
+        autoOn: '自动更新已开启',
+        autoOff: '自动更新已关闭',
+        notes: '在 GitHub 上查看更新内容',
+      },
       credits: '独立项目，与 Grinding Gear Games 无关。物品图标 © Grinding Gear Games，提取自本地游戏安装目录。',
     },
   },
@@ -581,6 +681,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       restoreClipboard: { label: 'クリップボードの復元', description: 'アイテムのコピー後に以前の内容を戻します' },
       interceptCopy: { label: 'Ctrl+C で価格チェック', description: 'ゲーム内でアイテムに Ctrl+C するとTierを読み取りオーバーレイを開きます。テキストは通常どおりコピーされますが、最大約0.2秒遅れます（チャットも同様）' },
       startup: { label: 'Windows 起動時に開始', description: 'システムトレイに常駐します' },
+      autoUpdate: { label: '自動アップデート', description: 'アプリ起動時に新しいバージョンをインストール。プレイ中はダウンロードして通知するだけです' },
     },
     hotkeys: {
       actions: {
@@ -654,6 +755,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
     about: {
       version: (v) => `バージョン ${v} · ${STACK}`,
       demo: 'デモモード（Tauri 外）',
+      update: {
+        check: 'アップデートを確認',
+        checking: 'GitHub で新しいバージョンを確認中…',
+        checkingButton: '確認中…',
+        upToDate: '最新バージョンです',
+        checkAgain: 'もう一度確認',
+        ready: (v) => `バージョン ${v} のダウンロード完了`,
+        install: '再起動して更新',
+        installing: 'インストール中…',
+        error: '確認できませんでした（オフライン？）',
+        retry: '再試行',
+        autoOn: '自動アップデート: オン',
+        autoOff: '自動アップデート: オフ',
+        notes: 'GitHub で更新内容を見る',
+      },
       credits:
         '独立したプロジェクトであり、Grinding Gear Games とは提携していません。アイテムアイコン © Grinding Gear Games（ローカルのゲームインストールから抽出）。',
     },
@@ -677,6 +793,7 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
       restoreClipboard: { label: '클립보드 복원', description: '아이템 복사 후 이전 내용을 되돌립니다' },
       interceptCopy: { label: 'Ctrl+C로 시세 확인', description: '게임에서 아이템 위에서 Ctrl+C를 누르면 티어를 읽고 오버레이를 엽니다. 텍스트는 그대로 복사되지만 최대 약 0.2초 늦어집니다(채팅 포함)' },
       startup: { label: 'Windows 시작 시 실행', description: '시스템 트레이에 머무릅니다' },
+      autoUpdate: { label: '자동 업데이트', description: '앱을 열 때 새 버전을 설치하고, 게임 중에는 다운로드 후 알려 주기만 합니다' },
     },
     hotkeys: {
       actions: {
@@ -750,6 +867,21 @@ export const settingsMsgs = defineMessages<SettingsMessages>({
     about: {
       version: (v) => `버전 ${v} · ${STACK}`,
       demo: '데모 모드 (Tauri 외부)',
+      update: {
+        check: '업데이트 확인',
+        checking: 'GitHub에서 새 버전을 찾는 중…',
+        checkingButton: '확인 중…',
+        upToDate: '최신 버전입니다',
+        checkAgain: '다시 확인',
+        ready: (v) => `버전 ${v} 다운로드 완료`,
+        install: '재시작하여 업데이트',
+        installing: '설치 중…',
+        error: '확인할 수 없습니다(오프라인?)',
+        retry: '다시 시도',
+        autoOn: '자동 업데이트 켜짐',
+        autoOff: '자동 업데이트 꺼짐',
+        notes: 'GitHub에서 새 기능 보기',
+      },
       credits:
         '독립 프로젝트이며 Grinding Gear Games와 관련이 없습니다. 아이템 아이콘 © Grinding Gear Games, 로컬 게임 설치본에서 추출.',
     },
@@ -768,6 +900,7 @@ export const SETTINGS_KEYWORDS = {
   restoreClipboard: 'clipboard área de transferência',
   interceptCopy: 'ctrl c copiar copy tier prefix suffix price check overlay',
   startup: 'startup inicialização bandeja tray boot',
+  autoUpdate: 'atualização atualizar automática versão github update updater automatic version release',
   hotkey: 'hotkey atalho tecla shortcut key',
   palette: 'hotkey atalho ctrl k comandos busca shortcut command palette search',
   modRange: 'porcentagem filtro mínimo margem percent filter minimum margin',

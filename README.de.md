@@ -129,6 +129,10 @@ solange das Spielfenster im Fokus ist — anderen Programmen werden also nie Tas
 - **Preischeck** — Mod-Wertebereich, Offline-Verkäufer anzeigen, standardmäßig aktive Filter, Standard-Itemlevel, Verlauf, Presets.
 - **Darstellung** — Skalierung (90–130 %), Dichte, reduzierte Animationen.
 
+### 🔁 Automatische Updates
+
+Ab v0.4.0 aktualisiert sich Mirrorsight selbst über die GitHub-Releases. Beim Start der App wird eine neue Version sofort installiert (kurzer Fortschrittsbalken, danach öffnet sie sich wieder). Erscheint eine Version während du spielst, wird sie im Hintergrund geladen und in der Statusleiste sowie im Tray-Menü erscheint **Neu starten zum Aktualisieren** — ohne deinen Klick wird nichts geschlossen. Abschaltbar unter **Einstellungen → Allgemein**. Version 0.3.0 und älter muss einmal manuell installiert werden.
+
 ## 🛠 Entwicklung
 
 Voraussetzungen: **Rust ≥ 1.80**, **Node ≥ 20**, Windows 10/11 (WebView2).

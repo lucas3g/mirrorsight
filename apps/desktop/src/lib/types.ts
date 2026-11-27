@@ -420,6 +420,8 @@ export interface Settings {
   /** Ctrl+C sobre um item no jogo também abre o price check (com tiers e prefix/suffix). */
   intercept_copy: boolean;
   launch_on_startup: boolean;
+  /** Instala versões novas do GitHub ao abrir e avisa das que saírem durante a sessão. */
+  auto_update: boolean;
   client_log_path: string | null;
   hotkeys: HotkeyBinding[];
   show_offline: boolean;
