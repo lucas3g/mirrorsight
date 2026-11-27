@@ -1,7 +1,8 @@
 name: Release
 
 # Gera uma nova versão: atualiza a versão nos manifestos, roda os testes, compila o instalador
-# NSIS, faz o commit + tag `vX.Y.Z` e publica a Release no GitHub com o .exe para download.
+# NSIS, mergeia o commit de versão via PR (a `main` é protegida), cria a tag `vX.Y.Z` e publica
+# a Release no GitHub com o .exe para download.
 # Também publica o `latest.json` + `.sig` usados pela atualização automática dos apps instalados
 # (secrets TAURI_SIGNING_PRIVATE_KEY / TAURI_SIGNING_PRIVATE_KEY_PASSWORD).
 #
@@ -22,6 +23,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
   group: release
@@ -146,16 +148,43 @@ jobs:
           cat dist-release/latest.json
           echo "installer=$name" >> "$GITHUB_OUTPUT"
 
-      - name: Commit & tag
+      # A `main` é protegida (só aceita PR): o commit de versão vai num PR `release/vX.Y.Z`
+      # que o próprio job mergeia; a tag aponta para o commit de merge que ficou na `main`.
+      # Requer em Settings → Actions → General: "Allow GitHub Actions to create and approve pull requests".
+      - name: Merge version bump & tag
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add Cargo.toml Cargo.lock apps/desktop/package.json apps/desktop/package-lock.json apps/desktop/src-tauri/tauri.conf.json
-          if ! git diff --cached --quiet; then
+
+          if git diff --cached --quiet; then
+            # Versão já estava nos manifestos: nada a mergear, a tag vai no commit atual.
+            target=$(git rev-parse HEAD)
+          else
+            branch="release/$TAG"
+            git switch -c "$branch"
             git commit -m "chore(release): $TAG"
+            git push origin "$branch"
+
+            url=$(gh pr create --base "$GITHUB_REF_NAME" --head "$branch" \
+              --title "chore(release): $TAG" \
+              --body "Atualiza a versão para $VERSION. PR aberto e mergeado automaticamente pela Action **Release**.")
+
+            # Logo após criar, o GitHub ainda pode estar calculando se o PR é mergeável.
+            merged=false
+            for attempt in 1 2 3 4 5 6; do
+              if gh pr merge "$url" --merge --subject "chore(release): $TAG"; then merged=true; break; fi
+              echo "Merge ainda não disponível (tentativa $attempt); aguardando…"
+              sleep 10
+            done
+            if [ "$merged" != true ]; then echo "::error::Não foi possível mergear $url"; exit 1; fi
+
+            target=$(gh pr view "$url" --json mergeCommit -q .mergeCommit.oid)
+            git push origin --delete "$branch" || true
+            git fetch origin "$target"
           fi
-          git tag -a "$TAG" -m "Mirrorsight $TAG"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+          git tag -a "$TAG" "$target" -m "Mirrorsight $TAG"
           git push origin "$TAG"
 
       - name: Create GitHub Release
