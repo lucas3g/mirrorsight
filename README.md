@@ -16,7 +16,7 @@ Hover an item, press <kbd>Ctrl</kbd> + <kbd>D</kbd>, and know what it's worth �
 
 **English** · [Português](README.pt-BR.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Deutsch](README.de.md) · [Español](README.es.md)
 
-<img src="docs/screenshots/price-check.png" alt="Mirrorsight price check panel" width="100%" />
+<img src="docs/screenshots/en/price-check.png" alt="Mirrorsight price check panel" width="100%" />
 
 </div>
 
@@ -37,10 +37,11 @@ It is written in **Rust** (fast, low memory, no Electron) with a **Svelte 5** in
 | | |
 |---|---|
 | 🎯 **One-key price check** | <kbd>Ctrl</kbd>+<kbd>D</kbd> over any item opens the panel next to the cursor. |
+| 📋 **Ctrl+C works too** | With *Ctrl+C opens the price check* on (default), the game's own copy shortcut reads the item with its tiers and opens the overlay — the text is still copied. |
 | 🧮 **Smart price estimate** | Minimum, median and maximum, plus a confidence indicator based on how many listings were found. |
 | 💡 **Suggested price** | *Buy* (p25), *Fair* (p50) and *Sell* (p75) percentiles, with a one-click `~b/o` note to copy. |
 | 🎛️ **Editable mod filters** | Toggle mods on/off, see their tier (T1…T*n*) and roll range, adjust min/max, use a margin slider, add mods by text search (pseudo mods included). |
-| 🧠 **Item evaluation (PoE 1)** | Each listing gets two independent reads: **upgrade** for your build (Better / Worse / Equivalent, comparing the whole set of stats, resistance caps and attribute requirements from your Path of Building build) and **item quality** (0–100 from tiers, rolls, crafting potential; uniques by their real roll ranges). Mods without enough data are marked *inconclusive*, never assumed perfect. |
+| 🧠 **Item evaluation (PoE 1)** | Each listing gets two independent reads: **upgrade** for your build (Better / Worse / Equivalent, comparing the whole set of stats, resistance caps and attribute requirements from your Path of Building build) and **item quality** (0–100 from tiers, rolls, crafting potential; uniques by their real roll ranges). Mods without enough data are marked *inconclusive*, never assumed perfect. Listings are grouped into Better / Equivalent / Worse, and the eye icon shows exactly which stats change. |
 | 💾 **Presets** | Save your favourite filter setups per game and reuse them. |
 | 📊 **Distribution chart** | Histogram of listing prices with p25 / p50 / p75 markers. |
 | 💰 **Bulk currency** | Currency and stackables are priced through the bulk exchange (price per unit, stock, seller). |
@@ -48,6 +49,7 @@ It is written in **Rust** (fast, low memory, no Electron) with a **Svelte 5** in
 | 🕘 **History** | Every check is saved and can be reopened with the same filters. |
 | ⌨️ **Command palette** | <kbd>Ctrl</kbd>+<kbd>K</kbd> to jump anywhere, switch game or league, clear history… |
 | 🎮 **PoE 1 & PoE 2** | Switch game and league from the title bar. |
+| 🌐 **7 languages** | English, Português, Español, Deutsch, 简体中文, 日本語 and 한국어 — follows the system language by default. |
 | 🛡️ **Rate-limit aware** | Respects the `X-Rate-Limit-*` headers of the official API — no bans, no spam. |
 
 ## 🔍 How it works
@@ -81,20 +83,28 @@ flowchart LR
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/price-check.png" alt="Price check" /><br/><sub><b>Price check</b> — estimate, suggested price, mod filters and listings</sub></td>
-    <td width="50%"><img src="docs/screenshots/distribution.png" alt="Distribution" /><br/><sub><b>Distribution</b> — histogram with percentile markers</sub></td>
+    <td width="50%"><img src="docs/screenshots/en/price-check.png" alt="Price check" /><br/><sub><b>Price check</b> — estimate, suggested price, mod filters and listings grouped by upgrade verdict</sub></td>
+    <td width="50%"><img src="docs/screenshots/en/evaluation.png" alt="Item evaluation" /><br/><sub><b>Item evaluation</b> — what changes for your build and the item quality (eye icon)</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/bulk-currency.png" alt="Bulk currency" /><br/><sub><b>Bulk currency</b> — exchange offers with stock</sub></td>
-    <td><img src="docs/screenshots/quick-price.png" alt="Quick price" /><br/><sub><b>Quick price</b> — poe.ninja value and 7-day trend</sub></td>
+    <td><img src="docs/screenshots/en/distribution.png" alt="Distribution" /><br/><sub><b>Distribution</b> — histogram with percentile markers</sub></td>
+    <td><img src="docs/screenshots/en/bulk-currency.png" alt="Bulk currency" /><br/><sub><b>Bulk currency</b> — exchange offers with stock</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/command-palette.png" alt="Command palette" /><br/><sub><b>Command palette</b> — <kbd>Ctrl</kbd>+<kbd>K</kbd></sub></td>
-    <td><img src="docs/screenshots/settings-hotkeys.png" alt="Hotkeys" /><br/><sub><b>Settings</b> — rebindable hotkeys</sub></td>
+    <td><img src="docs/screenshots/en/quick-price.png" alt="Quick price" /><br/><sub><b>Quick price</b> — poe.ninja value and 7-day trend</sub></td>
+    <td><img src="docs/screenshots/en/history.png" alt="History" /><br/><sub><b>History</b> — last 50 checks, reopen with the same filters</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/en/command-palette.png" alt="Command palette" /><br/><sub><b>Command palette</b> — <kbd>Ctrl</kbd>+<kbd>K</kbd></sub></td>
+    <td><img src="docs/screenshots/en/settings-hotkeys.png" alt="Hotkeys" /><br/><sub><b>Hotkeys</b> — rebindable hotkeys</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/en/settings-general.png" alt="Settings" /><br/><sub><b>Settings</b> — interface language, game, league, automatic updates</sub></td>
+    <td><img src="docs/screenshots/en/settings-price-check.png" alt="Path of Building build" /><br/><sub><b>Path of Building build</b> — item set and skill set for the upgrade verdict</sub></td>
   </tr>
 </table>
 
-> The UI is currently in Brazilian Portuguese. Screenshots were taken in the built-in demo mode.
+> The interface is available in English, Português, Español, Deutsch, 简体中文, 日本語 and 한국어 (**Settings → General → Interface language**; it follows the system language by default). Screenshots were taken in the built-in demo mode.
 
 ## 📦 Getting started
 
@@ -112,6 +122,7 @@ No game at hand? Paste an item's text into the main window with <kbd>Ctrl</kbd>+
 |---|---|
 | <kbd>Ctrl</kbd> + <kbd>D</kbd> | Price check the item under the cursor |
 | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>D</kbd> | Price check, already pinned on screen |
+| <kbd>Ctrl</kbd> + <kbd>C</kbd> | Price check with tiers; the text is still copied (can be turned off in **Settings → General**) |
 | <kbd>Shift</kbd> + <kbd>Space</kbd> | Show / hide the overlay |
 | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>O</kbd> | Open settings |
 | <kbd>Ctrl</kbd> + <kbd>K</kbd> | Command palette (inside Mirrorsight) |
@@ -125,8 +136,8 @@ window is focused, so they never steal keys from other apps.
 
 ### ⚙️ Settings
 
-- **General** — game, league, client language, display currency, restore clipboard, start with Windows.
-- **Price check** — mod roll range, show offline sellers, filters checked by default, default item level, Path of Building build for the upgrade verdict, history, presets.
+- **General** — interface language, game, league, client language, display currency, restore clipboard, Ctrl+C opens the price check, start with Windows, update automatically.
+- **Price check** — mod roll range, show offline sellers, filters checked by default, default suggested price level, Path of Building build (with item set and skill set) for the upgrade verdict, history, presets.
 - **Appearance** — interface scale (90–130 %), density, reduced motion.
 
 ### 🔁 Automatic updates
@@ -154,6 +165,8 @@ cd apps/desktop && npm run check
 # against the real APIs (uses rate limit — run sparingly):
 cargo test -p mirrorsight-infrastructure --test live -- --ignored --nocapture
 ```
+
+README screenshots: `node tools/screenshots/capture.mjs` builds the demo and captures every language into `docs/screenshots/<language>/` (Node ≥ 22 and Edge or Chrome; `--locales en,de` limits the languages).
 
 ### 🧱 Architecture (clean architecture)
 

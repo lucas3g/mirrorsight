@@ -16,7 +16,7 @@ Mit der Maus über einen Gegenstand, <kbd>Strg</kbd> + <kbd>D</kbd> drücken und
 
 [English](README.md) · [Português](README.pt-BR.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · **Deutsch** · [Español](README.es.md)
 
-<img src="docs/screenshots/price-check.png" alt="Mirrorsight Preischeck-Panel" width="100%" />
+<img src="docs/screenshots/de/price-check.png" alt="Mirrorsight Preischeck-Panel" width="100%" />
 
 </div>
 
@@ -37,9 +37,11 @@ Geschrieben in **Rust** (schnell, wenig Speicher, kein Electron) mit einer **Sve
 | | |
 |---|---|
 | 🎯 **Preischeck per Tastendruck** | <kbd>Strg</kbd>+<kbd>D</kbd> über einem Gegenstand öffnet das Panel neben dem Mauszeiger. |
+| 📋 **Strg+C geht auch** | Ist *Strg+C öffnet den Price Check* aktiv (Standard), liest der Kopier-Shortcut des Spiels das Item samt Tiers und öffnet das Overlay — der Text wird trotzdem kopiert. |
 | 🧮 **Intelligente Schätzung** | Minimum, Median und Maximum plus eine Vertrauensanzeige je nach Anzahl der Angebote. |
 | 💡 **Preisvorschlag** | Perzentile *Kaufen* (p25), *Fair* (p50) und *Verkaufen* (p75), inklusive kopierbarer `~b/o`-Notiz. |
 | 🎛️ **Bearbeitbare Mod-Filter** | Mods an/aus, Tier (T1…T*n*) und Wertebereich sehen, Min/Max anpassen, Margen-Regler, Mods per Textsuche hinzufügen (inkl. Pseudo-Mods). |
+| 🧠 **Item-Bewertung (PoE 1)** | Jedes Angebot bekommt zwei unabhängige Bewertungen: **Upgrade** für deinen Build (Besser / Schlechter / Gleichwertig — verglichen wird die gesamte Stat-Kombination inklusive Resistenz-Cap und Attributanforderungen aus deinem Path-of-Building-Build) und **Item-Qualität** (0–100 nach Tiers, Rolls und Crafting-Potenzial; Uniques nach ihren echten Roll-Bereichen). Mods ohne ausreichende Daten gelten als *nicht eindeutig*, nie als perfekter Roll. Die Angebote sind nach Besser / Gleichwertig / Schlechter gruppiert, und das Augen-Symbol zeigt genau, welche Stats sich ändern. |
 | 💾 **Presets** | Lieblings-Filter pro Spiel speichern und wiederverwenden. |
 | 📊 **Verteilungsdiagramm** | Histogramm der Angebotspreise mit p25 / p50 / p75-Markierungen. |
 | 💰 **Bulk-Währung** | Währung und stapelbare Items werden über den Bulk-Tausch bewertet (Preis pro Stück, Bestand, Verkäufer). |
@@ -47,6 +49,7 @@ Geschrieben in **Rust** (schnell, wenig Speicher, kein Electron) mit einer **Sve
 | 🕘 **Verlauf** | Jeder Check wird gespeichert und kann mit denselben Filtern erneut geöffnet werden. |
 | ⌨️ **Befehlspalette** | <kbd>Strg</kbd>+<kbd>K</kbd> zum Navigieren, Spiel oder Liga wechseln, Verlauf löschen… |
 | 🎮 **PoE 1 & PoE 2** | Spiel und Liga direkt in der Titelleiste wechseln. |
+| 🌐 **7 Sprachen** | English, Português, Español, Deutsch, 简体中文, 日本語 und 한국어 — folgt standardmäßig der Systemsprache. |
 | 🛡️ **Rate-Limit-bewusst** | Beachtet die `X-Rate-Limit-*`-Header der offiziellen API — keine Sperren, kein Spam. |
 
 ## 🔍 So funktioniert es
@@ -81,20 +84,28 @@ flowchart LR
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/price-check.png" alt="Preischeck" /><br/><sub><b>Preischeck</b> — Schätzung, Preisvorschlag, Mod-Filter und Angebote</sub></td>
-    <td width="50%"><img src="docs/screenshots/distribution.png" alt="Verteilung" /><br/><sub><b>Verteilung</b> — Histogramm mit Perzentil-Markierungen</sub></td>
+    <td width="50%"><img src="docs/screenshots/de/price-check.png" alt="Preischeck" /><br/><sub><b>Preischeck</b> — Schätzung, Preisvorschlag, Mod-Filter und Angebote, gruppiert nach Upgrade-Urteil</sub></td>
+    <td width="50%"><img src="docs/screenshots/de/evaluation.png" alt="Item-Bewertung" /><br/><sub><b>Item-Bewertung</b> — was sich für deinen Build ändert und die Item-Qualität (Augen-Symbol)</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/bulk-currency.png" alt="Bulk-Währung" /><br/><sub><b>Bulk-Währung</b> — Tauschangebote mit Bestand</sub></td>
-    <td><img src="docs/screenshots/quick-price.png" alt="Schnellpreis" /><br/><sub><b>Schnellpreis</b> — poe.ninja-Wert und 7-Tage-Trend</sub></td>
+    <td><img src="docs/screenshots/de/distribution.png" alt="Verteilung" /><br/><sub><b>Verteilung</b> — Histogramm mit Perzentil-Markierungen</sub></td>
+    <td><img src="docs/screenshots/de/bulk-currency.png" alt="Bulk-Währung" /><br/><sub><b>Bulk-Währung</b> — Tauschangebote mit Bestand</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/command-palette.png" alt="Befehlspalette" /><br/><sub><b>Befehlspalette</b> — <kbd>Strg</kbd>+<kbd>K</kbd></sub></td>
-    <td><img src="docs/screenshots/settings-hotkeys.png" alt="Hotkeys" /><br/><sub><b>Einstellungen</b> — frei belegbare Hotkeys</sub></td>
+    <td><img src="docs/screenshots/de/quick-price.png" alt="Schnellpreis" /><br/><sub><b>Schnellpreis</b> — poe.ninja-Wert und 7-Tage-Trend</sub></td>
+    <td><img src="docs/screenshots/de/history.png" alt="Verlauf" /><br/><sub><b>Verlauf</b> — die letzten 50 Preischecks, mit denselben Filtern erneut öffnen</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/de/command-palette.png" alt="Befehlspalette" /><br/><sub><b>Befehlspalette</b> — <kbd>Strg</kbd>+<kbd>K</kbd></sub></td>
+    <td><img src="docs/screenshots/de/settings-hotkeys.png" alt="Hotkeys" /><br/><sub><b>Hotkeys</b> — frei belegbare Hotkeys</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/de/settings-general.png" alt="Einstellungen" /><br/><sub><b>Einstellungen</b> — Oberflächensprache, Spiel, Liga, automatische Updates</sub></td>
+    <td><img src="docs/screenshots/de/settings-price-check.png" alt="Path-of-Building-Build" /><br/><sub><b>Path-of-Building-Build</b> — Item-Set und Skill-Set für das Upgrade-Urteil</sub></td>
   </tr>
 </table>
 
-> Die Oberfläche ist derzeit auf brasilianischem Portugiesisch. Die Screenshots stammen aus dem integrierten Demo-Modus.
+> Die Oberfläche gibt es auf English, Português, Español, Deutsch, 简体中文, 日本語 und 한국어 (**Einstellungen → Allgemein → Sprache der Oberfläche**; standardmäßig folgt sie der Systemsprache). Die Screenshots stammen aus dem integrierten Demo-Modus.
 
 ## 📦 Erste Schritte
 
@@ -112,6 +123,7 @@ Kein Spiel zur Hand? Füge den Text eines Items mit <kbd>Strg</kbd>+<kbd>V</kbd>
 |---|---|
 | <kbd>Strg</kbd> + <kbd>D</kbd> | Preischeck des Items unter dem Mauszeiger |
 | <kbd>Strg</kbd> + <kbd>Alt</kbd> + <kbd>D</kbd> | Preischeck, bereits angeheftet |
+| <kbd>Strg</kbd> + <kbd>C</kbd> | Preischeck mit Tiers; der Text wird trotzdem kopiert (abschaltbar unter **Einstellungen → Allgemein**) |
 | <kbd>Umschalt</kbd> + <kbd>Leertaste</kbd> | Overlay ein-/ausblenden |
 | <kbd>Strg</kbd> + <kbd>Umschalt</kbd> + <kbd>O</kbd> | Einstellungen öffnen |
 | <kbd>Strg</kbd> + <kbd>K</kbd> | Befehlspalette (innerhalb von Mirrorsight) |
@@ -125,8 +137,8 @@ solange das Spielfenster im Fokus ist — anderen Programmen werden also nie Tas
 
 ### ⚙️ Einstellungen
 
-- **Allgemein** — Spiel, Liga, Client-Sprache, Anzeigewährung, Zwischenablage wiederherstellen, mit Windows starten.
-- **Preischeck** — Mod-Wertebereich, Offline-Verkäufer anzeigen, standardmäßig aktive Filter, Standard-Itemlevel, Verlauf, Presets.
+- **Allgemein** — Oberflächensprache, Spiel, Liga, Client-Sprache, Anzeigewährung, Zwischenablage wiederherstellen, Strg+C öffnet den Price Check, mit Windows starten, automatisch aktualisieren.
+- **Preischeck** — Mod-Wertebereich, Offline-Verkäufer anzeigen, standardmäßig aktive Filter, Standardstufe des Preisvorschlags, Path-of-Building-Build (mit Item-Set und Skill-Set) für das Upgrade-Urteil, Verlauf, Presets.
 - **Darstellung** — Skalierung (90–130 %), Dichte, reduzierte Animationen.
 
 ### 🔁 Automatische Updates
@@ -155,13 +167,16 @@ cd apps/desktop && npm run check
 cargo test -p mirrorsight-infrastructure --test live -- --ignored --nocapture
 ```
 
+README-Screenshots: `node tools/screenshots/capture.mjs` baut die Demo und nimmt alle Sprachen nach `docs/screenshots/<sprache>/` auf (Node ≥ 22 und Edge oder Chrome; `--locales en,de` schränkt die Sprachen ein).
+
 ### 🧱 Architektur (Clean Architecture)
 
 ```
 crates/domain          Entitäten, reine Regeln und Ports (Traits). Kein I/O.
 crates/parser          Ctrl+C / Ctrl+Alt+C-Text → Item (Mods mit Trade-API-Stats abgeglichen)
 crates/application     Use Cases (Preischeck, Item aus dem Spiel kopieren, Einstellungen, Ligen)
-crates/infrastructure  Adapter: Trade-API + Rate-Limiter, poe.ninja, Win32, Zwischenablage, Einstellungen
+crates/infrastructure  Adapter: Trade-API + Rate-Limiter, poe.ninja, Win32, Zwischenablage, Einstellungen, PoB-Builds
+crates/gamedata        eingebettete PoE-1-Wissensbasis (Uniques, Tiers, Basen, Gems) + Bewertungsregeln
 apps/desktop/src-tauri Composition Root, Commands, Hotkeys, Overlay, Tray
 apps/desktop/src       Svelte-5-UI; spricht nur über den `Backend`-Port mit dem Backend
                        (Adapter: echtes Tauri und eine Browser-Demo)
@@ -171,6 +186,10 @@ apps/desktop/src       Svelte-5-UI; spricht nur über den `Backend`-Port mit dem
 
 - **Trade-API-Stats** (der Parser braucht sie, um Mods zu erkennen):
   `node tools/stats/update-stats.mjs` → aktualisiert `crates/parser/data/stats-*.tsv`.
+- **Item-Wissensbasis** (Roll-Bereiche der Uniques, Varianten, Mod-Tiers, Basen, Gem-Tags) aus dem neuesten
+  Path-of-Building-Release: `node tools/gamedata/update-gamedata.mjs` → aktualisiert `crates/gamedata/data/*.json`
+  (`--local "<PoB-Ordner>"` liest stattdessen eine lokale Installation). Gewichte, Synergien und Schwellen stehen in
+  `crates/gamedata/data/rules-poe1.json` und werden von Hand gepflegt. Danach `cargo test` ausführen.
 - **Währungs-Icons**: aus der lokalen Spielinstallation nach
   `apps/desktop/public/assets/currency/` extrahiert (PNG + `manifest.json`).
 
