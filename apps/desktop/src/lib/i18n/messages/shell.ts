@@ -13,6 +13,10 @@ interface ShellMessages {
     keyLocked: string;
     keyCommands: string;
     keyClose: string;
+    /** Chip "vX pronta · Reiniciar" (a versão vem antes, separada). */
+    updateChip: string;
+    updateChipTitle: string;
+    updateToast: (version: string) => string;
   };
   /** Barra de título e menu de ligas. */
   title: {
@@ -46,6 +50,9 @@ export const shellMsgs = defineMessages<ShellMessages>({
       keyLocked: 'fixado',
       keyCommands: 'comandos',
       keyClose: 'fechar',
+      updateChip: 'pronta · Reiniciar',
+      updateChipTitle: 'Instalar a atualização e reiniciar o Mirrorsight',
+      updateToast: (v) => `Mirrorsight v${v} baixado — reinicie quando quiser para atualizar.`,
     },
     title: {
       tagline: 'price check · Path of Exile',
@@ -74,6 +81,9 @@ export const shellMsgs = defineMessages<ShellMessages>({
       keyLocked: 'pinned',
       keyCommands: 'commands',
       keyClose: 'close',
+      updateChip: 'ready · Restart',
+      updateChipTitle: 'Install the update and restart Mirrorsight',
+      updateToast: (v) => `Mirrorsight v${v} downloaded — restart whenever you like to update.`,
     },
     title: {
       tagline: 'price check · Path of Exile',
@@ -102,6 +112,9 @@ export const shellMsgs = defineMessages<ShellMessages>({
       keyLocked: 'fijado',
       keyCommands: 'comandos',
       keyClose: 'cerrar',
+      updateChip: 'lista · Reiniciar',
+      updateChipTitle: 'Instalar la actualización y reiniciar Mirrorsight',
+      updateToast: (v) => `Mirrorsight v${v} descargado — reinicia cuando quieras para actualizar.`,
     },
     title: {
       tagline: 'price check · Path of Exile',
@@ -130,6 +143,9 @@ export const shellMsgs = defineMessages<ShellMessages>({
       keyLocked: 'fixiert',
       keyCommands: 'Befehle',
       keyClose: 'schließen',
+      updateChip: 'bereit · Neu starten',
+      updateChipTitle: 'Update installieren und Mirrorsight neu starten',
+      updateToast: (v) => `Mirrorsight v${v} heruntergeladen — starte neu, wann du willst, um zu aktualisieren.`,
     },
     title: {
       tagline: 'price check · Path of Exile',
@@ -158,6 +174,9 @@ export const shellMsgs = defineMessages<ShellMessages>({
       keyLocked: '固定',
       keyCommands: '命令',
       keyClose: '关闭',
+      updateChip: '已就绪 · 重启',
+      updateChipTitle: '安装更新并重启 Mirrorsight',
+      updateToast: (v) => `Mirrorsight v${v} 已下载 — 随时重启即可更新。`,
     },
     title: {
       tagline: 'price check · Path of Exile',
@@ -186,6 +205,9 @@ export const shellMsgs = defineMessages<ShellMessages>({
       keyLocked: '固定',
       keyCommands: 'コマンド',
       keyClose: '閉じる',
+      updateChip: '準備完了 · 再起動',
+      updateChipTitle: 'アップデートをインストールして Mirrorsight を再起動',
+      updateToast: (v) => `Mirrorsight v${v} をダウンロードしました — 好きなときに再起動して更新できます。`,
     },
     title: {
       tagline: 'price check · Path of Exile',
@@ -214,6 +236,9 @@ export const shellMsgs = defineMessages<ShellMessages>({
       keyLocked: '고정',
       keyCommands: '명령',
       keyClose: '닫기',
+      updateChip: '준비됨 · 재시작',
+      updateChipTitle: '업데이트를 설치하고 Mirrorsight 재시작',
+      updateToast: (v) => `Mirrorsight v${v} 다운로드 완료 — 원할 때 재시작하면 업데이트됩니다.`,
     },
     title: {
       tagline: 'price check · Path of Exile',

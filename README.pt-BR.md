@@ -128,6 +128,10 @@ registradas enquanto a janela do jogo está em foco, então nunca roubam teclas 
 - **Price check** — range dos mods, mostrar vendedores offline, filtros marcados por padrão, nível padrão, build do Path of Building para o veredito de upgrade, histórico, presets.
 - **Aparência** — escala da interface (90–130 %), densidade, reduzir animações.
 
+### 🔁 Atualizações automáticas
+
+A partir da v0.4.0 o Mirrorsight se atualiza sozinho pelas Releases do GitHub. Ao abrir o app, uma versão nova é instalada na hora (uma barrinha de progresso e ele reabre). Se sair uma versão enquanto você joga, ela é baixada em segundo plano e aparece o botão **Reiniciar para atualizar** na barra de status e no menu da bandeja — nada fecha sem o seu clique. Dá para desligar em **Configurações → Geral**. Quem está na 0.3.0 ou anterior precisa instalar uma vez manualmente.
+
 ## 🛠 Desenvolver
 
 Requisitos: **Rust ≥ 1.80**, **Node ≥ 20**, Windows 10/11 (WebView2).

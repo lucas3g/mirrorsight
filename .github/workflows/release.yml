@@ -2,6 +2,8 @@ name: Release
 
 # Gera uma nova versão: atualiza a versão nos manifestos, roda os testes, compila o instalador
 # NSIS, faz o commit + tag `vX.Y.Z` e publica a Release no GitHub com o .exe para download.
+# Também publica o `latest.json` + `.sig` usados pela atualização automática dos apps instalados
+# (secrets TAURI_SIGNING_PRIVATE_KEY / TAURI_SIGNING_PRIVATE_KEY_PASSWORD).
 #
 # Uso: Actions → Release → Run workflow → informe a versão (ex.: 0.2.0).
 
@@ -99,7 +101,16 @@ jobs:
 
       - name: Build installer
         working-directory: apps/desktop
-        run: npx tauri build
+        env:
+          # Assinatura do updater (`bundle.createUpdaterArtifacts`): gera o `*-setup.exe.sig`.
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          if [ -z "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            echo "::error::Secret TAURI_SIGNING_PRIVATE_KEY ausente: sem ela os apps instalados não conseguem se atualizar."
+            exit 1
+          fi
+          npx tauri build
 
       - name: Collect artifacts
         id: artifacts
@@ -107,10 +118,32 @@ jobs:
           mkdir -p dist-release
           installer=$(ls target/release/bundle/nsis/*-setup.exe | head -n 1)
           if [ -z "$installer" ]; then echo "::error::Instalador não encontrado"; exit 1; fi
+          if [ ! -f "$installer.sig" ]; then echo "::error::Assinatura do updater ($installer.sig) não encontrada"; exit 1; fi
           name="Mirrorsight_${VERSION}_x64-setup.exe"
           cp "$installer" "dist-release/$name"
+          cp "$installer.sig" "dist-release/$name.sig"
           (cd dist-release && sha256sum "$name" > SHA256SUMS.txt)
           cat dist-release/SHA256SUMS.txt
+
+          # Manifesto lido pelos apps instalados (endpoint `releases/latest/download/latest.json`
+          # em tauri.conf.json → pré-releases nunca são entregues pelo updater).
+          NAME="$name" node -e '
+            const fs = require("fs");
+            const { VERSION, TAG, NAME, GITHUB_REPOSITORY } = process.env;
+            const manifest = {
+              version: VERSION,
+              notes: `Mirrorsight ${TAG}`,
+              pub_date: new Date().toISOString(),
+              platforms: {
+                "windows-x86_64": {
+                  signature: fs.readFileSync(`dist-release/${NAME}.sig`, "utf8").trim(),
+                  url: `https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${NAME}`,
+                },
+              },
+            };
+            fs.writeFileSync("dist-release/latest.json", JSON.stringify(manifest, null, 2) + "\n");
+          '
+          cat dist-release/latest.json
           echo "installer=$name" >> "$GITHUB_OUTPUT"
 
       - name: Commit & tag
@@ -141,10 +174,13 @@ jobs:
           > clique em **Mais informações → Executar assim mesmo**.
           > Confira a integridade com o \`SHA256SUMS.txt\`.
 
+          🔄 A partir da v0.4.0 o Mirrorsight se atualiza sozinho (desligue em **Configurações → Geral**).
+
           ---
           EOF
 
           flags=(--title "Mirrorsight $TAG" --notes-file notes.md --generate-notes --verify-tag)
           if [ "${{ inputs.prerelease }}" = "true" ]; then flags+=(--prerelease); else flags+=(--latest); fi
 
-          gh release create "$TAG" "dist-release/$installer" dist-release/SHA256SUMS.txt "${flags[@]}"
+          gh release create "$TAG" "dist-release/$installer" "dist-release/$installer.sig" \
+            dist-release/latest.json dist-release/SHA256SUMS.txt "${flags[@]}"

@@ -4,6 +4,8 @@
   import { shellMsgs } from '$lib/i18n/messages/shell';
   import { priceCheck } from '$lib/stores/priceCheck.svelte';
   import { settings } from '$lib/stores/settings.svelte';
+  import { updater } from '$lib/stores/updater.svelte';
+  import Icon from '$lib/ui/Icon.svelte';
 
   /** Barra de status (30px): estado da Trade API, cotação do divine e atalhos. */
   let now = $state(Date.now());
@@ -49,6 +51,13 @@
     <kbd class="kbd">Ctrl K</kbd> {m.keyCommands}
     <kbd class="kbd">Esc</kbd> {m.keyClose}
   </span>
+  {#if updater.ready}
+    <button class="upd" title={m.updateChipTitle} disabled={updater.phase.kind === 'installing'}
+      onclick={() => void updater.install()}>
+      <span class="ico" class:spin={updater.phase.kind === 'installing'}><Icon name="reset" size={12} /></span>
+      <span class="mono">v{updater.ready.version}</span> {m.updateChip}
+    </button>
+  {/if}
   <span class="ver mono">v{APP_VERSION}</span>
 </footer>
 
@@ -73,6 +82,29 @@
   .keys .kbd { margin-left: 6px; }
   .grow { flex: 1; }
   .ver { color: var(--ms-text-3); }
+  /* Atualização baixada: chip menta clicável ("vX pronta · Reiniciar"). */
+  .upd {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 20px;
+    padding: 0 9px 0 7px;
+    border: 1px solid var(--ms-accent-line);
+    border-radius: 999px;
+    background: var(--ms-accent-soft);
+    color: var(--ms-accent);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform var(--ms-t-fast) var(--ms-ease);
+  }
+  .upd:hover:not(:disabled) { transform: translateY(-1px); }
+  .upd:focus-visible { outline: none; box-shadow: var(--ms-focus); }
+  .upd:disabled { cursor: progress; }
+  .ico { display: inline-flex; }
+  .spin { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
   .led { position: relative; width: 7px; height: 7px; border-radius: 50%; background: var(--ms-success); }
   .led::after {
     content: '';

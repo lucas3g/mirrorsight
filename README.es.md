@@ -128,6 +128,10 @@ la ventana del juego está enfocada, así que nunca roban teclas a otras aplicac
 - **Consulta de precio** — rango de mods, mostrar vendedores desconectados, filtros marcados por defecto, nivel por defecto, historial, presets.
 - **Apariencia** — escala de la interfaz (90–130 %), densidad, reducir animaciones.
 
+### 🔁 Actualizaciones automáticas
+
+Desde la v0.4.0, Mirrorsight se actualiza solo desde las Releases de GitHub. Al abrir la app, una versión nueva se instala de inmediato (una pequeña barra de progreso y se vuelve a abrir). Si sale una versión mientras juegas, se descarga en segundo plano y aparece el botón **Reiniciar para actualizar** en la barra de estado y en el menú de la bandeja; nada se cierra sin tu clic. Puedes desactivarlo en **Ajustes → General**. Las versiones 0.3.0 y anteriores necesitan una instalación manual.
+
 ## 🛠 Desarrollo
 
 Requisitos: **Rust ≥ 1.80**, **Node ≥ 20**, Windows 10/11 (WebView2).

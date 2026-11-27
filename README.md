@@ -129,6 +129,10 @@ window is focused, so they never steal keys from other apps.
 - **Price check** — mod roll range, show offline sellers, filters checked by default, default item level, Path of Building build for the upgrade verdict, history, presets.
 - **Appearance** — interface scale (90–130 %), density, reduced motion.
 
+### 🔁 Automatic updates
+
+From v0.4.0 on, Mirrorsight updates itself from GitHub Releases. When you open the app it installs any new version right away (a small progress bar, then it reopens). If a version comes out while you are playing, it is downloaded in the background and a **Restart to update** button shows up in the status bar and in the tray menu — nothing closes without your click. You can turn it off in **Settings → General**. Versions 0.3.0 and older need one manual install.
+
 ## 🛠 Development
 
 Requirements: **Rust ≥ 1.80**, **Node ≥ 20**, Windows 10/11 (WebView2).

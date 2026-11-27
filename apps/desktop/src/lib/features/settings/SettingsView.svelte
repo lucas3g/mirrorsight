@@ -44,6 +44,7 @@
           row(g.restoreClipboard, KW.restoreClipboard),
           row(g.interceptCopy, KW.interceptCopy),
           row(g.startup, KW.startup),
+          row(g.autoUpdate, KW.autoUpdate),
         ],
       },
       {

@@ -21,7 +21,7 @@ interface CommonMessages {
     rateLimited: string;
     network: (detail: string) => string;
   };
-  tray: { open: string; settings: string; quit: string; tooltip: (hotkey: string) => string };
+  tray: { open: string; settings: string; quit: string; tooltip: (hotkey: string) => string; update: string };
 }
 
 // Termos do jogo (fractured, enchant, desecrated, pseudo…) ficam como o cliente em inglês os mostra.
@@ -40,7 +40,7 @@ export const common = defineMessages<CommonMessages>({
       rateLimited: 'Limite da API atingido. Aguarde um instante.',
       network: (d) => `Falha de rede: ${d}`,
     },
-    tray: { open: 'Abrir Mirrorsight', settings: 'Configurações', quit: 'Sair', tooltip: (k) => `Mirrorsight — ${k} sobre um item no jogo` },
+    tray: { open: 'Abrir Mirrorsight', settings: 'Configurações', quit: 'Sair', tooltip: (k) => `Mirrorsight — ${k} sobre um item no jogo`, update: 'Reiniciar para atualizar' },
   },
   en: {
     now: 'now',
@@ -56,7 +56,7 @@ export const common = defineMessages<CommonMessages>({
       rateLimited: 'API rate limit reached. Wait a moment.',
       network: (d) => `Network error: ${d}`,
     },
-    tray: { open: 'Open Mirrorsight', settings: 'Settings', quit: 'Quit', tooltip: (k) => `Mirrorsight — ${k} over an item in game` },
+    tray: { open: 'Open Mirrorsight', settings: 'Settings', quit: 'Quit', tooltip: (k) => `Mirrorsight — ${k} over an item in game`, update: 'Restart to update' },
   },
   es: {
     now: 'ahora',
@@ -72,7 +72,7 @@ export const common = defineMessages<CommonMessages>({
       rateLimited: 'Límite de la API alcanzado. Espera un momento.',
       network: (d) => `Error de red: ${d}`,
     },
-    tray: { open: 'Abrir Mirrorsight', settings: 'Configuración', quit: 'Salir', tooltip: (k) => `Mirrorsight — ${k} sobre un objeto en el juego` },
+    tray: { open: 'Abrir Mirrorsight', settings: 'Configuración', quit: 'Salir', tooltip: (k) => `Mirrorsight — ${k} sobre un objeto en el juego`, update: 'Reiniciar para actualizar' },
   },
   de: {
     now: 'jetzt',
@@ -88,7 +88,7 @@ export const common = defineMessages<CommonMessages>({
       rateLimited: 'API-Limit erreicht. Bitte kurz warten.',
       network: (d) => `Netzwerkfehler: ${d}`,
     },
-    tray: { open: 'Mirrorsight öffnen', settings: 'Einstellungen', quit: 'Beenden', tooltip: (k) => `Mirrorsight — ${k} über einem Gegenstand im Spiel` },
+    tray: { open: 'Mirrorsight öffnen', settings: 'Einstellungen', quit: 'Beenden', tooltip: (k) => `Mirrorsight — ${k} über einem Gegenstand im Spiel`, update: 'Neu starten zum Aktualisieren' },
   },
   'zh-CN': {
     now: '刚刚',
@@ -104,7 +104,7 @@ export const common = defineMessages<CommonMessages>({
       rateLimited: '已达到 API 速率限制，请稍候。',
       network: (d) => `网络错误：${d}`,
     },
-    tray: { open: '打开 Mirrorsight', settings: '设置', quit: '退出', tooltip: (k) => `Mirrorsight — 在游戏中悬停物品按 ${k}` },
+    tray: { open: '打开 Mirrorsight', settings: '设置', quit: '退出', tooltip: (k) => `Mirrorsight — 在游戏中悬停物品按 ${k}`, update: '重启以更新' },
   },
   ja: {
     now: 'たった今',
@@ -120,7 +120,7 @@ export const common = defineMessages<CommonMessages>({
       rateLimited: 'API のレート制限に達しました。少し待ってください。',
       network: (d) => `ネットワークエラー: ${d}`,
     },
-    tray: { open: 'Mirrorsight を開く', settings: '設定', quit: '終了', tooltip: (k) => `Mirrorsight — ゲーム内のアイテムにカーソルを合わせて ${k}` },
+    tray: { open: 'Mirrorsight を開く', settings: '設定', quit: '終了', tooltip: (k) => `Mirrorsight — ゲーム内のアイテムにカーソルを合わせて ${k}`, update: '再起動して更新' },
   },
   ko: {
     now: '방금',
@@ -136,6 +136,6 @@ export const common = defineMessages<CommonMessages>({
       rateLimited: 'API 요청 한도에 도달했습니다. 잠시 기다려 주세요.',
       network: (d) => `네트워크 오류: ${d}`,
     },
-    tray: { open: 'Mirrorsight 열기', settings: '설정', quit: '종료', tooltip: (k) => `Mirrorsight — 게임에서 아이템 위에 ${k}` },
+    tray: { open: 'Mirrorsight 열기', settings: '설정', quit: '종료', tooltip: (k) => `Mirrorsight — 게임에서 아이템 위에 ${k}`, update: '재시작하여 업데이트' },
   },
 });

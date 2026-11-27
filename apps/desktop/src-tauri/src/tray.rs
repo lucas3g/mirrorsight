@@ -3,6 +3,8 @@
 
 use tauri::menu::{Menu, MenuItem, PredefinedMenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
+use std::sync::{Mutex, PoisonError};
+
 use tauri::{App, AppHandle, Emitter, Manager, Wry};
 
 /// Evento para o frontend da janela principal abrir a aba de configurações.
@@ -13,9 +15,31 @@ const TRAY_ID: &str = "mirrorsight";
 
 /// Itens do menu da bandeja, guardados para o frontend trocar o idioma depois.
 pub struct TrayMenu {
+    menu: Menu<Wry>,
     open: MenuItem<Wry>,
     settings: MenuItem<Wry>,
     quit: MenuItem<Wry>,
+    /// "Reiniciar para atualizar": só entra no menu quando há atualização baixada.
+    update: MenuItem<Wry>,
+    update_state: Mutex<UpdateItem>,
+}
+
+#[derive(Default)]
+struct UpdateItem {
+    /// Texto traduzido, sem a versão.
+    label: Option<String>,
+    /// Versão pronta para instalar; `Some` = o item já está no menu.
+    version: Option<String>,
+}
+
+impl UpdateItem {
+    fn text(&self) -> String {
+        let label = self.label.as_deref().unwrap_or("Restart to update");
+        match &self.version {
+            Some(v) => format!("{label} (v{v})"),
+            None => label.to_owned(),
+        }
+    }
 }
 
 /// Textos traduzidos do menu da bandeja (vindos do frontend).
@@ -25,6 +49,8 @@ pub struct TrayLabels {
     pub settings: String,
     pub quit: String,
     pub tooltip: String,
+    /// "Reiniciar para atualizar" (a versão é acrescentada aqui).
+    pub update: String,
 }
 
 /// Aplica os textos no idioma escolhido pelo usuário.
@@ -33,6 +59,12 @@ pub fn set_labels(app: &AppHandle, labels: &TrayLabels) -> tauri::Result<()> {
         menu.open.set_text(&labels.open)?;
         menu.settings.set_text(&labels.settings)?;
         menu.quit.set_text(&labels.quit)?;
+        let text = {
+            let mut item = menu.update_state.lock().unwrap_or_else(PoisonError::into_inner);
+            item.label = Some(labels.update.clone());
+            item.text()
+        };
+        menu.update.set_text(text)?;
     }
     if let Some(tray) = app.tray_by_id(TRAY_ID) {
         tray.set_tooltip(Some(&labels.tooltip))?;
@@ -44,6 +76,7 @@ pub fn build(app: &App) -> tauri::Result<()> {
     let open = MenuItem::with_id(app, "open", "Open Mirrorsight", true, None::<&str>)?;
     let settings = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
+    let update = MenuItem::with_id(app, "update", "Restart to update", true, None::<&str>)?;
     let menu = Menu::with_items(app, &[&open, &settings, &PredefinedMenuItem::separator(app)?, &quit])?;
 
     let mut tray = TrayIconBuilder::with_id(TRAY_ID)
@@ -53,6 +86,14 @@ pub fn build(app: &App) -> tauri::Result<()> {
         .on_menu_event(|app, event| match event.id.as_ref() {
             "open" => show_main(app, false),
             "settings" => show_main(app, true),
+            "update" => {
+                let app = app.clone();
+                tauri::async_runtime::spawn(async move {
+                    if let Err(err) = crate::updater::install_pending(&app).await {
+                        tracing::error!(%err, "falha ao instalar a atualização");
+                    }
+                });
+            }
             "quit" => app.exit(0),
             _ => {}
         })
@@ -65,8 +106,29 @@ pub fn build(app: &App) -> tauri::Result<()> {
         tray = tray.icon(icon.clone());
     }
     tray.build(app)?;
-    app.manage(TrayMenu { open, settings, quit });
+    app.manage(TrayMenu { menu, open, settings, quit, update, update_state: Mutex::default() });
     Ok(())
+}
+
+/// Mostra "Reiniciar para atualizar (vX)" no topo do menu da bandeja.
+pub fn set_update_ready(app: &AppHandle, version: &str) {
+    let Some(tray) = app.try_state::<TrayMenu>() else { return };
+    let (text, first_time) = {
+        let mut item = tray.update_state.lock().unwrap_or_else(PoisonError::into_inner);
+        let first_time = item.version.is_none();
+        item.version = Some(version.to_owned());
+        (item.text(), first_time)
+    };
+    let result = tray.update.set_text(text).and_then(|()| {
+        if first_time {
+            tray.menu.insert(&tray.update, 0)?;
+            tray.menu.insert(&PredefinedMenuItem::separator(app)?, 1)?;
+        }
+        Ok(())
+    });
+    if let Err(err) = result {
+        tracing::warn!(%err, "não foi possível mostrar a atualização na bandeja");
+    }
 }
 
 /// Traz a janela principal para frente (opcionalmente já na aba de configurações).

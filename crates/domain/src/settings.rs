@@ -54,6 +54,9 @@ pub struct Settings {
     /// Arquivos antigos recebem `true` pelo `#[serde(default)]`.
     pub intercept_copy: bool,
     pub launch_on_startup: bool,
+    /// Instala versões novas publicadas no GitHub (ao abrir) e avisa das que saírem durante a sessão.
+    /// Arquivos antigos recebem `true` pelo `#[serde(default)]`.
+    pub auto_update: bool,
     pub client_log_path: Option<String>,
     pub hotkeys: Vec<HotkeyBinding>,
     pub show_offline: bool,
@@ -107,6 +110,7 @@ impl Default for Settings {
             restore_clipboard: true,
             intercept_copy: true,
             launch_on_startup: false,
+            auto_update: true,
             client_log_path: None,
             hotkeys: vec![
                 bind(HotkeyAction::PriceCheck, "Ctrl + D"),
@@ -158,5 +162,13 @@ mod tests {
         let settings = serde_json::from_str::<Settings>(raw).unwrap().migrate();
         assert!(settings.intercept_copy);
         assert!(!settings.restore_clipboard);
+    }
+
+    #[test]
+    fn old_file_gets_auto_update_on() {
+        let raw = r#"{ "schema_version": 3, "launch_on_startup": true }"#;
+        let settings = serde_json::from_str::<Settings>(raw).unwrap().migrate();
+        assert!(settings.auto_update);
+        assert!(settings.launch_on_startup);
     }
 }

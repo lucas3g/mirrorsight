@@ -13,7 +13,7 @@
     "core:window:allow-close",
     {
       "identifier": "opener:allow-open-url",
-      "allow": [{ "url": "https://www.pathofexile.com/*" }, { "url": "https://poe.ninja/*" }]
+      "allow": [{ "url": "https://www.pathofexile.com/*" }, { "url": "https://poe.ninja/*" }, { "url": "https://github.com/lucas3g/mirrorsight/*" }]
     }
   ]
 }
