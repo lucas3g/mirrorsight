@@ -37,9 +37,12 @@ class UpdaterStore {
       })
       .catch(() => {});
     const subscription = backend.onUpdateReady((info) => {
-      const isNew = this.ready?.version !== info.version;
+      // Já instalando: o Rust instala a mais nova de qualquer jeito; não reabilita o botão.
+      if (this.phase.kind === 'installing') return;
+      // Checagem manual em andamento: a própria tela "Sobre" mostra o resultado, sem toast.
+      const announce = this.phase.kind !== 'checking' && this.ready?.version !== info.version;
       this.phase = { kind: 'ready', info };
-      if (isNew) toasts.push('info', shellMsgs.status.updateToast(info.version));
+      if (announce) toasts.push('info', shellMsgs.status.updateToast(info.version));
     });
     return () => void subscription.then((unsubscribe) => unsubscribe());
   }
@@ -64,6 +67,8 @@ class UpdaterStore {
     try {
       // Se der certo o processo é encerrado pelo instalador e esta promessa nunca volta.
       await backend.installUpdate();
+      // Voltou sem encerrar: não havia nada pendente no Rust.
+      this.phase = { kind: 'idle' };
     } catch (err) {
       this.phase = { kind: 'ready', info };
       toasts.push('error', describeError(toAppError(err)));

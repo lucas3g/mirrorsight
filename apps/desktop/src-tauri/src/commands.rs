@@ -68,9 +68,11 @@ pub async fn update_status(app: AppHandle) -> Result<Option<updater::UpdateInfo>
 /// Checagem manual (Configurações → Sobre): baixa a versão nova, se houver, sem instalar.
 #[tauri::command]
 pub async fn check_for_update(app: AppHandle) -> Result<updater::UpdateCheck, AppError> {
-    updater::check_and_download(&app)
-        .await
-        .map_err(|e| AppError::Network { message: e.to_string(), reason: None })
+    updater::check_and_download(&app).await.map_err(|e| {
+        // A UI só mostra "sem conexão?"; assinatura/versão inválida precisa ficar no log.
+        tracing::warn!(err = %e, "falha na checagem manual de atualização");
+        AppError::Network { message: e.to_string(), reason: None }
+    })
 }
 
 /// Instala a atualização baixada e reinicia o app.
